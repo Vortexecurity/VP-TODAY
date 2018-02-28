@@ -8,24 +8,27 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="384dp">
 
         <Button
             android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/button4"
-            android:layout_alignTop="@+id/textView"
+            android:layout_alignBaseline="@+id/button4"
+            android:layout_alignBottom="@+id/button4"
+            android:layout_alignStart="@+id/textView"
             android:text="Update" />
 
         <Button
             android:id="@+id/button4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:layout_below="@+id/button2"
-            android:layout_marginEnd="14dp"
-            android:layout_marginTop="13dp"
+            android:layout_marginBottom="19dp"
+            android:layout_marginEnd="11dp"
             android:text="Kurse" />
 
         <TextView
