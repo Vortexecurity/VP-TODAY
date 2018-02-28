@@ -40,5 +40,16 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="22dp"
             android:text="Deine Vertretungen für : " />
+
+        <EditText
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/textView"
+            android:layout_below="@+id/textView"
+            android:layout_marginTop="32dp"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
