@@ -1,6 +1,8 @@
 package sumedev.vp_today;
 
+import android.content.Context;
 import android.content.Intent;
+import android.security.NetworkSecurityPolicy;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,12 +19,11 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Base64;
 
 public class MainActivity extends AppCompatActivity {
 
     TextView txt;
-    String tmp;
+    String tmp = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,27 +51,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void update(){
-        Log.e("[LOG]", "Update Clicked");
-
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    String urlS = "https://vp.gymnasium-odenthal.de/god/2018-03-01";
-                    String name = "vp";
-                    String password = "god9201";
-                    String authString = name + ":" + password;
-
-                    //byte[] authEncBytes = Base64.getMimeEncoder().encode(authString.getBytes());
+                    String urlS = "https://vp.gymnasium-odenthal.de/god/2018-03-02";
                     String authStringEnc = "dnA6Z29kOTIwMQ==";
-
+                    Log.e("LOG","RUNS");
                     URL url = new URL(urlS);
                     URLConnection urlConnection = url.openConnection();
                     urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
                     InputStream is = urlConnection.getInputStream();
 
                     InputStreamReader isr = new InputStreamReader(is);
-
 
                     int numCharsRead;
                     char[] charArray = new char[1024];
@@ -80,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
                     String result = sb.toString();
 
                     tmp = result;
+                    Log.e("LOG", result);
+
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -88,8 +84,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         t.start();
-
-        txt.setText(tmp);
+        try {
+            t.join();
+            txt.setText(tmp);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
