@@ -10,29 +10,11 @@
         android:id="@+id/relativeLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <Button
-            android:id="@+id/btnUpdate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/btnKurse"
-            android:layout_alignBottom="@+id/btnKurse"
-            android:layout_alignStart="@+id/textView"
-            android:text="Update" />
-
-        <Button
-            android:id="@+id/btnKurse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginBottom="19dp"
-            android:layout_marginEnd="11dp"
-            android:text="Kurse" />
 
         <TextView
             android:id="@+id/textView"
@@ -44,15 +26,25 @@
             android:layout_marginTop="22dp"
             android:text="Deine Vertretungen für : " />
 
-        <EditText
-            android:id="@+id/text"
+        <Button
+            android:id="@+id/btnDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/textView"
-            android:layout_below="@+id/textView"
-            android:layout_marginTop="32dp"
+            android:layout_alignBaseline="@+id/textView"
+            android:layout_alignBottom="@+id/textView"
+            android:layout_alignParentEnd="true"
+            android:text="Datum"
+            android:textSize="10sp" />
+
+        <EditText
+            android:id="@+id/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/btnDate"
+            android:layout_marginTop="12dp"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textMultiLine" />
 
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
