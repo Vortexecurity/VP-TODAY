@@ -105,10 +105,12 @@ public class MainActivity extends AppCompatActivity{
 
                 if(day >= 10 && month >= 10)
                     date = year + "-" + month + "-" + day;
-                else if(day < 10)
+                else if(day < 10 && month >= 10)
                     date = year + "-" + month + "-0" + day;
-                else
+                else if(month < 10 && day >= 10)
                     date = year + "-0" + month + "-" + day;
+                else
+                    date = year + "-0" + month + "-0" + day;
                 textView.setText("Deine Vertretungen für : " + day + "." + month + "." + year);
                 update();
             }
