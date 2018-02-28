@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">VP-TODAY</string>
     <string name="settings">Einstellungen</string>
+    <string name="stufe">Stufe:</string>
+    <string name="apply">Übernehmen</string>
+    <string name="cancel">Abbrechen</string>
 </resources>

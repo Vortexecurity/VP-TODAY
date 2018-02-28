@@ -1,8 +1,6 @@
 package sumedev.vp_today;
 
-import android.content.Context;
 import android.content.Intent;
-import android.security.NetworkSecurityPolicy;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -95,6 +93,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void loadSettings() {
+        // TODO
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menuheader, menu);
@@ -106,11 +108,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch ( item.getItemId() ) {
             case R.id.settings:
-                Intent myIntent = new Intent(getBaseContext(), SettingsActivity.class);
+                Intent myIntent = new Intent(getApplicationContext(), SettingsActivity.class);
                 this.startActivity(myIntent);
-                break;
+                return true;
         }
 
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 }
