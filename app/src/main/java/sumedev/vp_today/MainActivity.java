@@ -25,11 +25,42 @@ public class MainActivity extends AppCompatActivity {
     TextView txt;
     String tmp = "";
 
+    Thread t;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String urlS = "https://vp.gymnasium-odenthal.de/god/2018-03-02";
+                    String authStringEnc = "dnA6Z29kOTIwMQ==";
+                    URL url = new URL(urlS);
+                    URLConnection urlConnection = url.openConnection();
+                    urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
+                    InputStream is = urlConnection.getInputStream();
+
+                    InputStreamReader isr = new InputStreamReader(is);
+
+                    int numCharsRead;
+                    char[] charArray = new char[1024];
+                    StringBuffer sb = new StringBuffer();
+                    while ((numCharsRead = isr.read(charArray)) > 0) {
+                        sb.append(charArray, 0, numCharsRead);
+                    }
+                    String result = sb.toString();
+
+                    tmp = result;
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         Button btnUpdate = findViewById(R.id.btnUpdate);
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,45 +79,17 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("[LOG]", "Kurse clicked");
             }
         });
+
+        //Last
+        update();
     }
 
     private void update(){
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String urlS = "https://vp.gymnasium-odenthal.de/god/2018-03-02";
-                    String authStringEnc = "dnA6Z29kOTIwMQ==";
-                    Log.e("LOG","RUNS");
-                    URL url = new URL(urlS);
-                    URLConnection urlConnection = url.openConnection();
-                    urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
-                    InputStream is = urlConnection.getInputStream();
-
-                    InputStreamReader isr = new InputStreamReader(is);
-
-                    int numCharsRead;
-                    char[] charArray = new char[1024];
-                    StringBuffer sb = new StringBuffer();
-                    while ((numCharsRead = isr.read(charArray)) > 0) {
-                        sb.append(charArray, 0, numCharsRead);
-                    }
-                    String result = sb.toString();
-
-                    tmp = result;
-                    Log.e("LOG", result);
-
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
         t.start();
         try {
             t.join();
             txt.setText(tmp);
+            Toast.makeText(getApplicationContext(), "Aktualisiert", Toast.LENGTH_SHORT).show();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
