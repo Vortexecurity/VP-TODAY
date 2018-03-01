@@ -89,7 +89,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void load() {
         /* Spinner setting */
-        String s = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getString("stufe", "");
+        String s = Util.getSettingStufe(this);
 
         switch (s) {
             case "EF":

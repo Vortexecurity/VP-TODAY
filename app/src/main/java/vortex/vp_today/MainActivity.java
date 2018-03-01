@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Aktualisiert!", Toast.LENGTH_SHORT).show();
 
             Document doc = Jsoup.parse(tmp);
-            filterHTML(doc);
+            filterHTML(doc, Util.getSettingStufe(this));
 
             Element e = null;
 
@@ -194,14 +194,17 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void filterHTML(Document d){
-        //TODO Input Filter
-        Elements elements = d.select("tr[data-index*='Q1']");
+    private void filterHTML(Document d, String stufe) {
+        String _stufe = stufe;
+        if (_stufe == null || _stufe == "")
+            _stufe = "5";
+
+        Elements elements = d.select("tr[data-index*='" + stufe + "']");
         String s = "";
 
         for(Element e : elements){
             if(e != null)
-            s += e.text() + "\n\n";
+                s += e.text() + "\n\n";
         }
 
         txt.setText(s);
