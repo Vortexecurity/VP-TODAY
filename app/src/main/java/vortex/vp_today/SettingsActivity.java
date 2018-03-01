@@ -116,14 +116,26 @@ public class SettingsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch ( item.getItemId() ) {
             case android.R.id.home:
-                new Handler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        DoDialog();
+                try {
+                    synchronized (this) {
+                        Runnable r = new Runnable() {
+                            @Override
+                            public void run() {
+                                DoDialog();
+                            }
+                        };
+                        new Handler().post(r);
+
+                        /**
+                         * TODO: fix: hier warten bis r fertig ist
+                         */
+
+                        NavUtils.navigateUpFromSameTask(this);
                     }
-                });
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
+                    return true;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
         }
 
         return super.onOptionsItemSelected(item);
@@ -131,7 +143,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void DoDialog() {
         if (changed) {
-            if (Util.ShowYesNoDialog(getApplicationContext(), "Möchten Sie die ungespeicherten Änderungen speichern?") == DialogInterface.BUTTON_POSITIVE) {
+            if (Util.ShowYesNoDialog(SettingsActivity.this, "Möchten Sie die ungespeicherten Änderungen speichern?") == DialogInterface.BUTTON_POSITIVE) {
                 save();
             }
         }

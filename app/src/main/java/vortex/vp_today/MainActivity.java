@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private String date = "";
     private TextView textView;
     private TextView msgOTD;
-    private String tmp = "";
+    private volatile String tmp = "";
     private Thread t;
     private Button btnDate;
     private SwipeRefreshLayout swipe;
@@ -63,7 +63,12 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     if (date.equals("")) {
-                        Toast.makeText(getApplicationContext(), "Ein Fehler ist während des Aktualisiervorgangs aufgetreten!", Toast.LENGTH_LONG);
+                        MainActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), "Ein Fehler ist während des Aktualisiervorgangs aufgetreten!", Toast.LENGTH_LONG);
+                            }
+                        });
                         return;
                     }
 
@@ -118,11 +123,11 @@ public class MainActivity extends AppCompatActivity {
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                 month = month + 1;
 
-                if(day >= 10 && month >= 10)
+                if (day >= 10 && month >= 10)
                     date = year + "-" + month + "-" + day;
-                else if(day < 10 && month >= 10)
+                else if (day < 10 && month >= 10)
                     date = year + "-" + month + "-0" + day;
-                else if(month < 10 && day >= 10)
+                else if (month < 10 && day >= 10)
                     date = year + "-0" + month + "-" + day;
                 else
                     date = year + "-0" + month + "-0" + day;
