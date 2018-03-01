@@ -16,6 +16,10 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+/**
+ * @author Melvin Zähl
+ * @author Simon Dräger
+ */
 public class SettingsActivity extends AppCompatActivity {
     private boolean changed = false;
 
@@ -125,7 +129,6 @@ public class SettingsActivity extends AppCompatActivity {
                             }
                         };
                         new Handler().post(r);
-
                         /**
                          * TODO: fix: hier warten bis r fertig ist
                          */
