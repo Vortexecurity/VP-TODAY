@@ -128,10 +128,6 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    private void loadSettings() {
-        // TODO
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menuheader, menu);
