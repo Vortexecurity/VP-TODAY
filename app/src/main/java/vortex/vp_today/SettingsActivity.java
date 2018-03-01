@@ -80,6 +80,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void load(){
         String s = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getString("stufe", "");
+
         switch (s) {
             case "EF":
                 spin.setSelection(5);
@@ -99,19 +100,26 @@ public class SettingsActivity extends AppCompatActivity {
                 spin.setSelection(i - 5);
                 break;
         }
-
-
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        onBackPressed();
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        DoDialog();
+        super.onBackPressed();
+    }
+
+    private void DoDialog() {
         if (changed) {
             if (Util.ShowYesNoDialog(getApplicationContext(), "Möchten Sie die ungespeicherten Änderungen speichern?") == DialogInterface.BUTTON_POSITIVE) {
                 save();
             }
         }
-        onBackPressed();
-        return true;
     }
 
     private void hasChanged() {

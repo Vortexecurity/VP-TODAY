@@ -24,7 +24,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private String date;
