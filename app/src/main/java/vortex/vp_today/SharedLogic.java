@@ -1,4 +1,4 @@
-package sumedev.vp_today;
+package vortex.vp_today;
 
 import android.support.annotation.Nullable;
 

@@ -1,4 +1,4 @@
-package sumedev.vp_today;
+package vortex.vp_today;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,9 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SettingsActivity extends AppCompatActivity {
     private boolean changed = false;
@@ -74,7 +71,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void save() {
-        SharedPreferences settings = getSharedPreferences("sumedev.vp_today.app", Context.MODE_PRIVATE);
+        SharedPreferences settings = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
         if(settings.edit().putString("stufe", spin.getSelectedItem().toString()).commit())
             Toast.makeText(getApplicationContext(), "Einstellungen gesichert!", Toast.LENGTH_SHORT).show();
         else
@@ -82,18 +79,22 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void load(){
-        String s = getSharedPreferences("sumedev.vp_today.app", Context.MODE_PRIVATE).getString("stufe", "");
-        switch (s){
-            case "EF" :
+        String s = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getString("stufe", "");
+        switch (s) {
+            case "EF":
                 spin.setSelection(5);
                 break;
-            case "Q1" :
+            case "Q1":
                 spin.setSelection(6);
                 break;
-            case "Q2" :
+            case "Q2":
                 spin.setSelection(7);
                 break;
             default:
+                if (s == null || s == ""){
+                    spin.setSelection(0);
+                    break;
+                }
                 int i = Integer.parseInt(s);
                 spin.setSelection(i - 5);
                 break;
