@@ -128,9 +128,13 @@ public class MainActivity extends AppCompatActivity {
         t.start();
         try {
             t.join();
-            txt.setText(tmp);
+            //TMP
+            //txt.setText(tmp);
+            //REAL SHIT
             Toast.makeText(getApplicationContext(), "Aktualisiert", Toast.LENGTH_SHORT).show();
+
             Document doc = Jsoup.parse(tmp);
+            filterHTML(doc);
             Element e = null;
             Log.e("LOG", "" + !doc.is("div.alert"));
             if(!doc.is("div.alert")) {
@@ -138,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 if(e != null)
                     msgOTD.setText("" + e.text());
                 else
-                    msgOTD.setText("An diesem Tag gibt es keinen Informationstext!");
+                    msgOTD.setText("An diesem Tag gibt es (noch) keinen Informationstext!");
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -163,4 +167,17 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void filterHTML(Document d){
+        //TODO Input Filter
+        Elements elements = d.select("tr[data-index*='Q1']");
+        String s = "";
+        for(Element e : elements){
+            if(e!=null)
+            s += e.text() + "\n\n";
+        }
+        txt.setText(s);
+    }
+
+
 }
