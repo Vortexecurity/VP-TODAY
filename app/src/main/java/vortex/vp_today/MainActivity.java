@@ -4,6 +4,8 @@ import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.content.Intent;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView msgOTD;
     private String tmp = "";
     private Thread t;
+    private Button btnDate;
+    private SwipeRefreshLayout swipe;
 
     //Temporäre Anzeige des HTML Quelltextes der abgerufenden Seite -> Endeffekt wirds eine Listview werden
     EditText txt;
@@ -50,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
         txt = findViewById(R.id.text);
         textView = findViewById(R.id.textView);
         msgOTD = findViewById(R.id.msgOTD);
-
-        Button btnDate = findViewById(R.id.btnDate);
+        btnDate = findViewById(R.id.btnDate);
+        swipe = findViewById(R.id.swiperefresh);
 
         /* Thread region */
         t = new Thread(new Runnable() {
@@ -121,6 +125,19 @@ public class MainActivity extends AppCompatActivity {
                 update();
             }
         };
+
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        update();
+                        swipe.setRefreshing(false);
+                    }
+                });
+            }
+        });
         /**/
     }
 
