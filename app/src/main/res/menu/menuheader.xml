@@ -5,6 +5,12 @@
         android:id="@+id/settings"
         android:checkable="false"
         android:title="@string/settings"></item>
+
+    <item
+        android:id="@+id/rate"
+        android:checkable="false"
+        android:title="@string/rateus"></item>
+
     <item
         android:id="@+id/about"
         android:checkable="false"

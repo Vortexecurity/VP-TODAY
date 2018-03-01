@@ -34,7 +34,7 @@ import java.util.Calendar;
 public class MainActivity extends AppCompatActivity {
 
     private DatePickerDialog.OnDateSetListener mDateSetListener;
-    private String date;
+    private String date = "";
     private TextView textView;
     private TextView msgOTD;
     private String tmp = "";
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnDate;
     private SwipeRefreshLayout swipe;
 
-    //Temporäre Anzeige des HTML Quelltextes der abgerufenden Seite -> Endeffekt wirds eine Listview werden
+    /* Temporäre Anzeige des HTML Quelltextes der abgerufenden Seite -> Endeffekt wirds eine Listview werden */
     EditText txt;
 
     @Override
@@ -62,6 +62,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
+                    if (date.equals("")) {
+                        Toast.makeText(getApplicationContext(), "Ein Fehler ist während des Aktualisiervorgangs aufgetreten!", Toast.LENGTH_LONG);
+                        return;
+                    }
+
                     String urlS = "https://vp.gymnasium-odenthal.de/god/" + date;
                     Log.e("LOG", urlS);
                     String authStringEnc = "dnA6Z29kOTIwMQ==";
@@ -196,10 +201,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void filterHTML(Document d, String stufe) {
         String _stufe = stufe;
-        if (_stufe == null || _stufe == "")
+        if (_stufe == null || _stufe.equals(""))
             _stufe = "5";
 
-        Elements elements = d.select("tr[data-index*='" + stufe + "']");
+        Elements elements = d.select("tr[data-index*='" + _stufe + "']");
         String s = "";
 
         for(Element e : elements){
