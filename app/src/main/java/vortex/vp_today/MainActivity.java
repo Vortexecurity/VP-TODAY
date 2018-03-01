@@ -16,6 +16,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -29,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private String date;
     private TextView textView;
+    private TextView msgOTD;
     private String tmp = "";
     private Thread t;
 
@@ -44,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         //View init
         txt = findViewById(R.id.text);
         textView = findViewById(R.id.textView);
+        msgOTD = findViewById(R.id.msgOTD);
 
         Button btnDate = findViewById(R.id.btnDate);
 
@@ -123,6 +130,16 @@ public class MainActivity extends AppCompatActivity {
             t.join();
             txt.setText(tmp);
             Toast.makeText(getApplicationContext(), "Aktualisiert", Toast.LENGTH_SHORT).show();
+            Document doc = Jsoup.parse(tmp);
+            Element e = null;
+            Log.e("LOG", "" + !doc.is("div.alert"));
+            if(!doc.is("div.alert")) {
+                e = doc.select("div.alert").first();
+                if(e != null)
+                    msgOTD.setText("" + e.text());
+                else
+                    msgOTD.setText("An diesem Tag gibt es keinen Informationstext!");
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
