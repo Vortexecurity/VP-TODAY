@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private String date = "";
     private TextView textView;
     private TextView msgOTD;
+    private TextView tvVers;
     private volatile String tmp = "";
     private Thread t;
     private Button btnDate;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         msgOTD = findViewById(R.id.msgOTD);
         btnDate = findViewById(R.id.btnDate);
         swipe = findViewById(R.id.swiperefresh);
+        tvVers = findViewById(R.id.tvVers);
 
         /* Thread region */
         t = new Thread(new Runnable() {
@@ -172,10 +174,9 @@ public class MainActivity extends AppCompatActivity {
             Document doc = Jsoup.parse(tmp);
             Log.e("STUFE",Util.getSettingStufe(this));
             filterHTML(doc, Util.getSettingStufe(this));
+            tvVers.setText("Version :" + doc.select("strong").first().text());
 
             Element e = null;
-
-            Log.e("LOG", "" + !doc.is("div.alert"));
 
             if(!doc.is("div.alert")) {
                 e = doc.select("div.alert").first();

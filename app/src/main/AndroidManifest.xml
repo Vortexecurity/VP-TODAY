@@ -20,6 +20,7 @@
         </activity>
         <activity android:name="vortex.vp_today.SettingsActivity"
             android:label="@string/settings"
+            android:screenOrientation="portrait"
             android:parentActivityName="vortex.vp_today.MainActivity" >
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
