@@ -41,21 +41,19 @@ public class MainActivity extends AppCompatActivity {
     //Temporäre Anzeige des HTML Quelltextes der abgerufenden Seite -> Endeffekt wirds eine Listview werden
     EditText txt;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //View init
+        /* Initialize views */
         txt = findViewById(R.id.text);
         textView = findViewById(R.id.textView);
         msgOTD = findViewById(R.id.msgOTD);
 
         Button btnDate = findViewById(R.id.btnDate);
 
-
-        //Threads
+        /* Thread region */
         t = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -86,8 +84,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        /**/
 
-        //Listeners
+        /* Listener region */
         btnDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -122,28 +121,35 @@ public class MainActivity extends AppCompatActivity {
                 update();
             }
         };
+        /**/
     }
 
     private void update() {
         try {
-            if (!t.isAlive()) {
-                t.start();
-                Toast.makeText(getApplicationContext(), "Aktualisiere...", Toast.LENGTH_SHORT).show();
+            try {
+                if (!t.isAlive()) {
+                    t.start();
+                    Toast.makeText(getApplicationContext(), "Aktualisiere...", Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
+
             t.join();
-            //TMP
-            //txt.setText(tmp);
-            //REAL SHIT
+
             Toast.makeText(getApplicationContext(), "Aktualisiert!", Toast.LENGTH_SHORT).show();
 
             Document doc = Jsoup.parse(tmp);
             filterHTML(doc);
+
             Element e = null;
+
             Log.e("LOG", "" + !doc.is("div.alert"));
+
             if(!doc.is("div.alert")) {
                 e = doc.select("div.alert").first();
                 if(e != null)
-                    msgOTD.setText("" + e.text());
+                    msgOTD.setText(e.text());
                 else
                     msgOTD.setText("An diesem Tag gibt es (noch) keinen Informationstext!");
             }
@@ -175,12 +181,12 @@ public class MainActivity extends AppCompatActivity {
         //TODO Input Filter
         Elements elements = d.select("tr[data-index*='Q1']");
         String s = "";
+
         for(Element e : elements){
             if(e != null)
             s += e.text() + "\n\n";
         }
+
         txt.setText(s);
     }
-
-
 }

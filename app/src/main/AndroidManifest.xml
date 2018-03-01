@@ -18,7 +18,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="vortex.vp_today.SettingsActivity"></activity>
+        <activity android:name="vortex.vp_today.SettingsActivity"
+            android:label="@string/settings"
+            android:parentActivityName="vortex.vp_today.MainActivity" >
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="vortex.vp_today.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
