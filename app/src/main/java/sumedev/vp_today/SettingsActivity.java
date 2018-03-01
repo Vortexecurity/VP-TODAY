@@ -70,6 +70,7 @@ public class SettingsActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         Spinner sItems = findViewById(R.id.spinStufen);
         sItems.setAdapter(adapter);
+        load();
     }
 
     private void save() {
@@ -78,6 +79,27 @@ public class SettingsActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Einstellungen gesichert!", Toast.LENGTH_SHORT).show();
         else
             Toast.makeText(getApplicationContext(), "Speichern fehlgeschlagen!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void load(){
+        String s = getSharedPreferences("sumedev.vp_today.app", Context.MODE_PRIVATE).getString("stufe", "");
+        switch (s){
+            case "EF" :
+                spin.setSelection(5);
+                break;
+            case "Q1" :
+                spin.setSelection(6);
+                break;
+            case "Q2" :
+                spin.setSelection(7);
+                break;
+            default:
+                int i = Integer.parseInt(s);
+                spin.setSelection(i - 5);
+                break;
+        }
+
+
     }
 
     @Override
