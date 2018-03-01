@@ -1,3 +1,3 @@
 # VP-TODAY
 
-VP-TODAY - your VP news feed
+VP-TODAY - Inoffizielle App zur Vereinfachung des Stundenplans am Gymnasium in Odenthal
