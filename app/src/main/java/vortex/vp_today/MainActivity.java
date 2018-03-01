@@ -124,14 +124,17 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-    private void update(){
-        t.start();
+    private void update() {
         try {
+            if (!t.isAlive()) {
+                t.start();
+                Toast.makeText(getApplicationContext(), "Aktualisiere...", Toast.LENGTH_SHORT).show();
+            }
             t.join();
             //TMP
             //txt.setText(tmp);
             //REAL SHIT
-            Toast.makeText(getApplicationContext(), "Aktualisiert", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Aktualisiert!", Toast.LENGTH_SHORT).show();
 
             Document doc = Jsoup.parse(tmp);
             filterHTML(doc);
@@ -144,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
                 else
                     msgOTD.setText("An diesem Tag gibt es (noch) keinen Informationstext!");
             }
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -173,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         Elements elements = d.select("tr[data-index*='Q1']");
         String s = "";
         for(Element e : elements){
-            if(e!=null)
+            if(e != null)
             s += e.text() + "\n\n";
         }
         txt.setText(s);

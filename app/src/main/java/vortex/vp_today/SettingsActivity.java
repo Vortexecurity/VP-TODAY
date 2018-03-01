@@ -3,6 +3,8 @@ package vortex.vp_today;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -20,12 +22,14 @@ public class SettingsActivity extends AppCompatActivity {
     Button btnApply;
     Button btnCancel;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_settings);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         spin = findViewById(R.id.spinStufen);
         btnApply = findViewById(R.id.btnApply);
@@ -44,18 +48,22 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        btnApply.setBackgroundColor(Color.GREEN);
+
         btnApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 save();
-                onBackPressed();
+                NavUtils.navigateUpFromSameTask(SettingsActivity.this);
             }
         });
+
+        btnCancel.setBackgroundColor(Color.GREEN);
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                NavUtils.navigateUpFromSameTask(SettingsActivity.this);
             }
         });
 
@@ -78,7 +86,8 @@ public class SettingsActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Speichern fehlgeschlagen!", Toast.LENGTH_SHORT).show();
     }
 
-    private void load(){
+    private void load() {
+        /* Spinner setting */
         String s = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getString("stufe", "");
 
         switch (s) {
@@ -104,14 +113,19 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        onBackPressed();
-        return true;
-    }
+        switch ( item.getItemId() ) {
+            case android.R.id.home:
+                findViewById(android.R.id.home).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        DoDialog();
+                    }
+                });
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
 
-    @Override
-    public void onBackPressed() {
-        DoDialog();
-        super.onBackPressed();
+        return super.onOptionsItemSelected(item);
     }
 
     private void DoDialog() {
