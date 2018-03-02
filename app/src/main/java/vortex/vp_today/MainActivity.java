@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private Thread t;
     private Button btnDate;
     private SwipeRefreshLayout swipe;
+    private static final Object lockObj = new Object();
 
     /* Temporäre Anzeige des HTML Quelltextes der abgerufenden Seite -> Endeffekt wirds eine Listview werden */
     EditText txt;
@@ -81,13 +82,15 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     String urlS = "https://vp.gymnasium-odenthal.de/god/" + date;
-                    Log.e("LOG", urlS);
                     String authStringEnc = "dnA6Z29kOTIwMQ==";
+
+                    Log.e("LOG", urlS);
+
                     URL url = new URL(urlS);
                     URLConnection urlConnection = url.openConnection();
                     urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
-                    InputStream is = urlConnection.getInputStream();
 
+                    InputStream is = urlConnection.getInputStream();
                     InputStreamReader isr = new InputStreamReader(is);
 
                     int numCharsRead;
@@ -166,32 +169,35 @@ public class MainActivity extends AppCompatActivity {
      */
     private void update() {
         try {
-            try {
-                if (!t.isAlive()) {
-                    t.start();
-                    Toast.makeText(getApplicationContext(), "Aktualisiere...", Toast.LENGTH_SHORT).show();
+            /* Auf einen Thread synchronisieren, sonst gibst Fehler */
+            synchronized (lockObj) {
+                try {
+                    if (!t.isAlive()) {
+                        t.start();
+                        Toast.makeText(getApplicationContext(), "Aktualisiere...", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
 
-            t.join();
+                t.join();
 
-            Toast.makeText(getApplicationContext(), "Aktualisiert!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Aktualisiert!", Toast.LENGTH_SHORT).show();
 
-            Document doc = Jsoup.parse(tmp);
-            Log.e("STUFE", Util.getSettingStufe(this));
-            filterHTML(doc, Util.getSettingStufe(this));
-            tvVers.setText("Version : " + doc.select("strong").first().text());
+                Document doc = Jsoup.parse(tmp);
+                Log.e("STUFE", Util.getSettingStufe(this));
+                filterHTML(doc, Util.getSettingStufe(this));
+                tvVers.setText("Version : " + doc.select("strong").first().text());
 
-            Element e = null;
+                Element e = null;
 
-            if(!doc.is("div.alert")) {
-                e = doc.select("div.alert").first();
-                if(e != null)
-                    msgOTD.setText(e.text());
-                else
-                    msgOTD.setText("An diesem Tag gibt es (noch) keinen Informationstext!");
+                if (!doc.is("div.alert")) {
+                    e = doc.select("div.alert").first();
+                    if (e != null)
+                        msgOTD.setText(e.text());
+                    else
+                        msgOTD.setText("An diesem Tag gibt es (noch) keinen Informationstext!");
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -241,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
         String s = "";
 
         for (Element e : elements) {
+            /* Manchmal sind Einträge im VP mehrere Male vorhanden, also nur einmal in die Liste tun. */
             if(e != null && !(s.contains(e.text())))
                 s += e.text() + "\n\n";
         }
