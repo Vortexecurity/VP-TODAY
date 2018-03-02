@@ -159,7 +159,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     *
+     * Updates the Vertretungs-ListView
+     * @author Melvin Zähl
+     * @author Simon Dräger
      */
     private void update() {
         try {
