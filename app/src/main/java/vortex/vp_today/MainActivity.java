@@ -185,9 +185,12 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Aktualisiert!", Toast.LENGTH_SHORT).show();
 
                 Document doc = Jsoup.parse(tmp);
+
                 Log.e("STUFE", Util.getSettingStufe(this));
+
                 filterHTML(doc, Util.getSettingStufe(this));
-                tvVers.setText("Version : " + doc.select("strong").first().text());
+
+                tvVers.setText("Version: " + doc.select("strong").first().text());
 
                 Element e = null;
 
