@@ -132,7 +132,7 @@ public class SettingsActivity extends AppCompatActivity {
                         };
                         new Handler().post(r);
 
-                        while (!_continue);
+                        r.wait();
 
                         NavUtils.navigateUpFromSameTask(this);
                     }
