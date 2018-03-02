@@ -11,31 +11,36 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="vortex.vp_today.MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="vortex.vp_today.SettingsActivity"
+        <activity
+            android:name=".SettingsActivity"
             android:label="@string/settings"
-            android:screenOrientation="portrait"
-            android:parentActivityName="vortex.vp_today.MainActivity" >
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait">
+
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="vortex.vp_today.MainActivity" />
         </activity>
 
-        <receiver android:name=".Widget" >
+        <receiver android:name=".Widget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
+
+            <meta-data
+                android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info" />
         </receiver>
 
+        <activity android:name=".RateActivity"></activity>
     </application>
 
 </manifest>

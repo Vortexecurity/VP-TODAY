@@ -22,11 +22,12 @@ import android.widget.Toast;
  */
 public class SettingsActivity extends AppCompatActivity {
     private boolean changed = false;
+    private static final Object lockObj = new Object();
+    private volatile boolean _continue = false;
 
     Spinner spin;
     Button btnApply;
     Button btnCancel;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,17 +122,17 @@ public class SettingsActivity extends AppCompatActivity {
         switch ( item.getItemId() ) {
             case android.R.id.home:
                 try {
-                    synchronized (this) {
+                    synchronized (lockObj) {
                         Runnable r = new Runnable() {
                             @Override
                             public void run() {
                                 DoDialog();
+                                SettingsActivity.this._continue = true;
                             }
                         };
                         new Handler().post(r);
-                        /**
-                         * TODO: fix: hier warten bis r fertig ist
-                         */
+
+                        while (!_continue);
 
                         NavUtils.navigateUpFromSameTask(this);
                     }

@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
             Document doc = Jsoup.parse(tmp);
             Log.e("STUFE", Util.getSettingStufe(this));
             filterHTML(doc, Util.getSettingStufe(this));
-            tvVers.setText("Version :" + doc.select("strong").first().text());
+            tvVers.setText("Version : " + doc.select("strong").first().text());
 
             Element e = null;
 
@@ -215,7 +215,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (_stufe == null || _stufe.equals(""))
             _stufe = "05";
-        else
+
+        /* Wenn 5 <= stufe < EF */
+        if (!Character.isLetter(_stufe.charAt(0)))
             _stufe = "0" + _stufe;
 
         Elements elements = d.select("tr[data-index*='" + _stufe + "']");
