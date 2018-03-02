@@ -1,6 +1,8 @@
 package vortex.vp_today;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.content.Intent;
@@ -65,6 +67,13 @@ public class MainActivity extends AppCompatActivity {
         btnDate = findViewById(R.id.btnDate);
         swipe = findViewById(R.id.swiperefresh);
         tvVers = findViewById(R.id.tvVers);
+        /**/
+
+        SharedPreferences sp = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
+
+        if (sp.getString("clientid", "0x0").equals("0x0")) {
+            sp.edit().putString("clientid", Util.generateClientID());
+        }
 
         /* Thread region */
         t = new Thread(new Runnable() {
@@ -234,6 +243,10 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * @author Melvin Zähl
+     * @author Simon Dräger
+     */
     private void filterHTML(Document d, String stufe) {
         /* Hilfsvariable, sodass stufe nicht direkt verändert wird */
         String _stufe = stufe;

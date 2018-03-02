@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+
+import java.util.Random;
 
 /**
  * @author Simon Dräger
@@ -15,6 +18,12 @@ import android.net.NetworkInfo;
 
 public final class Util {
     private static int result;
+    private static Random rand;
+    private static final String ALPHANUM = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+
+    static {
+        rand = new Random();
+    }
 
     public static int ShowYesNoDialog(Context ctx, String text) {
         try {
@@ -58,5 +67,35 @@ public final class Util {
         ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
+    }
+
+    public static String[] getDevEmails(Context ctx) {
+        return new String[] { ctx.getResources().getString(R.string.melvinemail),
+                              ctx.getResources().getString(R.string.simonemail)
+                              // TODO: Florian
+        };
+    }
+
+    public static Intent sendEmail(String to, String subj, String body) {
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{ to });
+        i.putExtra(Intent.EXTRA_SUBJECT, subj);
+        i.putExtra(Intent.EXTRA_TEXT   , body);
+        return Intent.createChooser(i, "Sending email...");
+    }
+
+    public static String genRandString(int length) {
+        String result = "";
+
+        for (int i = 0; i < length; i++) {
+            result += ALPHANUM.charAt(rand.nextInt(ALPHANUM.length() - 1));
+        }
+
+        return result;
+    }
+
+    public static String generateClientID() {
+        return "0x" + genRandString(16);
     }
 }

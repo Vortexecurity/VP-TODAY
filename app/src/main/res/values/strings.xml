@@ -9,14 +9,17 @@
     <string name="cancel">Abbrechen</string>
     <string name="btnRateSend">Senden</string>
     <string name="title_activity_about">AboutActivity</string>
+    <string name="melvinemail">nc-zaehlvo6@netcologne.de</string>
+    <string name="simonemail">simon.draeger12@gmail.com</string>
+    <string name="florianemail"></string> <!-- TODO: Florian tu deine Email hier rein!!! -->
     <string name="abouttxt"><i>VP-TODAY</i>&#169; a <b>VorteX Dev. Corp.</b> development.\n
                             Build: %1$d, Date: %2$s\n\n
                             <u>Copyright</u>\n
                             The underlying Application is conducted under absolute closed-source copyright.\n
                             Any attempts of decompilation or unauthorized distribution are strictly prohibited.\n\n
                             On need of contacting the publisher, please refer to the following persons:\n
-                            Melvin Zähl (nc-zaehlvo6@netcologne.de>)\n
-                            Simon Dräger (simon.draeger12@gmail.com)\n
-                            Florian Koll (email)
+                            Melvin Zähl (%3$s)\n
+                            Simon Dräger (%4$s)\n
+                            Florian Koll (%5$s)
     </string>
 </resources>

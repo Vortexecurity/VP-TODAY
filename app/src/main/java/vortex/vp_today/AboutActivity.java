@@ -32,7 +32,11 @@ public class AboutActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        txtV.setText(String.format(getString(R.string.abouttxt), buildnr, BuildConfig.buildTime.toString()));
+        txtV.setText(String.format(getString(R.string.abouttxt), buildnr, BuildConfig.buildTime.toString(),
+                getString(R.string.melvinemail),
+                getString(R.string.simonemail),
+                getString(R.string.florianemail)
+        ));
         txtV.setFocusable(false);
     }
 }
