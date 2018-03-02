@@ -1,18 +1,14 @@
 package vortex.vp_today;
 
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.EditText;
 
-import java.text.SimpleDateFormat;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
 /**
  * @author Simon Dräger
+ * @version 2.3.18
  */
 
 public class AboutActivity extends AppCompatActivity {

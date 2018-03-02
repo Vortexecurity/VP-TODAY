@@ -3,6 +3,7 @@
     package="vortex.vp_today">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -30,7 +31,8 @@
                 android:value="vortex.vp_today.MainActivity" />
         </activity>
 
-        <receiver android:name=".Widget">
+        <!--<receiver android:name=".Widget"
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -38,6 +40,16 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info" />
+        </receiver>
+        -->
+
+        <receiver
+            android:enabled="true"
+            android:exported="true"
+            android:name=".NetworkReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
         </receiver>
 
         <activity

@@ -67,7 +67,8 @@
                 android:layout_weight="3.5"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="14sp"
-                android:textStyle="bold|italic" />
+                android:textStyle="bold|italic"
+                />
 
             <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/swiperefresh"

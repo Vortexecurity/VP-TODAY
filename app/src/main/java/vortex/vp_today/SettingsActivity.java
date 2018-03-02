@@ -19,6 +19,7 @@ import android.widget.Toast;
 /**
  * @author Melvin Zähl
  * @author Simon Dräger
+ * @version 2.3.18
  */
 
 public class SettingsActivity extends AppCompatActivity {

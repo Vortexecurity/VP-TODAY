@@ -34,6 +34,7 @@ import java.util.Calendar;
 /**
  * @author Simon Dräger
  * @author Melvin Zähl
+ * @version 2.3.18
  */
 
 public class MainActivity extends AppCompatActivity {
@@ -239,8 +240,8 @@ public class MainActivity extends AppCompatActivity {
 
         String s = "";
 
-        for(Element e : elements){
-            if(e != null)
+        for (Element e : elements) {
+            if(e != null && !(s.contains(e.text())))
                 s += e.text() + "\n\n";
         }
 

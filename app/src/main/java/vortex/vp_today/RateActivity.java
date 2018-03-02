@@ -8,6 +8,7 @@ import android.widget.ProgressBar;
 
 /**
  * @author Simon Dräger
+ * @version 2.3.18
  */
 
 public class RateActivity extends AppCompatActivity {
