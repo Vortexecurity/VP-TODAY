@@ -20,6 +20,7 @@ import android.widget.Toast;
  * @author Melvin Zähl
  * @author Simon Dräger
  */
+
 public class SettingsActivity extends AppCompatActivity {
     private boolean changed = false;
     private static final Object lockObj = new Object();

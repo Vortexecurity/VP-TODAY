@@ -40,7 +40,27 @@
                 android:resource="@xml/widget_info" />
         </receiver>
 
-        <activity android:name=".RateActivity"></activity>
+        <activity
+            android:name=".RateActivity"
+            android:label="@string/ratelbl"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            >
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="vortex.vp_today.MainActivity" />
+        </activity>
+        <activity android:name=".AboutActivity"
+            android:label="@string/about"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            >
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="vortex.vp_today.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

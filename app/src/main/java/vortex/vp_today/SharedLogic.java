@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by shftr on 2/28/2018.
+ * @author Simon Dräger
  */
 
 public final class SharedLogic {

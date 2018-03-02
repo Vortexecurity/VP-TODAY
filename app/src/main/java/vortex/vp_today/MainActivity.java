@@ -31,6 +31,11 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Calendar;
 
+/**
+ * @author Simon Dräger
+ * @author Melvin Zähl
+ */
+
 public class MainActivity extends AppCompatActivity {
 
     private DatePickerDialog.OnDateSetListener mDateSetListener;
@@ -201,8 +206,16 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch ( item.getItemId() ) {
             case R.id.settings:
-                Intent myIntent = new Intent(getApplicationContext(), SettingsActivity.class);
-                this.startActivity(myIntent);
+                Intent settings = new Intent(getApplicationContext(), SettingsActivity.class);
+                this.startActivity(settings);
+                return true;
+            case R.id.rate:
+                Intent rating = new Intent(getApplicationContext(), RateActivity.class);
+                this.startActivity(rating);
+                return true;
+            case R.id.about:
+                Intent about = new Intent(getApplicationContext(), AboutActivity.class);
+                this.startActivity(about);
                 return true;
         }
 

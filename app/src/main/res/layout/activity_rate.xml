@@ -26,5 +26,35 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="22dp" />
+
+        <Button
+            android:id="@+id/btnSend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:text="@string/btnRateSend" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toStartOf="@+id/btnSend" />
+
+        <EditText
+            android:id="@+id/txtSuggest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/btnSend"
+            android:layout_alignParentStart="true"
+            android:ems="10"
+            android:fadeScrollbars="true"
+            android:inputType="textMultiLine"
+            android:lines="15"
+            android:maxLines="20"
+            android:scrollbars="vertical" />
+
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
