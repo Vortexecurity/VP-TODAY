@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Aktualisiert!", Toast.LENGTH_SHORT).show();
 
             Document doc = Jsoup.parse(tmp);
-            Log.e("STUFE",Util.getSettingStufe(this));
+            Log.e("STUFE", Util.getSettingStufe(this));
             filterHTML(doc, Util.getSettingStufe(this));
             tvVers.setText("Version :" + doc.select("strong").first().text());
 
@@ -210,27 +210,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void filterHTML(Document d, String stufe) {
+        /* Hilfsvariable, sodass stufe nicht direkt verändert wird */
         String _stufe = stufe;
+
         if (_stufe == null || _stufe.equals(""))
             _stufe = "05";
+        else
+            _stufe = "0" + _stufe;
 
-        switch (_stufe){
-            case "5":
-                _stufe = "05";
-                break;
-            case "6":
-                _stufe = "06";
-                break;
-            case "7":
-                _stufe = "07";
-                break;
-            case "8":
-                _stufe = "08";
-                break;
-            case "9":
-                _stufe = "09";
-                break;
-        }
         Elements elements = d.select("tr[data-index*='" + _stufe + "']");
 
         String s = "";
