@@ -60,7 +60,7 @@ public final class Util {
     }
 
     public static String getSettingStufe(Activity a) {
-        return a.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getString("stufe", "");
+        return a.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getString("stufe", "5");
     }
 
     public static boolean isInternetConnected(Context ctx) {
