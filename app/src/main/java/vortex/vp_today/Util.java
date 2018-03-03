@@ -76,10 +76,10 @@ public final class Util {
         };
     }
 
-    public static Intent sendEmail(String to, String subj, String body) {
+    public static Intent sendEmail(String[] to, String subj, String body) {
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("message/rfc822");
-        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{ to });
+        i.putExtra(Intent.EXTRA_EMAIL  , to);
         i.putExtra(Intent.EXTRA_SUBJECT, subj);
         i.putExtra(Intent.EXTRA_TEXT   , body);
         return Intent.createChooser(i, "Sending email...");
