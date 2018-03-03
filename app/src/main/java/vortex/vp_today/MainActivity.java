@@ -171,15 +171,19 @@ public class MainActivity extends AppCompatActivity {
         /**/
     }
 
+    public MainActivity getInst() {
+        return this;
+    }
+
     /**
      * Updates the Vertretungs-ListView
      * @author Melvin Zähl
      * @author Simon Dräger
      */
-    private void update() {
+    private synchronized void update() {
         try {
             /* Auf einen Thread synchronisieren, sonst gibst Fehler */
-            synchronized (lockObj) {
+            //synchronized (lockObj) {
                 try {
                     if (!t.isAlive()) {
                         t.start();
@@ -210,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
                     else
                         msgOTD.setText("An diesem Tag gibt es (noch) keinen Informationstext!");
                 }
-            }
+            //}
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -247,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
      * @author Melvin Zähl
      * @author Simon Dräger
      */
-    private void filterHTML(Document d, String stufe) {
+    private synchronized void filterHTML(Document d, String stufe) {
         /* Hilfsvariable, sodass stufe nicht direkt verändert wird */
         String _stufe = stufe;
 

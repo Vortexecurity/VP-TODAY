@@ -13,7 +13,7 @@ import java.util.Random;
 
 /**
  * @author Simon Dräger
- * @version 2.3.18
+ * @version 3.3.18
  */
 
 public final class Util {

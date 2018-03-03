@@ -86,7 +86,7 @@ public class SettingsActivity extends AppCompatActivity {
         load();
     }
 
-    private void save() {
+    private synchronized void save() {
         SharedPreferences settings = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
         if(settings.edit().putString("stufe", spin.getSelectedItem().toString()).commit())
             Toast.makeText(getApplicationContext(), "Einstellungen gesichert!", Toast.LENGTH_SHORT).show();
@@ -94,7 +94,7 @@ public class SettingsActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Speichern fehlgeschlagen!", Toast.LENGTH_SHORT).show();
     }
 
-    private void load() {
+    private synchronized void load() {
         /* Spinner setting */
         String s = Util.getSettingStufe(this);
 
