@@ -2,6 +2,8 @@ package vortex.vp_today;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -97,5 +99,30 @@ public final class Util {
 
     public static String generateClientID() {
         return "0x" + genRandString(16);
+    }
+
+    public static boolean anyMatch(String str, String[] items) {
+        for(int i = 0; i < items.length; i++) {
+            if(str.contains(items[i]))
+                return true;
+        }
+        return false;
+    }
+
+    public static void makePushNotification(Context ctx, String title, String text) {
+        try {
+            NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+
+            Notification.Builder notify = new Notification.Builder(ctx);
+            notify.setContentTitle(title);
+            notify.setContentText(text);
+            notify.setSmallIcon(R.mipmap.ic_launcher_round);
+
+            Notification n = notify.build();
+
+            nm.notify(0, n);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

@@ -31,12 +31,13 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
 import java.util.Calendar;
 
 /**
  * @author Simon Dräger
  * @author Melvin Zähl
- * @version 2.3.18
+ * @version 3.3.18
  */
 
 public class MainActivity extends AppCompatActivity {
@@ -52,8 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipe;
     private static final Object lockObj = new Object();
 
-    /* Temporäre Anzeige des HTML Quelltextes der abgerufenden Seite -> Endeffekt wirds eine Listview werden */
-    EditText txt;
+    private EditText txt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
 
         if (sp.getString("clientid", "0x0").equals("0x0")) {
-            sp.edit().putString("clientid", Util.generateClientID());
+            sp.edit().putString("clientid", Util.generateClientID()).commit();
         }
 
         /* Thread region */
@@ -231,16 +231,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch ( item.getItemId() ) {
             case R.id.settings:
-                Intent settings = new Intent(getApplicationContext(), SettingsActivity.class);
-                this.startActivity(settings);
+                SettingsActivity.show(getApplicationContext());
                 return true;
             case R.id.rate:
-                Intent rating = new Intent(getApplicationContext(), RateActivity.class);
-                this.startActivity(rating);
+                RateActivity.show(getApplicationContext());
                 return true;
             case R.id.about:
-                Intent about = new Intent(getApplicationContext(), AboutActivity.class);
-                this.startActivity(about);
+                AboutActivity.show(getApplicationContext());
                 return true;
         }
 
@@ -269,6 +266,30 @@ public class MainActivity extends AppCompatActivity {
         for (Element e : elements) {
             /* Manchmal sind Einträge im VP mehrere Male vorhanden, also nur einmal in die Liste tun. */
             if(e != null && !(s.contains(e.text())))
+                s += e.text() + "\n\n";
+        }
+
+        txt.setText(s);
+    }
+
+    /**
+     * @author Simon Dräger
+     */
+    private synchronized void filterHTML(Document d, String stufe, String[] kurse) {
+        String _stufe = stufe;
+
+        if (_stufe == null || _stufe.equals(""))
+            _stufe = "05";
+
+        if (!Character.isLetter(_stufe.charAt(0)))
+            _stufe = "0" + _stufe;
+
+        Elements elements = d.select("tr[data-index*='" + _stufe + "']");
+
+        String s = "";
+
+        for (Element e : elements) {
+            if(e != null && !(s.contains(e.text())) && Util.anyMatch(e.text(), kurse))
                 s += e.text() + "\n\n";
         }
 

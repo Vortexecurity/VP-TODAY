@@ -2,9 +2,11 @@ package vortex.vp_today;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,7 +21,7 @@ import android.widget.Toast;
 /**
  * @author Melvin Zähl
  * @author Simon Dräger
- * @version 2.3.18
+ * @version 3.3.18
  */
 
 public class SettingsActivity extends AppCompatActivity {
@@ -84,6 +86,11 @@ public class SettingsActivity extends AppCompatActivity {
         Spinner sItems = findViewById(R.id.spinStufen);
         sItems.setAdapter(adapter);
         load();
+    }
+
+    public static void show(@NonNull Context context){
+        Intent intent = new Intent(context, SettingsActivity.class);
+        context.startActivity(intent);
     }
 
     private synchronized void save() {

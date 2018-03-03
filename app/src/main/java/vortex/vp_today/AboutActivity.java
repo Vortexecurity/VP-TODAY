@@ -1,14 +1,17 @@
 package vortex.vp_today;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.EditText;
 
 /**
  * @author Simon Dräger
- * @version 2.3.18
+ * @version 3.3.18
  */
 
 public class AboutActivity extends AppCompatActivity {
@@ -38,5 +41,10 @@ public class AboutActivity extends AppCompatActivity {
                 getString(R.string.florianemail)
         ));
         txtV.setFocusable(false);
+    }
+
+    public static void show(@NonNull Context context){
+        Intent intent = new Intent(context, AboutActivity.class);
+        context.startActivity(intent);
     }
 }

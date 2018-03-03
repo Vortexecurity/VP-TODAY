@@ -22,4 +22,5 @@
                             Simon Dräger (%4$s)\n
                             Florian Koll (%5$s)
     </string>
+    <string name="ratehint">(Geben Sie hier einen Feedback-Text ein...)</string>
 </resources>

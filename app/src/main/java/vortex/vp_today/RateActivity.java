@@ -3,8 +3,13 @@ package vortex.vp_today;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,7 +19,7 @@ import android.widget.Toast;
 
 /**
  * @author Simon Dräger
- * @version 2.3.18
+ * @version 3.3.18
  */
 
 public class RateActivity extends AppCompatActivity {
@@ -48,7 +53,8 @@ public class RateActivity extends AppCompatActivity {
                     });
                 } else {
                     if (Util.isInternetConnected(getApplicationContext())) {
-                        Intent in = Util.sendEmail(getString(R.string.simonemail),
+                        Intent in = Util.sendEmail(
+                                new String[] { getString(R.string.simonemail) },
                                 getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getString("clientid", "0x0"),
                                 "Sendete ein Rating von " + rateBar.getNumStars() + " Sternen.");
                         RateActivity.this.startActivity(in);
@@ -69,5 +75,21 @@ public class RateActivity extends AppCompatActivity {
                 }
             }
         });
+
+        txtSuggest.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (txtSuggest.getText().toString().length() >= 1000)
+                        return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    public static void show(@NonNull Context context){
+        Intent intent = new Intent(context, RateActivity.class);
+        context.startActivity(intent);
     }
 }
