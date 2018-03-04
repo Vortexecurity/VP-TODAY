@@ -23,6 +23,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Simon Dräger
@@ -33,9 +34,15 @@ public final class Util {
     private static int result;
     private static Random rand;
     private static final String ALPHANUM = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+    private static AtomicInteger atomInt;
 
     static {
         rand = new Random();
+        atomInt = new AtomicInteger(0);
+    }
+
+    public static final int getNotificationID() {
+        return atomInt.incrementAndGet();
     }
 
     public static int ShowYesNoDialog(Context ctx, String text) {
@@ -131,7 +138,7 @@ public final class Util {
 
             Notification n = notify.build();
 
-            nm.notify(0, n);
+            nm.notify(getNotificationID(), n);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

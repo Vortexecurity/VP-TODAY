@@ -23,4 +23,5 @@
                             Florian Koll (%5$s)
     </string>
     <string name="ratehint">(Geben Sie hier einen Feedback-Text ein...)</string>
+    <string name="klasse">Klasse:</string>
 </resources>

@@ -29,9 +29,10 @@ public class SettingsActivity extends AppCompatActivity {
     private static final Object lockObj = new Object();
     private volatile boolean _continue = false;
 
-    Spinner spin;
-    Button btnApply;
-    Button btnCancel;
+    private Spinner spinStufen;
+    private Spinner spinKlassen;
+    private Button btnApply;
+    private Button btnCancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +42,12 @@ public class SettingsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        spin = findViewById(R.id.spinStufen);
+        spinStufen = findViewById(R.id.spinStufen);
+        spinKlassen = findViewById(R.id.spinKlasse);
         btnApply = findViewById(R.id.btnApply);
         btnCancel = findViewById(R.id.btnCancel);
 
-        spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinStufen.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 hasChanged();
@@ -53,7 +55,20 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                spin.setSelection(0);
+                spinStufen.setSelection(0);
+                hasChanged();
+            }
+        });
+
+        spinKlassen.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                hasChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                spinKlassen.setSelection(0);
                 hasChanged();
             }
         });
@@ -95,7 +110,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     private synchronized void save() {
         SharedPreferences settings = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
-        if(settings.edit().putString("stufe", spin.getSelectedItem().toString()).commit())
+        SharedPreferences.Editor e = settings.edit();
+
+        e.putString("stufe", spinStufen.getSelectedItem().toString());
+
+        if (e.commit())
             Toast.makeText(getApplicationContext(), "Einstellungen gesichert!", Toast.LENGTH_SHORT).show();
         else
             Toast.makeText(getApplicationContext(), "Speichern fehlgeschlagen!", Toast.LENGTH_SHORT).show();
@@ -107,21 +126,21 @@ public class SettingsActivity extends AppCompatActivity {
 
         switch (s) {
             case "EF":
-                spin.setSelection(5);
+                spinStufen.setSelection(5);
                 break;
             case "Q1":
-                spin.setSelection(6);
+                spinStufen.setSelection(6);
                 break;
             case "Q2":
-                spin.setSelection(7);
+                spinStufen.setSelection(7);
                 break;
             default:
                 if (s == null || s == ""){
-                    spin.setSelection(0);
+                    spinStufen.setSelection(0);
                     break;
                 }
                 int i = Integer.parseInt(s);
-                spin.setSelection(i - 5);
+                spinStufen.setSelection(i - 5);
                 break;
         }
     }
