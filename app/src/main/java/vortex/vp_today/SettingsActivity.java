@@ -120,9 +120,14 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SharedPreferences prefs = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
+                boolean[] selects = null;
+
                 Set<String> strSelects = prefs.getStringSet(getString(R.string.selectedkurseindices), null);
-                boolean[] selects = Util.StrArrToBoolArr(strSelects.toArray(new String[0]));
-                currentKurseChanges = Util.ShowKurseDialogQ1(getApplicationContext(), selects);
+
+                if (strSelects != null)
+                     selects = Util.StrArrToBoolArr(strSelects.toArray(new String[0]));
+
+                currentKurseChanges = Util.ShowKurseDialogQ1(SettingsActivity.this, selects);
                 hasChanged();
             }
         });

@@ -1,5 +1,6 @@
 package vortex.vp_today;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -84,18 +85,18 @@ public final class Util {
 
     /**
      *
-     * @param ctx
+     * @param actv
      * @param preselectedItems Look the positions up in strings.xml/KurseQ1 etc.
      * @return The selected items
      */
     @Nullable
-    public static String[] ShowKurseDialogQ1(Context ctx, @Nullable boolean[] preselectedItems) {
-        final Resources res = ctx.getResources();
+    public static String[] ShowKurseDialogQ1(Activity actv, @Nullable boolean[] preselectedItems) {
+        final Resources res = actv.getApplicationContext().getResources();
         final ArrayList<String> selectedItems = new ArrayList<>();
         final String[] items = res.getStringArray(R.array.KurseQ1);
         final DlgResult result = new DlgResult();
 
-        AlertDialog dialog = new AlertDialog.Builder(ctx)
+        AlertDialog dialog = new AlertDialog.Builder(actv)
                 .setTitle("Kurse auswählen...")
                 .setMultiChoiceItems(items, preselectedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
