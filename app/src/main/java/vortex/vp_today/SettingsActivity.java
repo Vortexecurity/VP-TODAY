@@ -122,7 +122,9 @@ public class SettingsActivity extends AppCompatActivity {
                 SharedPreferences prefs = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
                 boolean[] selects = null;
 
-                Set<String> strSelects = prefs.getStringSet(getString(R.string.selectedkurseindices), null);
+                // FIXME: crasht beim laden
+
+                Set<String> strSelects = prefs.getStringSet(getString(R.string.settingkurse), null);
 
                 if (strSelects != null)
                      selects = Util.StrArrToBoolArr(strSelects.toArray(new String[0]));
