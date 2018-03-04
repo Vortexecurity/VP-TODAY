@@ -36,6 +36,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Button btnApply;
     private Button btnCancel;
     private Switch switchVibrate;
+    private Switch switchPushes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public class SettingsActivity extends AppCompatActivity {
         spinKlassen = findViewById(R.id.spinKlasse);
         btnApply = findViewById(R.id.btnApply);
         btnCancel = findViewById(R.id.btnCancel);
+        switchPushes = findViewById(R.id.switchPushes);
         switchVibrate = findViewById(R.id.switchVibrate);
 
         spinStufen.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -105,6 +107,14 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        switchPushes.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                switchVibrate.setEnabled(isChecked);
+                hasChanged();
+            }
+        });
+
         switchVibrate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -153,6 +163,7 @@ public class SettingsActivity extends AppCompatActivity {
         else
             e.remove("klasse");
 
+        e.putBoolean("receivePushes", switchPushes.isChecked());
         e.putBoolean("vibrateOnPushReceiveInLS", switchVibrate.isChecked());
 
         if (e.commit())
@@ -162,6 +173,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private synchronized void load() {
+        SharedPreferences prefs = getApplicationContext().getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
+
         /* Spinner Stufen setting */
         String stufe = Util.getSettingStufe(getApplicationContext());
 
@@ -205,10 +218,14 @@ public class SettingsActivity extends AppCompatActivity {
                 spinKlassen.setSelection(0);
         }
 
+        /* Switch push notifications setting */
+        switchPushes.setChecked(
+                prefs.getBoolean("receivePushes", getResources().getBoolean(R.bool.switchPushesEnabled))
+        );
+
         /* Switch vibrate setting */
         switchVibrate.setChecked(
-                getApplicationContext().getSharedPreferences("vortex.vp_today.app",
-                        Context.MODE_PRIVATE).getBoolean("vibrateOnPushReceiveInLS", true)
+                prefs.getBoolean("vibrateOnPushReceiveInLS", getResources().getBoolean(R.bool.switchPushVibrateEnabled))
         );
     }
 
