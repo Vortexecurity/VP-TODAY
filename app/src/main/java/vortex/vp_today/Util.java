@@ -1,16 +1,27 @@
 package vortex.vp_today;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -61,8 +72,8 @@ public final class Util {
         return 0;
     }
 
-    public static String getSettingStufe(Activity a) {
-        return a.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getString("stufe", "5");
+    public static String getSettingStufe(Context ctx) {
+        return ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getString("stufe", "5");
     }
 
     public static boolean isInternetConnected(Context ctx) {
@@ -116,7 +127,7 @@ public final class Util {
             Notification.Builder notify = new Notification.Builder(ctx);
             notify.setContentTitle(title);
             notify.setContentText(text);
-            notify.setSmallIcon(R.mipmap.ic_launcher_round);
+            notify.setSmallIcon(R.mipmap.ic_launcher);
 
             Notification n = notify.build();
 
@@ -124,5 +135,129 @@ public final class Util {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    /**
+     * @return null on error.
+     */
+    @Nullable
+    public static String makeDate(int day, int month, int year) {
+        String res = "";
+
+        int _month = month + 1;
+
+        if (day >= 10 && _month >= 10)
+            res = year + "-" + _month + "-" + day;
+        else if (day < 10 && _month >= 10)
+            res = year + "-" + _month + "-0" + day;
+        else if (_month < 10 && day >= 10)
+            res = year + "-0" + _month + "-" + day;
+        else
+            res = year + "-0" + _month + "-0" + day;
+
+        if (!res.equals(""))
+            return res;
+
+        return null;
+    }
+
+    /**
+     * @return null on error.
+     */
+    @Nullable
+    public static synchronized String fetchUnfiltered(String date) {
+        try {
+            /*if (date.equals("")) {
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "Ein Fehler ist während des Aktualisiervorgangs aufgetreten!", Toast.LENGTH_LONG);
+                    }
+                });
+                return;
+            }*/
+
+            String urlS = "https://vp.gymnasium-odenthal.de/god/" + date;
+            String authStringEnc = "dnA6Z29kOTIwMQ==";
+
+            Log.e("LOG", urlS);
+
+            URL url = new URL(urlS);
+            URLConnection urlConnection = url.openConnection();
+            urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
+
+            InputStream is = urlConnection.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+
+            int numCharsRead;
+            char[] charArray = new char[1024];
+            StringBuffer sb = new StringBuffer();
+
+            while ((numCharsRead = isr.read(charArray)) > 0) {
+                sb.append(charArray, 0, numCharsRead);
+            }
+
+            String result = sb.toString();
+
+            return result;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * @author Melvin Zähl
+     * @author Simon Dräger
+     */
+    public static synchronized String[] filterHTML(Document d, String stufe) {
+        /* Hilfsvariable, sodass stufe nicht direkt verändert wird */
+        String _stufe = stufe;
+
+        if (_stufe == null || _stufe.equals(""))
+            _stufe = "05";
+
+        /* Wenn 5 <= stufe < EF */
+        if (!Character.isLetter(_stufe.charAt(0)))
+            _stufe = "0" + _stufe;
+
+        Elements elements = d.select("tr[data-index*='" + _stufe + "']");
+
+        ArrayList<String> s = new ArrayList<>();
+
+        for (Element e : elements) {
+            /* Manchmal sind Einträge im VP mehrere Male vorhanden, also nur einmal in die Liste tun. */
+            if(e != null && !(s.contains(e.text())))
+                s.add(e.text())/* e.text() + "\n\n"*/;
+        }
+
+        return s.toArray(new String[0]);
+    }
+
+    /**
+     * @author Simon Dräger
+     */
+    public static synchronized String[] filterHTML(Document d, String stufe, String[] kurse) {
+        String _stufe = stufe;
+
+        if (_stufe == null || _stufe.equals(""))
+            _stufe = "05";
+
+        if (!Character.isLetter(_stufe.charAt(0)))
+            _stufe = "0" + _stufe;
+
+        Elements elements = d.select("tr[data-index*='" + _stufe + "']");
+
+        ArrayList<String> s = new ArrayList<>();
+
+        for (Element e : elements) {
+            if (e != null && !(s.contains(e.text())) && Util.anyMatch(e.text(), kurse))
+                s.add(e.text())/* + "\n\n"*/;
+        }
+
+        return s.toArray(new String[0]);
     }
 }

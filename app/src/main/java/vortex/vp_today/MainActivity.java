@@ -5,11 +5,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,7 +23,6 @@ import android.widget.Toast;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,7 +30,6 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Arrays;
 import java.util.Calendar;
 
 /**
@@ -71,9 +69,13 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences sp = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
 
+        /* Falls dies der erste Start sein sollte eine Client ID erstellen und speichern. */
         if (sp.getString("clientid", "0x0").equals("0x0")) {
             sp.edit().putString("clientid", Util.generateClientID()).commit();
         }
+
+        /* Das auf false setzen, damit der MainService aufhört. */
+        sp.edit().putBoolean("fetchHtmlPushes", false).commit();
 
         /* Thread region */
         t = new Thread(new Runnable() {
@@ -141,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         mDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                month = month + 1;
+                month++;
 
                 if (day >= 10 && month >= 10)
                     date = year + "-" + month + "-" + day;
@@ -171,10 +173,6 @@ public class MainActivity extends AppCompatActivity {
         /**/
     }
 
-    public MainActivity getInst() {
-        return this;
-    }
-
     /**
      * Updates the Vertretungs-ListView
      * @author Melvin Zähl
@@ -201,7 +199,9 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.e("STUFE", Util.getSettingStufe(this));
 
-                filterHTML(doc, Util.getSettingStufe(this));
+                String[] content = Util.filterHTML(doc, Util.getSettingStufe(getApplicationContext()));
+
+                txt.setText(TextUtils.join("\n\n", content));
 
                 tvVers.setText("Version: " + doc.select("strong").first().text());
 
@@ -242,57 +242,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * @author Melvin Zähl
-     * @author Simon Dräger
-     */
-    private synchronized void filterHTML(Document d, String stufe) {
-        /* Hilfsvariable, sodass stufe nicht direkt verändert wird */
-        String _stufe = stufe;
-
-        if (_stufe == null || _stufe.equals(""))
-            _stufe = "05";
-
-        /* Wenn 5 <= stufe < EF */
-        if (!Character.isLetter(_stufe.charAt(0)))
-            _stufe = "0" + _stufe;
-
-        Elements elements = d.select("tr[data-index*='" + _stufe + "']");
-
-        String s = "";
-
-        for (Element e : elements) {
-            /* Manchmal sind Einträge im VP mehrere Male vorhanden, also nur einmal in die Liste tun. */
-            if(e != null && !(s.contains(e.text())))
-                s += e.text() + "\n\n";
-        }
-
-        txt.setText(s);
-    }
-
-    /**
-     * @author Simon Dräger
-     */
-    private synchronized void filterHTML(Document d, String stufe, String[] kurse) {
-        String _stufe = stufe;
-
-        if (_stufe == null || _stufe.equals(""))
-            _stufe = "05";
-
-        if (!Character.isLetter(_stufe.charAt(0)))
-            _stufe = "0" + _stufe;
-
-        Elements elements = d.select("tr[data-index*='" + _stufe + "']");
-
-        String s = "";
-
-        for (Element e : elements) {
-            if(e != null && !(s.contains(e.text())) && Util.anyMatch(e.text(), kurse))
-                s += e.text() + "\n\n";
-        }
-
-        txt.setText(s);
     }
 }
