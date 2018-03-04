@@ -15,7 +15,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
 /**
@@ -33,6 +35,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Spinner spinKlassen;
     private Button btnApply;
     private Button btnCancel;
+    private Switch switchVibrate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +49,20 @@ public class SettingsActivity extends AppCompatActivity {
         spinKlassen = findViewById(R.id.spinKlasse);
         btnApply = findViewById(R.id.btnApply);
         btnCancel = findViewById(R.id.btnCancel);
+        switchVibrate = findViewById(R.id.switchVibrate);
 
         spinStufen.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String item = spinStufen.getSelectedItem().toString();
+
+                if (item.equals("EF") || item.equals("Q1") || item.equals("Q2")) {
+                    spinKlassen.setEnabled(false);
+                }
+                else {
+                    spinKlassen.setEnabled(true);
+                }
+
                 hasChanged();
             }
 
@@ -92,6 +105,13 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        switchVibrate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                hasChanged();
+            }
+        });
+
         ArrayAdapter<String> stufenAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
@@ -115,6 +135,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     public static void show(@NonNull Context context){
         Intent intent = new Intent(context, SettingsActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
@@ -122,8 +143,17 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences settings = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
         SharedPreferences.Editor e = settings.edit();
 
-        e.putString("stufe", spinStufen.getSelectedItem().toString());
-        e.putString("klasse", spinKlassen.getSelectedItem().toString());
+        String selStufe = spinStufen.getSelectedItem().toString();
+        String selKlasse = spinKlassen.isEnabled() ? spinKlassen.getSelectedItem().toString() : null;
+
+        e.putString("stufe", selStufe);
+
+        if (selKlasse != null)
+            e.putString("klasse", spinKlassen.getSelectedItem().toString());
+        else
+            e.remove("klasse");
+
+        e.putBoolean("vibrateOnPushReceiveInLS", switchVibrate.isChecked());
 
         if (e.commit())
             Toast.makeText(getApplicationContext(), "Einstellungen gesichert!", Toast.LENGTH_SHORT).show();
@@ -174,6 +204,12 @@ public class SettingsActivity extends AppCompatActivity {
             default:
                 spinKlassen.setSelection(0);
         }
+
+        /* Switch vibrate setting */
+        switchVibrate.setChecked(
+                getApplicationContext().getSharedPreferences("vortex.vp_today.app",
+                        Context.MODE_PRIVATE).getBoolean("vibrateOnPushReceiveInLS", true)
+        );
     }
 
     @Override
@@ -185,13 +221,15 @@ public class SettingsActivity extends AppCompatActivity {
                         Runnable r = new Runnable() {
                             @Override
                             public void run() {
-                                DoDialog();
+                                if (changed)
+                                    DoDialog();
                                 SettingsActivity.this._continue = true;
                             }
                         };
                         new Handler().post(r);
 
-                        r.wait();
+                        // TODO: warten bis r fertig ist
+                        //r.wait();
 
                         NavUtils.navigateUpFromSameTask(this);
                     }

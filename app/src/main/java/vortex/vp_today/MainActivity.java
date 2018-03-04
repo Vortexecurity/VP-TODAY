@@ -23,6 +23,7 @@ import android.widget.Toast;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -203,7 +204,19 @@ public class MainActivity extends AppCompatActivity {
 
                 txt.setText(TextUtils.join("\n\n", content));
 
-                tvVers.setText("Version: " + doc.select("strong").first().text());
+                Elements elements = doc.select("strong");
+
+                if (elements == null) {
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!", Toast.LENGTH_SHORT);
+                        }
+                    });
+                    return;
+                }
+
+                tvVers.setText("Version: " + elements.first().text());
 
                 Element e = null;
 

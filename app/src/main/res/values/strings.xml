@@ -24,4 +24,5 @@
     </string>
     <string name="ratehint">(Geben Sie hier einen Feedback-Text ein...)</string>
     <string name="klasse">Klasse:</string>
+    <string name="vibrateonreceive">Beim Erhalt einer Benachrichtigung vibrieren</string>
 </resources>

@@ -86,6 +86,14 @@
                 android:layout_weight="0"
                 android:text="Für jeden Kurs eine Box" />
 
+            <Switch
+                android:id="@+id/switchVibrate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:textSize="13sp"
+                android:text="@string/vibrateonreceive" />
+
         </LinearLayout>
 
         <Button

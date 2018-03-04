@@ -87,6 +87,7 @@ public class RateActivity extends AppCompatActivity {
 
     public static void show(@NonNull Context context){
         Intent intent = new Intent(context, RateActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 }

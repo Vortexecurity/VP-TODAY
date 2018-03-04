@@ -45,6 +45,7 @@ public class AboutActivity extends AppCompatActivity {
 
     public static void show(@NonNull Context context){
         Intent intent = new Intent(context, AboutActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 }
