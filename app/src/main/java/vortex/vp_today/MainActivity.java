@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText txt;
 
+    private BroadcastReceiver scrnReceive = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,11 +83,15 @@ public class MainActivity extends AppCompatActivity {
         /* Das auf false setzen, damit der MainService aufhört. */
         sp.edit().putBoolean("fetchHtmlPushes", false).commit();
 
-        /* Den ScreenReceiver registrieren */
-        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-        filter.addAction(Intent.ACTION_SCREEN_OFF);
-        BroadcastReceiver mReceiver = new ScreenReceiver();
-        registerReceiver(mReceiver, filter);
+        if (scrnReceive == null) {
+            /* Den ScreenReceiver registrieren */
+            IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+            filter.addAction(Intent.ACTION_SCREEN_OFF);
+
+            scrnReceive = new ScreenReceiver();
+            registerReceiver(scrnReceive, filter);
+            /**/
+        }
 
         /* Thread region */
         t = new Thread(new Runnable() {
@@ -181,6 +187,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         /**/
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        unregisterReceiver(scrnReceive);
     }
 
     /**

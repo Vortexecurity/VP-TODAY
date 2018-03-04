@@ -90,7 +90,7 @@ public final class Util {
      * @return The selected items
      */
     @Nullable
-    public static String[] ShowKurseDialogQ1(Activity actv, @Nullable boolean[] preselectedItems) {
+    public static String[] ShowKurseDialogQ1(@NonNull Activity actv, @Nullable boolean[] preselectedItems) {
         final Resources res = actv.getApplicationContext().getResources();
         final ArrayList<String> selectedItems = new ArrayList<>();
         final String[] items = res.getStringArray(R.array.KurseQ1);
@@ -104,7 +104,7 @@ public final class Util {
                         if (isChecked) {
                             selectedItems.add(items[indexSelected]);
                         } else {
-                            selectedItems.remove(indexSelected);
+                            selectedItems.remove(items[indexSelected]);
                         }
                     }
                 }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
