@@ -73,19 +73,6 @@
 
             </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_weight="0"
-                android:text="Kurse:" />
-
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:text="Für jeden Kurs eine Box" />
-
             <Switch
                 android:id="@+id/switchPushes"
                 android:layout_width="match_parent"
@@ -102,6 +89,13 @@
                 android:paddingLeft="10dp"
                 android:text="@string/vibrateonreceive"
                 android:textSize="13sp" />
+
+            <Button
+                android:id="@+id/btnKurse"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="@string/selectkurse" />
 
         </LinearLayout>
 

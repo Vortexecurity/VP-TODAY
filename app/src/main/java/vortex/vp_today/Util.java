@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -81,8 +82,14 @@ public final class Util {
         return 0;
     }
 
+    /**
+     *
+     * @param ctx
+     * @param preselectedItems Look the positions up in strings.xml/KurseQ1 etc.
+     * @return The selected items
+     */
     @Nullable
-    public static String[] ShowKurseDialog(Context ctx) {
+    public static String[] ShowKurseDialogQ1(Context ctx, @Nullable boolean[] preselectedItems) {
         final Resources res = ctx.getResources();
         final ArrayList<String> selectedItems = new ArrayList<>();
         final String[] items = res.getStringArray(R.array.KurseQ1);
@@ -90,7 +97,7 @@ public final class Util {
 
         AlertDialog dialog = new AlertDialog.Builder(ctx)
                 .setTitle("Kurse auswählen...")
-                .setMultiChoiceItems(items, null, new DialogInterface.OnMultiChoiceClickListener() {
+                .setMultiChoiceItems(items, preselectedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
                         if (isChecked) {
@@ -116,6 +123,19 @@ public final class Util {
         if (result.getResult() == DialogResult.OK)
             return selectedItems.toArray(new String[0]);
         return null;
+    }
+
+    @Nullable
+    public static boolean[] StrArrToBoolArr(@Nullable String[] input) {
+        if (input == null)
+            return null;
+
+        boolean[] output = new boolean[input.length];
+
+        for (int i = 0; i < input.length; i++)
+            output[i] = Boolean.parseBoolean(input[i]);
+
+        return output;
     }
 
     public static String getSettingStufe(Context ctx) {

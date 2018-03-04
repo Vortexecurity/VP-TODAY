@@ -37,7 +37,8 @@ public class MainService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         Log.i("INFO", "Entering onHandleIntent...");
-        while (getApplicationContext().getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getBoolean("fetchHtmlPushes", true)) {
+        while (getApplicationContext().getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getBoolean("fetchHtmlPushes",
+                getResources().getBoolean(R.bool.defaultFetchHtml))) {
             try {
                 Calendar c = Calendar.getInstance();
                 String dt = Util.makeDate(c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.MONTH), c.get(Calendar.YEAR));
