@@ -37,19 +37,10 @@ public final class Util {
     private static Random rand;
     private static final String ALPHANUM = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
     private static AtomicInteger atomInt;
-    private static String[][] kurse;
 
     static {
         rand = new Random();
         atomInt = new AtomicInteger(0);
-        kurse = new String[][] {
-                // EF
-                {},
-                // Q1
-                {},
-                // Q2
-                {}
-        };
     }
 
     public static final int getNotificationID() {
@@ -90,39 +81,41 @@ public final class Util {
         return 0;
     }
 
-    public static void ShowKurseDialog(Context ctx) {
-        Resources res = ctx.getResources();
-        XmlResourceParser xrp = res.getXml(R.xml.kurse);
-        final ArrayList seletedItems = new ArrayList();
-
-        // TODO
+    @Nullable
+    public static String[] ShowKurseDialog(Context ctx) {
+        final Resources res = ctx.getResources();
+        final ArrayList<String> selectedItems = new ArrayList<>();
+        final String[] items = res.getStringArray(R.array.KurseQ1);
+        final DlgResult result = new DlgResult();
 
         AlertDialog dialog = new AlertDialog.Builder(ctx)
-                .setTitle("Select The Difficulty Level")
-                .setMultiChoiceItems(res.getStringArray(R.array.KurseQ1), null, new DialogInterface.OnMultiChoiceClickListener() {
+                .setTitle("Kurse auswählen...")
+                .setMultiChoiceItems(items, null, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
                         if (isChecked) {
-                            // If the user checked the item, add it to the selected items
-                            seletedItems.add(indexSelected);
-                        } else if (seletedItems.contains(indexSelected)) {
-                            // Else, if the item is already in the array, remove it
-                            seletedItems.remove(Integer.valueOf(indexSelected));
+                            selectedItems.add(items[indexSelected]);
+                        } else {
+                            selectedItems.remove(indexSelected);
                         }
                     }
                 }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        //  Your code when user clicked on OK
-                        //  You can write the code  to save the selected item here
+                        result.setResult(DialogResult.OK);
                     }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                }).setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        //  Your code when user clicked on Cancel
+                        result.setResult(DialogResult.CANCEL);
                     }
                 }).create();
+
         dialog.show();
+
+        if (result.getResult() == DialogResult.OK)
+            return selectedItems.toArray(new String[0]);
+        return null;
     }
 
     public static String getSettingStufe(Context ctx) {
