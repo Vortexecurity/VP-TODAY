@@ -1,5 +1,6 @@
 package vortex.vp_today;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -41,5 +42,10 @@ public final class SharedLogic {
     @NonNull
     public static String[] getKlassen() {
         return lstKlassen.toArray(new String[0]);
+    }
+
+    @NonNull
+    public static String[] getKurseQ1(Context ctx) {
+        return ctx.getResources().getStringArray(R.array.KurseQ1);
     }
 }

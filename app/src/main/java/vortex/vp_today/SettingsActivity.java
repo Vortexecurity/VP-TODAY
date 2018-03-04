@@ -20,6 +20,10 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author Melvin Zähl
  * @author Simon Dräger
@@ -35,8 +39,12 @@ public class SettingsActivity extends AppCompatActivity {
     private Spinner spinKlassen;
     private Button btnApply;
     private Button btnCancel;
+    private Button btnKurse;
     private Switch switchVibrate;
     private Switch switchPushes;
+
+    private String[] currentKurseChanges = null;
+    private boolean[] currentKurseSelectChanges = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +58,7 @@ public class SettingsActivity extends AppCompatActivity {
         spinKlassen = findViewById(R.id.spinKlasse);
         btnApply = findViewById(R.id.btnApply);
         btnCancel = findViewById(R.id.btnCancel);
+        btnKurse = findViewById(R.id.btnKurse);
         switchPushes = findViewById(R.id.switchPushes);
         switchVibrate = findViewById(R.id.switchVibrate);
 
@@ -107,6 +116,17 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        btnKurse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences prefs = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
+                Set<String> strSelects = prefs.getStringSet(getString(R.string.selectedkurseindices), null);
+                boolean[] selects = Util.StrArrToBoolArr(strSelects.toArray(new String[0]));
+                currentKurseChanges = Util.ShowKurseDialogQ1(getApplicationContext(), selects);
+                hasChanged();
+            }
+        });
+
         switchPushes.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -156,15 +176,18 @@ public class SettingsActivity extends AppCompatActivity {
         String selStufe = spinStufen.getSelectedItem().toString();
         String selKlasse = spinKlassen.isEnabled() ? spinKlassen.getSelectedItem().toString() : null;
 
-        e.putString("stufe", selStufe);
+        e.putString(getString(R.string.settingstufe), selStufe);
 
         if (selKlasse != null)
-            e.putString("klasse", spinKlassen.getSelectedItem().toString());
+            e.putString(getString(R.string.settingklasse), spinKlassen.getSelectedItem().toString());
         else
-            e.remove("klasse");
+            e.remove(getString(R.string.settingklasse));
 
-        e.putBoolean("receivePushes", switchPushes.isChecked());
-        e.putBoolean("vibrateOnPushReceiveInLS", switchVibrate.isChecked());
+        e.putBoolean(getString(R.string.settingpushes), switchPushes.isChecked());
+        e.putBoolean(getString(R.string.settingvibrateLS), switchVibrate.isChecked());
+
+        if (currentKurseChanges != null)
+            e.putStringSet(getString(R.string.settingkurse), new HashSet<>(Arrays.asList(currentKurseChanges)));
 
         if (e.commit())
             Toast.makeText(getApplicationContext(), "Einstellungen gesichert!", Toast.LENGTH_SHORT).show();
@@ -220,12 +243,12 @@ public class SettingsActivity extends AppCompatActivity {
 
         /* Switch push notifications setting */
         switchPushes.setChecked(
-                prefs.getBoolean("receivePushes", getResources().getBoolean(R.bool.switchPushesEnabled))
+                prefs.getBoolean(getString(R.string.settingpushes), getResources().getBoolean(R.bool.switchPushesEnabled))
         );
 
         /* Switch vibrate setting */
         switchVibrate.setChecked(
-                prefs.getBoolean("vibrateOnPushReceiveInLS", getResources().getBoolean(R.bool.switchPushVibrateEnabled))
+                prefs.getBoolean(getString(R.string.settingvibrateLS), getResources().getBoolean(R.bool.switchPushVibrateEnabled))
         );
     }
 

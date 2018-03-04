@@ -16,7 +16,9 @@ public class ScreenReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-            if (context.getApplicationContext().getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getBoolean("receivePushes", true)) {
+            /* MainService starten */
+            if (context.getApplicationContext().getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getBoolean("receivePushes",
+                    context.getResources().getBoolean(R.bool.receivePushesEnabled))) {
                 context.startService(new Intent(context, MainService.class));
             }
         } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {

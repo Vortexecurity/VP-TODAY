@@ -2,4 +2,6 @@
 <resources>
     <bool name="switchPushesEnabled">false</bool>
     <bool name="switchPushVibrateEnabled">false</bool>
+    <bool name="receivePushesEnabled">false</bool>
+    <bool name="defaultFetchHtml">true</bool>
 </resources>

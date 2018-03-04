@@ -26,6 +26,13 @@
     <string name="klasse">Klasse:</string>
     <string name="vibrateonreceive">Beim Erhalt einer Benachrichtigung vibrieren</string>
     <string name="receivepushes">Push-Nachrichten erhalten</string>
+    <string name="selectkurse">Kurse auswählen...</string>
+    <string name="settingkurse">kurse</string>
+    <string name="settingklasse">klasse</string>
+    <string name="settingstufe">stufe</string>
+    <string name="settingpushes">receivePushes</string>
+    <string name="settingvibrateLS">vibrateOnPushReceiveInLS</string>
+    <string name="selectedkurseindices">selectedKurseIndices</string>
     <string-array name="KurseQ1">
         <item>BI G1</item>
         <item>BI G2</item>
