@@ -80,7 +80,11 @@ public final class Util {
     }
 
     public static String getSettingStufe(Context ctx) {
-        return ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getString("stufe", "5");
+        return ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getString("stufe", "");
+    }
+
+    public static String getSettingKlasse(Context ctx) {
+        return ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getString("klasse", "");
     }
 
     public static boolean isInternetConnected(Context ctx) {

@@ -1,8 +1,10 @@
 package vortex.vp_today;
 
 import android.app.IntentService;
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -23,8 +25,14 @@ import java.util.HashSet;
  */
 
 public class MainService extends IntentService {
+    private KeyguardManager keyguardManager;
+    private Vibrator vibrator;
+
     public MainService() {
         super("MainService");
+
+        keyguardManager = (KeyguardManager) getApplicationContext().getSystemService(Context.KEYGUARD_SERVICE);
+        vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     @Override
@@ -61,6 +69,13 @@ public class MainService extends IntentService {
                         Util.makePushNotification(getApplicationContext(), "Vertretung:", str);
                     else
                         Util.makePushNotification(getApplicationContext(), "Unbekannt:", str);
+
+                    if (keyguardManager.inKeyguardRestrictedInputMode() &&
+                            getApplicationContext().getSharedPreferences("vortex.vp_today.app",
+                                    Context.MODE_PRIVATE).getBoolean("vibrateOnPushReceiveInLS", true)) {
+                        /* 2 mal vibrieren, -1 für nicht wiederholen. */
+                        vibrator.vibrate(new long[] { 700, 700 }, -1);
+                    }
 
                     if (known == null) {
                         known = new HashSet<>();

@@ -92,14 +92,24 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_item,
+        ArrayAdapter<String> stufenAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
                 SharedLogic.getStufen()
         );
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        Spinner sItems = findViewById(R.id.spinStufen);
-        sItems.setAdapter(adapter);
+        ArrayAdapter<String> klassenAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                SharedLogic.getKlassen()
+        );
+
+        stufenAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        klassenAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinStufen.setAdapter(stufenAdapter);
+        spinKlassen.setAdapter(klassenAdapter);
+
         load();
     }
 
@@ -113,6 +123,7 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences.Editor e = settings.edit();
 
         e.putString("stufe", spinStufen.getSelectedItem().toString());
+        e.putString("klasse", spinKlassen.getSelectedItem().toString());
 
         if (e.commit())
             Toast.makeText(getApplicationContext(), "Einstellungen gesichert!", Toast.LENGTH_SHORT).show();
@@ -121,10 +132,10 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private synchronized void load() {
-        /* Spinner setting */
-        String s = Util.getSettingStufe(this);
+        /* Spinner Stufen setting */
+        String stufe = Util.getSettingStufe(getApplicationContext());
 
-        switch (s) {
+        switch (stufe) {
             case "EF":
                 spinStufen.setSelection(5);
                 break;
@@ -135,13 +146,33 @@ public class SettingsActivity extends AppCompatActivity {
                 spinStufen.setSelection(7);
                 break;
             default:
-                if (s == null || s == ""){
+                if (stufe == null || stufe.equals("")) {
                     spinStufen.setSelection(0);
                     break;
                 }
-                int i = Integer.parseInt(s);
+                int i = Integer.parseInt(stufe);
                 spinStufen.setSelection(i - 5);
                 break;
+        }
+
+        /* Spinner Klassen setting */
+        String klasse = Util.getSettingKlasse(getApplicationContext());
+
+        switch (klasse) {
+            case "A":
+                spinKlassen.setSelection(0);
+                break;
+            case "B":
+                spinKlassen.setSelection(1);
+                break;
+            case "C":
+                spinKlassen.setSelection(2);
+                break;
+            case "D":
+                spinKlassen.setSelection(3);
+                break;
+            default:
+                spinKlassen.setSelection(0);
         }
     }
 
