@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         /* Das auf false setzen, damit der MainService aufhört. */
         sp.edit().putBoolean("fetchHtmlPushes", false).commit();
 
+        /* Den ScreenReceiver registrieren */
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         BroadcastReceiver mReceiver = new ScreenReceiver();
