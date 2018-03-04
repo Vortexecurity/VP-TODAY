@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="vortex.vp_today">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:allowBackup="true"
@@ -11,18 +14,77 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="vortex.vp_today.MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="vortex.vp_today.SettingsActivity"
+        <activity
+            android:name=".SettingsActivity"
             android:label="@string/settings"
-            android:screenOrientation="portrait"
-            android:parentActivityName="vortex.vp_today.MainActivity" >
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait">
+
             <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="vortex.vp_today.MainActivity" />
+        </activity>
+
+        <!--<receiver android:name=".Widget"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info" />
+        </receiver>
+        -->
+
+        <receiver
+            android:name=".NetworkReceiver"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".BootReceiver"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <!-- Cold boot -->
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <!-- Reboot -->
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".MainService"
+            android:enabled="true"
+            android:exported="false"/>
+
+        <activity android:name=".RateActivity"
+            android:label="@string/ratelbl"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            >
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="vortex.vp_today.MainActivity" />
+        </activity>
+        <activity android:name=".AboutActivity"
+            android:label="@string/about"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            >
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="vortex.vp_today.MainActivity" />

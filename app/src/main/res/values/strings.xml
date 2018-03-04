@@ -3,7 +3,85 @@
     <string name="settings">Einstellungen</string>
     <string name="about">Über</string>
     <string name="rateus">Bewerte uns!</string>
+    <string name="ratelbl">Bewerten</string>
     <string name="stufe">Stufe:</string>
     <string name="apply">Übernehmen</string>
     <string name="cancel">Abbrechen</string>
+    <string name="btnRateSend">Senden</string>
+    <string name="title_activity_about">AboutActivity</string>
+    <string name="melvinemail">nc-zaehlvo6@netcologne.de</string>
+    <string name="simonemail">simon.draeger12@gmail.com</string>
+    <string name="florianemail"></string> <!-- TODO: Florian tu deine Email hier rein!!! -->
+    <string name="abouttxt"><i>VP-TODAY</i>&#169; a <b>VorteX Dev. Corp.</b> development.\n
+                            Build: %1$d, Date: %2$s\n\n
+                            <u>Copyright</u>\n
+                            The underlying Application is conducted under absolute closed-source copyright.\n
+                            Any attempts of decompilation or unauthorized distribution are strictly prohibited.\n\n
+                            On need of contacting the publisher, please refer to the following persons:\n
+                            Melvin Zähl (%3$s)\n
+                            Simon Dräger (%4$s)\n
+                            Florian Koll (%5$s)
+    </string>
+    <string name="ratehint">(Geben Sie hier einen Feedback-Text ein...)</string>
+    <string name="klasse">Klasse:</string>
+    <string name="vibrateonreceive">Beim Erhalt einer Benachrichtigung vibrieren</string>
+    <string name="receivepushes">Push-Nachrichten erhalten</string>
+    <string-array name="KurseQ1">
+        <item>BI G1</item>
+        <item>BI G2</item>
+        <item>BIB 1</item>
+        <item>BI L1</item>
+        <item>BI L2</item>
+        <item>IF G1</item>
+        <item>IF L1</item>
+        <item>MG 1</item>
+        <item>MG 2</item>
+        <item>MG 3</item>
+        <item>MG 4</item>
+        <item>ML 1</item>
+        <item>PL G1</item>
+        <item>PL G2</item>
+        <item>S0 G1</item>
+        <item>S0 G2</item>
+        <item>GE G1</item>
+        <item>GE G2</item>
+        <item>GE L1</item>
+        <item>PH G1</item>
+        <item>FG 1</item>
+        <item>EG 1</item>
+        <item>EG 2</item>
+        <item>EG 3</item>
+        <item>EG 4</item>
+        <item>EL 1</item>
+        <item>EL 2</item>
+        <item>KU G1</item>
+        <item>KU G2</item>
+        <item>KU G3</item>
+        <item>KU L1</item>
+        <item>LI G1</item>
+        <item>SW G1</item>
+        <item>SW G2</item>
+        <item>PXM1</item>
+        <item>DG 1</item>
+        <item>DG 2</item>
+        <item>DG 3</item>
+        <item>DL 1</item>
+        <item>DL 2</item>
+        <item>EK G1</item>
+        <item>EK L1</item>
+        <item>CH G1</item>
+        <item>CH L1</item>
+        <item>ER G1</item>
+        <item>KR G1</item>
+        <item>KR G2</item>
+        <item>SP G1</item>
+        <item>SP G2</item>
+        <item>SP G3</item>
+        <item>SP G4</item>
+        <item>SP G5</item>
+        <item>SP G6</item>
+        <item>PXC 1</item>
+        <item>MU G1</item>
+        <item>MUB 1</item>
+    </string-array>
 </resources>

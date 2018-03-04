@@ -1,13 +1,18 @@
 package vortex.vp_today;
 
 import android.app.DatePickerDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +36,12 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Calendar;
 
+/**
+ * @author Simon Dräger
+ * @author Melvin Zähl
+ * @version 3.3.18
+ */
+
 public class MainActivity extends AppCompatActivity {
 
     private DatePickerDialog.OnDateSetListener mDateSetListener;
@@ -42,9 +53,9 @@ public class MainActivity extends AppCompatActivity {
     private Thread t;
     private Button btnDate;
     private SwipeRefreshLayout swipe;
+    private static final Object lockObj = new Object();
 
-    /* Temporäre Anzeige des HTML Quelltextes der abgerufenden Seite -> Endeffekt wirds eine Listview werden */
-    EditText txt;
+    private EditText txt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +69,23 @@ public class MainActivity extends AppCompatActivity {
         btnDate = findViewById(R.id.btnDate);
         swipe = findViewById(R.id.swiperefresh);
         tvVers = findViewById(R.id.tvVers);
+        /**/
+
+        SharedPreferences sp = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
+
+        /* Falls dies der erste Start sein sollte eine Client ID erstellen und speichern. */
+        if (sp.getString("clientid", "0x0").equals("0x0")) {
+            sp.edit().putString("clientid", Util.generateClientID()).commit();
+        }
+
+        /* Das auf false setzen, damit der MainService aufhört. */
+        sp.edit().putBoolean("fetchHtmlPushes", false).commit();
+
+        /* Den ScreenReceiver registrieren */
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        BroadcastReceiver mReceiver = new ScreenReceiver();
+        registerReceiver(mReceiver, filter);
 
         /* Thread region */
         t = new Thread(new Runnable() {
@@ -75,13 +103,15 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     String urlS = "https://vp.gymnasium-odenthal.de/god/" + date;
-                    Log.e("LOG", urlS);
                     String authStringEnc = "dnA6Z29kOTIwMQ==";
+
+                    Log.e("LOG", urlS);
+
                     URL url = new URL(urlS);
                     URLConnection urlConnection = url.openConnection();
                     urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
-                    InputStream is = urlConnection.getInputStream();
 
+                    InputStream is = urlConnection.getInputStream();
                     InputStreamReader isr = new InputStreamReader(is);
 
                     int numCharsRead;
@@ -123,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         mDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                month = month + 1;
+                month++;
 
                 if (day >= 10 && month >= 10)
                     date = year + "-" + month + "-" + day;
@@ -154,37 +184,59 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     *
+     * Updates the Vertretungs-ListView
+     * @author Melvin Zähl
+     * @author Simon Dräger
      */
-    private void update() {
+    private synchronized void update() {
         try {
-            try {
-                if (!t.isAlive()) {
-                    t.start();
-                    Toast.makeText(getApplicationContext(), "Aktualisiere...", Toast.LENGTH_SHORT).show();
+            /* Auf einen Thread synchronisieren, sonst gibst Fehler */
+            //synchronized (lockObj) {
+                try {
+                    if (!t.isAlive()) {
+                        t.start();
+                        Toast.makeText(getApplicationContext(), "Aktualisiere...", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
 
-            t.join();
+                t.join();
 
-            Toast.makeText(getApplicationContext(), "Aktualisiert!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Aktualisiert!", Toast.LENGTH_SHORT).show();
 
-            Document doc = Jsoup.parse(tmp);
-            Log.e("STUFE",Util.getSettingStufe(this));
-            filterHTML(doc, Util.getSettingStufe(this));
-            tvVers.setText("Version :" + doc.select("strong").first().text());
+                Document doc = Jsoup.parse(tmp);
 
-            Element e = null;
+                Log.e("STUFE", Util.getSettingStufe(this));
 
-            if(!doc.is("div.alert")) {
-                e = doc.select("div.alert").first();
-                if(e != null)
-                    msgOTD.setText(e.text());
-                else
-                    msgOTD.setText("An diesem Tag gibt es (noch) keinen Informationstext!");
-            }
+                String[] content = Util.filterHTML(doc, Util.getSettingStufe(getApplicationContext()));
+
+                txt.setText(TextUtils.join("\n\n", content));
+
+                Elements elements = doc.select("strong");
+
+                if (elements == null) {
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!", Toast.LENGTH_SHORT);
+                        }
+                    });
+                    return;
+                }
+
+                tvVers.setText("Version: " + elements.first().text());
+
+                Element e = null;
+
+                if (!doc.is("div.alert")) {
+                    e = doc.select("div.alert").first();
+                    if (e != null)
+                        msgOTD.setText(e.text());
+                    else
+                        msgOTD.setText("An diesem Tag gibt es (noch) keinen Informationstext!");
+                }
+            //}
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -201,45 +253,16 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch ( item.getItemId() ) {
             case R.id.settings:
-                Intent myIntent = new Intent(getApplicationContext(), SettingsActivity.class);
-                this.startActivity(myIntent);
+                SettingsActivity.show(getApplicationContext());
+                return true;
+            case R.id.rate:
+                RateActivity.show(getApplicationContext());
+                return true;
+            case R.id.about:
+                AboutActivity.show(getApplicationContext());
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void filterHTML(Document d, String stufe) {
-        String _stufe = stufe;
-        if (_stufe == null || _stufe.equals(""))
-            _stufe = "05";
-
-        switch (_stufe){
-            case "5":
-                _stufe = "05";
-                break;
-            case "6":
-                _stufe = "06";
-                break;
-            case "7":
-                _stufe = "07";
-                break;
-            case "8":
-                _stufe = "08";
-                break;
-            case "9":
-                _stufe = "09";
-                break;
-        }
-        Elements elements = d.select("tr[data-index*='" + _stufe + "']");
-
-        String s = "";
-
-        for(Element e : elements){
-            if(e != null)
-                s += e.text() + "\n\n";
-        }
-
-        txt.setText(s);
     }
 }
