@@ -60,15 +60,6 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/msgOTD"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="4"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="14sp"
-                android:textStyle="bold|italic" />
-
             <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/swiperefresh"
                 android:layout_width="match_parent"
@@ -92,6 +83,15 @@
                     android:scrollbars="horizontal|vertical" />
 
             </android.support.v4.widget.SwipeRefreshLayout>
+
+            <TextView
+                android:id="@+id/msgOTD"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="14sp"
+                android:textStyle="bold|italic" />
         </LinearLayout>
 
     </RelativeLayout>
