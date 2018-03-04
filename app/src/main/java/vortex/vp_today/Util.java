@@ -300,6 +300,7 @@ public final class Util {
         Elements elements = d.select("tr[data-index*='" + _stufe + "']");
 
         ArrayList<String> s = new ArrayList<>();
+        
 
         for (Element e : elements) {
             /* Manchmal sind Einträge im VP mehrere Male vorhanden, also nur einmal in die Liste tun. */

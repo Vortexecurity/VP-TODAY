@@ -215,17 +215,18 @@ public class MainActivity extends AppCompatActivity {
 
                 Elements elements = doc.select("strong");
 
-                if (elements == null) {
+                if (elements.first() == null) {
                     new Handler().post(new Runnable() {
                         @Override
                         public void run() {
                             Toast.makeText(getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!", Toast.LENGTH_SHORT);
                         }
                     });
+                    tvVers.setText("Version: 0");
+                    msgOTD.setText("Für diesen tag gibt es noch keine Vertretungen!");
                     return;
-                }
-
-                tvVers.setText("Version: " + elements.first().text());
+                } else
+                    tvVers.setText("Version: " + elements.first().text());
 
                 Element e = null;
 
@@ -236,6 +237,10 @@ public class MainActivity extends AppCompatActivity {
                     else
                         msgOTD.setText("An diesem Tag gibt es (noch) keinen Informationstext!");
                 }
+
+                e  = doc.selectFirst("p");
+                if(e.text() == "Für diesen Tag existiert derzeit kein Vertretungsplan. Bitten schauen Sie später nochmal vorbei!")
+                    msgOTD.setText("Für diesen Tag existiert derzeit kein Vertretungsplan. Bitten schauen Sie später nochmal vorbei!");
             //}
         } catch (Exception e) {
             e.printStackTrace();
