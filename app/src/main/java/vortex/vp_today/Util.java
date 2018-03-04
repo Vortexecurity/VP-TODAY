@@ -263,7 +263,7 @@ public final class Util {
      * @author Melvin Zähl
      * @author Simon Dräger
      */
-    public static synchronized String[] filterHTML(Document d, String stufe) {
+    public static synchronized String[] filterHTML(Document d, String stufe, String sub) {
         /* Hilfsvariable, sodass stufe nicht direkt verändert wird */
         String _stufe = stufe;
 
@@ -271,8 +271,10 @@ public final class Util {
             _stufe = "05";
 
         /* Wenn 5 <= stufe < EF */
-        if (!Character.isLetter(_stufe.charAt(0)))
+        if (!Character.isLetter(_stufe.charAt(0))) {
             _stufe = "0" + _stufe;
+            _stufe = _stufe + sub;
+        }
 
         Elements elements = d.select("tr[data-index*='" + _stufe + "']");
 

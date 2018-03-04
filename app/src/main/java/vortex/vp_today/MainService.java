@@ -42,7 +42,7 @@ public class MainService extends IntentService {
                 Calendar c = Calendar.getInstance();
                 String dt = Util.makeDate(c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.MONTH), c.get(Calendar.YEAR));
                 String unf = Util.fetchUnfiltered(dt);
-                ArrayList<String> infos = new ArrayList<>(Arrays.asList(Util.filterHTML(Jsoup.parse(unf), Util.getSettingStufe(getApplicationContext()))));
+                ArrayList<String> infos = new ArrayList<>(Arrays.asList(Util.filterHTML(Jsoup.parse(unf), Util.getSettingStufe(getApplicationContext()), Util.getSettingKlasse(getApplicationContext()))));
 
                 HashSet<String> known =
                         new HashSet<>(getApplicationContext().getSharedPreferences("vortex.vp_today.app",

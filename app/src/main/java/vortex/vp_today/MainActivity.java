@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.e("STUFE", Util.getSettingStufe(this));
 
-                String[] content = Util.filterHTML(doc, Util.getSettingStufe(getApplicationContext()));
+                String[] content = Util.filterHTML(doc, Util.getSettingStufe(getApplicationContext()), Util.getSettingKlasse(getApplicationContext()));
 
                 txt.setText(TextUtils.join("\n\n", content));
 
