@@ -1,7 +1,10 @@
 package vortex.vp_today;
 
 import android.app.DatePickerDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -77,6 +80,11 @@ public class MainActivity extends AppCompatActivity {
 
         /* Das auf false setzen, damit der MainService aufhört. */
         sp.edit().putBoolean("fetchHtmlPushes", false).commit();
+
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        BroadcastReceiver mReceiver = new ScreenReceiver();
+        registerReceiver(mReceiver, filter);
 
         /* Thread region */
         t = new Thread(new Runnable() {
