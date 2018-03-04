@@ -25,4 +25,8 @@
     <string name="ratehint">(Geben Sie hier einen Feedback-Text ein...)</string>
     <string name="klasse">Klasse:</string>
     <string name="vibrateonreceive">Beim Erhalt einer Benachrichtigung vibrieren</string>
+    <string name="receivepushes">Push-Nachrichten erhalten</string>
+    <string-array name="KurseQ1">
+        <item>BIG1</item>
+    </string-array>
 </resources>

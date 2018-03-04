@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<stufen>
+    <stufe name="EF">
+        <kurse>
+
+        </kurse>
+    </stufe>
+
+    <stufe name="Q1">
+        <string-array name="Kurse">
+            <item>BIG1</item>
+            <item>BIG2</item>
+            <item>BIL1</item>
+            <item>BIL2</item>
+            <BIG1></BIG1>
+            <BIG2></BIG2>
+            <BIB1></BIB1>
+            <BIL1></BIL1>
+            <BIL2></BIL2>
+            <IFG1></IFG1>
+            <IFL1></IFL1>
+            <MG1></MG1>
+            <MG2></MG2>
+            <MG3></MG3>
+            <MG4></MG4>
+            <ML1></ML1>
+            <PLG1></PLG1>
+            <PLG2></PLG2>
+            <S0G1></S0G1>
+            <S0G2></S0G2>
+            <GEG1></GEG1>
+            <GEG2></GEG2>
+            <GEL1></GEL1>
+            <PHG1></PHG1>
+            <FG1></FG1>
+            <EG1></EG1>
+            <EG2></EG2>
+            <EG3></EG3>
+            <EG4></EG4>
+            <EL1></EL1>
+            <EL2></EL2>
+            <KUG1></KUG1>
+            <KUG2></KUG2>
+            <KUG3></KUG3>
+            <KUL1></KUL1>
+            <LIG1></LIG1>
+            <SWG1></SWG1>
+            <SWG2></SWG2>
+            <SWL1></SWL1>
+            <PXM1></PXM1>
+            <DG1></DG1>
+            <DG2></DG2>
+            <DG3></DG3>
+            <DL1></DL1>
+            <DL2></DL2>
+            <EKG1></EKG1>
+            <EKL1></EKL1>
+            <CHG1></CHG1>
+            <CHL1></CHL1>
+            <ERG1></ERG1>
+            <KRG1></KRG1>
+            <KRG2></KRG2>
+            <SPG1></SPG1>
+            <SPG2></SPG2>
+            <SPG3></SPG3>
+            <SPG4></SPG4>
+            <SPG5></SPG5>
+            <SPG6></SPG6>
+            <PXC1></PXC1>
+            <MUG1></MUG1>
+            <MUB1></MUB1>
+
+        </string-array>
+    </stufe>
+
+    <stufe name="Q2">
+        <kurse>
+
+        </kurse>
+    </stufe>
+</stufen>

@@ -87,12 +87,21 @@
                 android:text="Für jeden Kurs eine Box" />
 
             <Switch
+                android:id="@+id/switchPushes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:paddingLeft="33dp"
+                android:text="@string/receivepushes" />
+
+            <Switch
                 android:id="@+id/switchVibrate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:textSize="13sp"
-                android:text="@string/vibrateonreceive" />
+                android:paddingLeft="10dp"
+                android:text="@string/vibrateonreceive"
+                android:textSize="13sp" />
 
         </LinearLayout>
 
@@ -102,7 +111,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginBottom="137dp"
             android:text="@string/apply" />
 
         <Button
