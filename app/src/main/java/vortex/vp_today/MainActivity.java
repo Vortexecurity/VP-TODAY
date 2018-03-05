@@ -193,7 +193,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        unregisterReceiver(scrnReceive);
+        if (scrnReceive != null)
+            unregisterReceiver(scrnReceive);
     }
 
     /**
@@ -236,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                     tvVers.setText("Version: 0");
-                    msgOTD.setText("Für diesen tag gibt es noch keine Vertretungen!");
+                    msgOTD.setText("Für diesen Tag gibt es noch keine Vertretungen!");
                     return;
                 } else
                     tvVers.setText("Version: " + elements.first().text());
