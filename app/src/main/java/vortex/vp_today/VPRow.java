@@ -1,5 +1,7 @@
 package vortex.vp_today;
 
+import android.support.annotation.Nullable;
+
 /**
  * Eine VP-Reihe.
  * @author Simon Dräger
@@ -25,6 +27,14 @@ public class VPRow {
         raum = null;
         statt = null;
         bemerkung = null;
+    }
+
+    @Nullable
+    public String getContent() {
+        if (art != null) {
+            return art + " " + String.valueOf(stunde) + " " + fach + " " + vertreter + " " + klasse + " " + raum + " " + statt + " " + bemerkung;
+        }
+        return null;
     }
 
     public VPKind getArt() {

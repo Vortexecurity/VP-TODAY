@@ -286,17 +286,9 @@ public final class Util {
      * @return null on error.
      */
     @Nullable
-    public static synchronized String fetchUnfiltered(String date) {
+    public static synchronized String fetchUnfiltered(@NonNull String date) throws AssertionError {
         try {
-            /*if (date.equals("")) {
-                MainActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "Ein Fehler ist während des Aktualisiervorgangs aufgetreten!", Toast.LENGTH_LONG);
-                    }
-                });
-                return;
-            }*/
+            assert !date.equals("") : "date kann nicht leer sein.";
 
             String urlS = "https://vp.gymnasium-odenthal.de/god/" + date;
             String authStringEnc = "dnA6Z29kOTIwMQ==";
@@ -333,6 +325,7 @@ public final class Util {
     /**
      * @author Melvin Zähl
      * @author Simon Dräger
+     * @param sub Klassenbuchstabe; Bsp 6C
      */
     public static synchronized String[] filterHTML(Document d, String stufe, String sub) {
         /* Hilfsvariable, sodass stufe nicht direkt verändert wird */
@@ -350,7 +343,6 @@ public final class Util {
         Elements elements = d.select("tr[data-index*='" + _stufe + "']");
 
         ArrayList<String> s = new ArrayList<>();
-        
 
         for (Element e : elements) {
             /* Manchmal sind Einträge im VP mehrere Male vorhanden, also nur einmal in die Liste tun. */
@@ -379,9 +371,50 @@ public final class Util {
 
         for (Element e : elements) {
             if (e != null && !(s.contains(e.text())) && Util.anyMatch(e.text(), kurse))
-                s.add(e.text())/* + "\n\n"*/;
+                s.add(e.text());
         }
 
         return s.toArray(new String[0]);
+    }
+
+    /**
+     * @author Simon Dräger
+     */
+    @Nullable
+    public static synchronized VPInfo getCurrentInfo(@NonNull Document d) {
+        Elements elements = d.select("tr[data-index]");
+
+        VPInfo inf = new VPInfo();
+
+        for (Element e : elements) {
+            if (e != null && !(inf.getRows().contains(e.text()))) {
+                VPRow r = new VPRow();
+                Elements subs = e.getAllElements();
+
+                switch (subs.select("data-type").get(0).text().toLowerCase()) {
+                    case "vertretung":
+                        r.setArt(VPKind.VERTRETUNG);
+                        break;
+                    case "entfall":
+                        r.setArt(VPKind.ENTFALL);
+                        break;
+                    case "eigenv. arbeiten":
+                        r.setArt(VPKind.EIGENVARBEITEN);
+                        break;
+                }
+
+                r.setStunde(Integer.parseInt(subs.select("data-hour").get(0).text()));
+                /* Unnötige Leerzeichen wegmachen */
+                r.setFach(subs.select("data-subject").get(0).text().replaceAll("\\s+", " "));
+                r.setKlasse(subs.select("data-form").get(0).text().replace("", ""));
+                r.setRaum(subs.select("data-room").get(0).text());
+                r.setStatt(subs.select("data-instead").get(0).text());
+                r.setBemerkung(subs.select("data-notice").get(0).text());
+
+                inf.addRow(r);
+            }
+        }
+
+        return inf;
     }
 }

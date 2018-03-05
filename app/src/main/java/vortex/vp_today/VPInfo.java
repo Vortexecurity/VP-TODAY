@@ -1,5 +1,7 @@
 package vortex.vp_today;
 
+import android.support.annotation.Nullable;
+
 import java.util.ArrayList;
 
 /**
@@ -10,13 +12,26 @@ import java.util.ArrayList;
 public class VPInfo {
     private ArrayList<VPRow> rows;
 
-    public VPInfo() { }
+    public VPInfo() {
+        rows = new ArrayList<>();
+    }
 
-    public VPRow[] getRows() {
-        return rows.toArray(new VPRow[0]);
+    public ArrayList<VPRow> getRows() {
+        return rows;
     }
 
     public void addRow(VPRow row) {
         rows.add(row);
+    }
+
+    @Nullable
+    public String[] getContent() {
+        ArrayList<String> temp = new ArrayList<>(rows.size());
+
+        for (VPRow row : rows) {
+            temp.add(row.getContent());
+        }
+
+        return temp.toArray(new String[0]);
     }
 }
