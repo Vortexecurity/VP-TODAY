@@ -4,8 +4,10 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/VP-TODAY.iml" filepath="$PROJECT_DIR$/VP-TODAY.iml" />
       <module fileurl="file://Z:\Daten\Dokumente\Android Studio\VideoApp\VPTODAY\VP-TODAY.iml" filepath="Z:\Daten\Dokumente\Android Studio\VideoApp\VPTODAY\VP-TODAY.iml" />
+      <module fileurl="file://C:\Users\fkoll\StudioProjects\VP-TODAY\VP-TODAY.iml" filepath="C:\Users\fkoll\StudioProjects\VP-TODAY\VP-TODAY.iml" />
       <module fileurl="file://C:\Users\shftr\Desktop\VP-TODAY\VPTODAY.iml" filepath="C:\Users\shftr\Desktop\VP-TODAY\VPTODAY.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\fkoll\StudioProjects\VP-TODAY\app\app.iml" filepath="C:\Users\fkoll\StudioProjects\VP-TODAY\app\app.iml" />
     </modules>
   </component>
 </project>
