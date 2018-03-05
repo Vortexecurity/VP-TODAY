@@ -123,9 +123,11 @@ public class MainActivity extends AppCompatActivity {
                     int numCharsRead;
                     char[] charArray = new char[1024];
                     StringBuffer sb = new StringBuffer();
+
                     while ((numCharsRead = isr.read(charArray)) > 0) {
                         sb.append(charArray, 0, numCharsRead);
                     }
+
                     String result = sb.toString();
 
                     tmp = result;
@@ -180,13 +182,33 @@ public class MainActivity extends AppCompatActivity {
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        update();
-                        swipe.setRefreshing(false);
+                        try {
+                            //update();
+                            t.start();
+
+                            Log.i("THREAD", "Waiting for t to finish.");
+
+                            t.join();
+
+                            Log.i("THREAD", "t done.");
+
+                            Document doc = Jsoup.parse(tmp);
+                            String[] content = Util.getCurrentInfo(doc).getContent();
+                            txt.setText(TextUtils.join("\n\n", content));
+
+                            swipe.setRefreshing(false);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
                     }
                 });
+                swipe.setRefreshing(false);
             }
         });
         /**/
+
+        // Funktioniert
+        //txt.setText("test");
     }
 
     @Override
@@ -233,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
                     new Handler().post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!", Toast.LENGTH_SHORT);
+                            Toast.makeText(getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!", Toast.LENGTH_SHORT).show();
                         }
                     });
                     tvVers.setText("Version: 0");
