@@ -219,10 +219,10 @@ public final class Util {
         };
     }
 
-    public static void sendBotEmail(Context ctx, String[] to, String subj, String body) {
-        BackgroundMail bm = new BackgroundMail(ctx);
-        bm.setGmailUserName(ctx.getString(R.string.botemail));
-        bm.setGmailPassword(ctx.getString(R.string.botpwd));
+    public static void sendBotEmail(Activity actv, String[] to, String subj, String body) {
+        BackgroundMail bm = new BackgroundMail(actv);
+        bm.setGmailUserName(actv.getApplicationContext().getString(R.string.botemail));
+        bm.setGmailPassword(actv.getApplicationContext().getString(R.string.botpwd));
         bm.setMailTo(TextUtils.join(",", to));
         bm.setFormSubject(subj);
         bm.setFormBody(body);
