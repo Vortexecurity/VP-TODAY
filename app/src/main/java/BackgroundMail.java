@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import vortex.vp_today.R;
+import vortex.vp_today.util.Util;
 
 public class BackgroundMail {
     String TAG = "BackgroundMail";
@@ -259,7 +260,7 @@ public class BackgroundMail {
         if (TextUtils.isEmpty(subject)) {
             throw new IllegalArgumentException("You didn't set a subject");
         }
-        if (!Utils.isNetworkAvailable(mContext)) {
+        if (!Util.isNetworkAvailable(mContext)) {
             Log.d(TAG, "you need internet connection to send the email");
         }
         new SendEmailTask().execute();
