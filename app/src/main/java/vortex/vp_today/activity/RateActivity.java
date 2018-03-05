@@ -54,7 +54,7 @@ public class RateActivity extends AppCompatActivity {
                 } else {
                     if (Util.isInternetConnected(getApplicationContext())) {
                         Util.sendBotEmail(getApplicationContext(), Util.getDevEmails(getApplicationContext()), "Rating " + rateBar.getNumStars() + " Sterne",
-                                "Da hat einer " + rateBar.getNumStars() + " geratet");
+                                txtSuggest.getText().toString());
                         new Handler().post(new Runnable() {
                             @Override
                             public void run() {
