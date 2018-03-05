@@ -53,7 +53,7 @@ public class RateActivity extends AppCompatActivity {
                     });
                 } else {
                     if (Util.isInternetConnected(getApplicationContext())) {
-                        Util.sendBotEmail(RateActivity.this, Util.getDevEmails(getApplicationContext()), "Rating " + rateBar.getNumStars() + " Sterne",
+                        Util.sendBotEmail(RateActivity.this, Util.getDevEmails(getApplicationContext()), "Rating " + rateBar.getRating() + " Sterne",
                                 txtSuggest.getText().toString());
                         new Handler().post(new Runnable() {
                             @Override
@@ -85,7 +85,7 @@ public class RateActivity extends AppCompatActivity {
         });
     }
 
-    public static void show(@NonNull Context context) {
+    public static void show(@NonNull Context context){
         Intent intent = new Intent(context, RateActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
