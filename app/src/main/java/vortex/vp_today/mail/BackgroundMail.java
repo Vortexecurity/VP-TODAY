@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.annotation.ArrayRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -267,10 +268,14 @@ public class BackgroundMail {
         protected void onPreExecute() {
             super.onPreExecute();
             if (processVisibility) {
-                progressDialog = new ProgressDialog(mContext);
-                progressDialog.setMessage(sendingMessage);
-                progressDialog.setCancelable(false);
-                progressDialog.show();
+                /*new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {*/
+                        progressDialog = new ProgressDialog(mContext);
+                        progressDialog.setMessage(sendingMessage);
+                        progressDialog.setCancelable(false);
+                        progressDialog.show();
+                //});
             }
         }
 
