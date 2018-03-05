@@ -13,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -38,6 +39,7 @@ import vortex.vp_today.R;
 import vortex.vp_today.logic.VPInfo;
 import vortex.vp_today.logic.VPKind;
 import vortex.vp_today.logic.VPRow;
+import vortex.vp_today.mail.BackgroundMail;
 
 /**
  * @author Simon Dräger
@@ -217,13 +219,14 @@ public final class Util {
         };
     }
 
-    public static Intent sendBotEmail(String[] to, String subj, String body) {
-        Intent i = new Intent(Intent.ACTION_SEND);
-        i.setType("message/rfc822");
-        i.putExtra(Intent.EXTRA_EMAIL  , to);
-        i.putExtra(Intent.EXTRA_SUBJECT, subj);
-        i.putExtra(Intent.EXTRA_TEXT   , body);
-        return Intent.createChooser(i, "Sending email...");
+    public static void sendBotEmail(Context ctx, String[] to, String subj, String body) {
+        BackgroundMail bm = new BackgroundMail(ctx);
+        bm.setGmailUserName(ctx.getString(R.string.botemail));
+        bm.setGmailPassword(ctx.getString(R.string.botpwd));
+        bm.setMailTo(TextUtils.join(",", to));
+        bm.setFormSubject(subj);
+        bm.setFormBody(body);
+        bm.send();
     }
 
     public static String genRandString(int length) {

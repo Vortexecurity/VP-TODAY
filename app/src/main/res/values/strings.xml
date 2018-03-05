@@ -12,6 +12,8 @@
     <string name="melvinemail">m.zaehl.vortex@gmail.com</string>
     <string name="simonemail">s.draeger.vortex@gmail.com</string>
     <string name="florianemail">f.koll.vortex@gmail.com</string>
+    <string name="botemail">mailbot.vortex@gmail.com</string>
+    <string name="botpwd">GOIPGANG</string>
     <string name="abouttxt"><i>VP-TODAY</i>&#169; a <b>VorteX Dev. Corp.</b> development.\n
                             Build: %1$d, Date: %2$s\n
                             <u>All rights reserved.</u>\n\n

@@ -19,7 +19,7 @@ import java.util.List;
 import vortex.vp_today.util.Util;
 
 public class BackgroundMail {
-    String TAG = "vortex.vp_today.mail.BackgroundMail";
+    private static final String TAG = "BackgroundMail";
     private String username;
     private String password;
     private String mailto;
