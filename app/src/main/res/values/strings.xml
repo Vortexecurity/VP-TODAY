@@ -41,11 +41,11 @@
         <item>BI L2</item>
         <item>IF G1</item>
         <item>IF L1</item>
-        <item>MG 1</item>
-        <item>MG 2</item>
-        <item>MG 3</item>
-        <item>MG 4</item>
-        <item>ML 1</item>
+        <item>M G1</item>
+        <item>M G2</item>
+        <item>M G3</item>
+        <item>M G4</item>
+        <item>M L1</item>
         <item>PL G1</item>
         <item>PL G2</item>
         <item>S0 G1</item>
@@ -54,13 +54,13 @@
         <item>GE G2</item>
         <item>GE L1</item>
         <item>PH G1</item>
-        <item>FG 1</item>
-        <item>EG 1</item>
-        <item>EG 2</item>
-        <item>EG 3</item>
-        <item>EG 4</item>
-        <item>EL 1</item>
-        <item>EL 2</item>
+        <item>F G1</item>
+        <item>E G1</item>
+        <item>E G2</item>
+        <item>E G3</item>
+        <item>E G4</item>
+        <item>E L1</item>
+        <item>E L2</item>
         <item>KU G1</item>
         <item>KU G2</item>
         <item>KU G3</item>
@@ -69,11 +69,11 @@
         <item>SW G1</item>
         <item>SW G2</item>
         <item>PXM1</item>
-        <item>DG 1</item>
-        <item>DG 2</item>
-        <item>DG 3</item>
-        <item>DL 1</item>
-        <item>DL 2</item>
+        <item>D G1</item>
+        <item>D G2</item>
+        <item>D G3</item>
+        <item>D L1</item>
+        <item>D L2</item>
         <item>EK G1</item>
         <item>EK L1</item>
         <item>CH G1</item>
