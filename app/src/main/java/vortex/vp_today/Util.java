@@ -35,6 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Simon Dräger
+ * @author Florian Koll
  * @version 5.3.18
  */
 
