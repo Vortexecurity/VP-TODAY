@@ -14,6 +14,7 @@ import vortex.vp_today.R;
  *
  * @author Simon Dräger
  * @version 4.3.18
+ *
  */
 
 public class ScreenReceiver extends BroadcastReceiver {

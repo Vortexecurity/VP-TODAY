@@ -11,8 +11,6 @@ public enum VPKind {
     RAUMVERTRETUNG("Raumvertretung"),
     EIGENVARBEITEN("Eigenv. Arbeiten");
 
-
-
     private final String name;
 
     VPKind(String strEquiv) {

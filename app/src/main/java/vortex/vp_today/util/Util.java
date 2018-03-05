@@ -216,7 +216,7 @@ public final class Util {
         };
     }
 
-    public static Intent sendEmail(String[] to, String subj, String body) {
+    public static Intent sendBotEmail(String[] to, String subj, String body) {
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("message/rfc822");
         i.putExtra(Intent.EXTRA_EMAIL  , to);
@@ -383,6 +383,16 @@ public final class Util {
         return s.toArray(new String[0]);
     }
 
+    @Nullable
+    public static String[] ArrListToArr(@Nullable ArrayList<String> arr) {
+        String[] out = new String[arr.size()];
+
+        for (int i = 0; i < arr.size(); i++)
+
+
+        return out;
+    }
+
     /**
      * @author Simon Dräger
      */
@@ -391,6 +401,8 @@ public final class Util {
         Elements elements = d.select("tr[data-index]");
 
         VPInfo inf = new VPInfo();
+
+        Log.i("getCurrentInfo/elements", elements.eachText().);
 
         for (Element e : elements) {
             if (e != null && !(inf.getRows().contains(e.text()))) {
