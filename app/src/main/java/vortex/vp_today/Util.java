@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Simon Dräger
- * @version 3.3.18
+ * @version 5.3.18
  */
 
 public final class Util {
@@ -49,7 +49,7 @@ public final class Util {
         return atomInt.incrementAndGet();
     }
 
-    public static int ShowYesNoDialog(Context ctx, String text) {
+    public static int ShowYesNoDialog(@NonNull Activity actv, @NonNull String text) {
         try {
             DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
                 @Override
@@ -65,7 +65,7 @@ public final class Util {
                 }
             };
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+            AlertDialog.Builder builder = new AlertDialog.Builder(actv);
             builder.setMessage(text)
                     .setPositiveButton("Ja", listener)
                     .setNegativeButton("Nein", listener).show();
