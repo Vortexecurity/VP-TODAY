@@ -18,6 +18,8 @@ public class VPRow {
     private String statt;
     private String bemerkung;
 
+    public static final String DELIMITER = " | ";
+
     public VPRow() {
         art = null;
         stunde = 0;
@@ -32,7 +34,14 @@ public class VPRow {
     @Nullable
     public String getContent() {
         if (art != null) {
-            return art + " " + String.valueOf(stunde) + " " + fach + " " + vertreter + " " + klasse + " " + raum + " " + statt + " " + bemerkung;
+            return art + DELIMITER +
+                    String.valueOf(stunde) +
+                    DELIMITER + fach +
+                    DELIMITER + vertreter +
+                    DELIMITER + klasse +
+                    DELIMITER + raum +
+                    DELIMITER + statt +
+                    DELIMITER + bemerkung;
         }
         return null;
     }

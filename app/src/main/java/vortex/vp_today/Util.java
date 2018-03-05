@@ -204,9 +204,9 @@ public final class Util {
     }
 
     public static String[] getDevEmails(Context ctx) {
-        return new String[] { ctx.getResources().getString(R.string.melvinemail),
-                              ctx.getResources().getString(R.string.simonemail)
-                              // TODO: Florian
+        return new String[] { ctx.getResources().getString(R.string.simonemail),
+                              ctx.getResources().getString(R.string.melvinemail),
+                              ctx.getResources().getString(R.string.florianemail)
         };
     }
 

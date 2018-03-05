@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         /* Das auf false setzen, damit der MainService aufhört. */
-        sp.edit().putBoolean("fetchHtmlPushes", false).commit();
+        //sp.edit().putBoolean("fetchHtmlPushes", false).commit();
 
         if (scrnReceive == null) {
             /* Den ScreenReceiver registrieren */
