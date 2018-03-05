@@ -398,6 +398,9 @@ public final class Util {
                     case "entfall":
                         r.setArt(VPKind.ENTFALL);
                         break;
+                    case "raumvertretung":
+                        r.setArt(VPKind.RAUMVERTRETUNG);
+                        break;
                     case "eigenv. arbeiten":
                         r.setArt(VPKind.EIGENVARBEITEN);
                         break;
