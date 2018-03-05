@@ -283,14 +283,9 @@ public class BackgroundMail {
         protected Boolean doInBackground(String... arg0) {
             try {
                 GmailSender sender = new GmailSender(username, password);
-                if (!attachments.isEmpty()) {
-                    for (int i = 0; i < attachments.size(); i++) {
-                        if (!attachments.get(i).isEmpty()) {
-                            sender.addAttachment(attachments.get(i));
-                        }
-                    }
-                }
+               
                 sender.sendMail(subject, body, username, mailto, type);
+
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;
