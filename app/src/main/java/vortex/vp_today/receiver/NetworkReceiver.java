@@ -1,8 +1,10 @@
-package vortex.vp_today;
+package vortex.vp_today.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+
+import vortex.vp_today.util.Util;
 
 /**
  * @author Simon Dräger

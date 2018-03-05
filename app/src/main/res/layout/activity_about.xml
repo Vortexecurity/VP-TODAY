@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="vortex.vp_today.Activity.AboutActivity">
+    tools:context="vortex.vp_today.activity.AboutActivity">
 
     <RelativeLayout
         android:id="@+id/relativeLayout4"

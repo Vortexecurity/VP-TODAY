@@ -1,4 +1,4 @@
-package vortex.vp_today.Activity;
+package vortex.vp_today.activity;
 
 import android.app.DatePickerDialog;
 import android.content.BroadcastReceiver;
@@ -37,8 +37,8 @@ import java.net.URLConnection;
 import java.util.Calendar;
 
 import vortex.vp_today.R;
-import vortex.vp_today.Receiver.ScreenReceiver;
-import vortex.vp_today.Util.Util;
+import vortex.vp_today.receiver.ScreenReceiver;
+import vortex.vp_today.util.Util;
 
 /**
  * @author Simon Dräger

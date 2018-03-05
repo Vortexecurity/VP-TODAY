@@ -1,4 +1,4 @@
-package vortex.vp_today;
+package vortex.vp_today.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +13,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.Toast;
+
+import vortex.vp_today.R;
+import vortex.vp_today.util.Util;
 
 /**
  * @author Simon Dräger

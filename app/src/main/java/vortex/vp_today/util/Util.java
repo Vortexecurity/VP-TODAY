@@ -1,4 +1,4 @@
-package vortex.vp_today;
+package vortex.vp_today.util;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.content.res.XmlResourceParser;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
@@ -29,9 +28,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import vortex.vp_today.DialogResult;
+import vortex.vp_today.DlgResult;
+import vortex.vp_today.R;
+import vortex.vp_today.logic.VPInfo;
+import vortex.vp_today.logic.VPKind;
+import vortex.vp_today.logic.VPRow;
 
 /**
  * @author Simon Dräger

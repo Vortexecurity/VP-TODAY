@@ -1,4 +1,4 @@
-package vortex.vp_today;
+package vortex.vp_today.activity;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,10 +20,10 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import vortex.vp_today.R;
+import vortex.vp_today.logic.SharedLogic;
+import vortex.vp_today.util.Tuple;
+import vortex.vp_today.util.Util;
 
 /**
  * @author Melvin Zähl

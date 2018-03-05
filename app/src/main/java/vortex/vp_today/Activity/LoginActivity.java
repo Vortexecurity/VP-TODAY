@@ -1,4 +1,4 @@
-package vortex.vp_today.Activity;
+package vortex.vp_today.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

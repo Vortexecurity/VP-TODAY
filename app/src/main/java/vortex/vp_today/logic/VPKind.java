@@ -1,4 +1,4 @@
-package vortex.vp_today;
+package vortex.vp_today.logic;
 
 /**
  * @author Simon Dräger
