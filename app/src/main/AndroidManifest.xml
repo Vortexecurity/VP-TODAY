@@ -48,7 +48,6 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-
                 <!-- Cold boot -->
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <!-- Reboot -->
