@@ -1,4 +1,4 @@
-package vortex.vp_today;
+package vortex.vp_today.mail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -20,8 +20,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-
-import vortex.vp_today.JSSEProvider;
 
 /**
  * @author Simon Dräger

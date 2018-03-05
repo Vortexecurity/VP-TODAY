@@ -53,11 +53,12 @@ public class RateActivity extends AppCompatActivity {
                     });
                 } else {
                     if (Util.isInternetConnected(getApplicationContext())) {
-                        Intent in = Util.sendEmail(
+                        // TODO: fix
+                        /*Intent in = Util.sendEmail(
                                 new String[] { getString(R.string.simonemail) },
                                 getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getString("clientid", "0x0"),
-                                "Sendete ein Rating von " + rateBar.getNumStars() + " Sternen.");
-                        RateActivity.this.startActivity(in);
+                                "Sendete ein Rating von " + rateBar.getNumStars() + " Sternen.");*/
+                        //RateActivity.this.startActivity(in);
                         new Handler().post(new Runnable() {
                             @Override
                             public void run() {
