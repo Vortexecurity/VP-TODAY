@@ -28,6 +28,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -384,11 +385,11 @@ public final class Util {
     }
 
     @Nullable
-    public static String[] ArrListToArr(@Nullable ArrayList<String> arr) {
+    public static String[] ArrListToArr(@Nullable List<String> arr) {
         String[] out = new String[arr.size()];
 
         for (int i = 0; i < arr.size(); i++)
-
+            out[i] = arr.get(i);
 
         return out;
     }
@@ -402,7 +403,7 @@ public final class Util {
 
         VPInfo inf = new VPInfo();
 
-        Log.i("getCurrentInfo/elements", elements.eachText().);
+        //Log.i("getCurrentInfo/elements", ArrListToArr(elements.eachText()));
 
         for (Element e : elements) {
             if (e != null && !(inf.getRows().contains(e.text()))) {
