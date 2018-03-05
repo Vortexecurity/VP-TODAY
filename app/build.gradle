@@ -37,4 +37,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation files('libs/jsoup-1.11.2.jar')
+    implementation files('libs/gson-2.8.2.jar')
 }

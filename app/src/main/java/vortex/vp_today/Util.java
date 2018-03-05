@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.net.ConnectivityManager;
@@ -14,6 +15,8 @@ import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
+import com.google.gson.Gson;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -26,6 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -47,6 +51,22 @@ public final class Util {
 
     public static final int getNotificationID() {
         return atomInt.incrementAndGet();
+    }
+
+    public static boolean putGsonObject(@NonNull Context ctx, @NonNull String tag, @Nullable Object obj) {
+        SharedPreferences.Editor prefsEditor = ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(obj);
+        prefsEditor.putString(tag, json);
+        return prefsEditor.commit();
+    }
+
+    @Nullable
+    public static Object getGsonObject(@NonNull Context ctx, @NonNull String tag) {
+        SharedPreferences prefs = ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = prefs.getString(tag, "");
+        return gson.fromJson(json, Object.class);
     }
 
     public static int ShowYesNoDialog(@NonNull Activity actv, @NonNull String text) {
@@ -86,15 +106,32 @@ public final class Util {
     /**
      *
      * @param actv
-     * @param preselectedItems Look the positions up in strings.xml/KurseQ1 etc.
+     * @param preselectedItems Look the positions up in strings.xml/KurseQ1 etc. (complete list)
+     * @throws AssertionError wird ausgelöst, wenn preselectedItems != null und Länge != KurseQ1.length
      * @return The selected items
      */
     @Nullable
-    public static String[] ShowKurseDialogQ1(@NonNull Activity actv, @Nullable boolean[] preselectedItems) {
+    public static Tuple<String[], Boolean[]> ShowKurseDialogQ1(@NonNull Activity actv, @Nullable boolean[] preselectedItems) throws AssertionError {
         final Resources res = actv.getApplicationContext().getResources();
-        final ArrayList<String> selectedItems = new ArrayList<>();
+        final int q1Len = res.getStringArray(R.array.KurseQ1).length;
+        final ArrayList<String> selectedItems = new ArrayList<>(q1Len);
+        final ArrayList<Boolean> boolSelectedItems = new ArrayList<>(q1Len);
         final String[] items = res.getStringArray(R.array.KurseQ1);
         final DlgResult result = new DlgResult();
+
+        /* Wenn items ausgewählt wurden */
+        if (preselectedItems != null) {
+            assert preselectedItems.length == q1Len : "preselectedItems must be the length of KurseQ1!";
+            for (int i = 0; i < preselectedItems.length; i++) {
+                selectedItems.add(items[i]);
+                boolSelectedItems.add(preselectedItems[i]);
+            }
+        } else {
+            /* Sonst alles auf false setzen */
+            for (int i = 0; i < q1Len; i++) {
+                boolSelectedItems.set(i, false);
+            }
+        }
 
         AlertDialog dialog = new AlertDialog.Builder(actv)
                 .setTitle("Kurse auswählen...")
@@ -102,7 +139,7 @@ public final class Util {
                     @Override
                     public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
                         if (isChecked) {
-                            selectedItems.add(items[indexSelected]);
+                            selectedItems.set(indexSelected, items[indexSelected]);
                         } else {
                             selectedItems.remove(items[indexSelected]);
                         }
@@ -122,8 +159,21 @@ public final class Util {
         dialog.show();
 
         if (result.getResult() == DialogResult.OK)
-            return selectedItems.toArray(new String[0]);
+            return new Tuple<>(selectedItems.toArray(new String[0]), boolSelectedItems.toArray(new Boolean[0]));
         return null;
+    }
+
+    @Nullable
+    public static boolean[] BoolToTypeBool(@Nullable Boolean[] input) {
+        if (input == null)
+            return null;
+
+        boolean[] output = new boolean[input.length];
+
+        for (int i = 0; i < input.length; i++)
+            output[i] = input[i].booleanValue();
+
+        return output;
     }
 
     @Nullable

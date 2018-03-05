@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,7 +28,7 @@ import java.util.Set;
 /**
  * @author Melvin Zähl
  * @author Simon Dräger
- * @version 3.3.18
+ * @version 5.3.18
  */
 
 public class SettingsActivity extends AppCompatActivity {
@@ -43,8 +44,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Switch switchVibrate;
     private Switch switchPushes;
 
-    private String[] currentKurseChanges = null;
-    private boolean[] currentKurseSelectChanges = null;
+    private Tuple<String[], Boolean[]> currentKurseChanges = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,15 +119,14 @@ public class SettingsActivity extends AppCompatActivity {
         btnKurse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences prefs = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
                 boolean[] selects = null;
 
                 // FIXME: crasht beim laden
 
-                Set<String> strSelects = prefs.getStringSet(getString(R.string.settingkurse), null);
+                Tuple<String[], Boolean[]> tupSelects = (Tuple<String[], Boolean[]>) Util.getGsonObject(getApplicationContext(), getString(R.string.settingkurse));
 
-                if (strSelects != null)
-                     selects = Util.StrArrToBoolArr(strSelects.toArray(new String[0]));
+                if (tupSelects != null)
+                     selects = Util.BoolToTypeBool(tupSelects.y);
 
                 currentKurseChanges = Util.ShowKurseDialogQ1(SettingsActivity.this, selects);
                 hasChanged();
@@ -149,13 +148,13 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        ArrayAdapter<String> stufenAdapter = new ArrayAdapter<>(
+        ArrayAdapter<String> stufenAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_spinner_item,
                 SharedLogic.getStufen()
         );
 
-        ArrayAdapter<String> klassenAdapter = new ArrayAdapter<>(
+        ArrayAdapter<String> klassenAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_spinner_item,
                 SharedLogic.getKlassen()
@@ -193,8 +192,9 @@ public class SettingsActivity extends AppCompatActivity {
         e.putBoolean(getString(R.string.settingpushes), switchPushes.isChecked());
         e.putBoolean(getString(R.string.settingvibrateLS), switchVibrate.isChecked());
 
-        if (currentKurseChanges != null)
-            e.putStringSet(getString(R.string.settingkurse), new HashSet<>(Arrays.asList(currentKurseChanges)));
+        if (currentKurseChanges != null) {
+            Util.putGsonObject(getApplicationContext(), getString(R.string.settingkurse), currentKurseChanges);
+        }
 
         if (e.commit())
             Toast.makeText(getApplicationContext(), "Einstellungen gesichert!", Toast.LENGTH_SHORT).show();
