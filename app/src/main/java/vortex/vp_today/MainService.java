@@ -68,6 +68,8 @@ public class MainService extends IntentService {
                         Util.makePushNotification(getApplicationContext(), "Eigenv. Arbeiten:", str);
                     else if (low.contains("vertretung"))
                         Util.makePushNotification(getApplicationContext(), "Vertretung:", str);
+                    else if (low.contains("raumvertretung"))
+                        Util.makePushNotification(getApplicationContext(), "Raumvertretung:", str);
                     else
                         Util.makePushNotification(getApplicationContext(), "Unbekannt:", str);
 

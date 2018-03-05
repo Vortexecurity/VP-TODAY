@@ -7,6 +7,7 @@ import android.content.Intent;
 /**
  *
  * Empfängt Bildschirm an/aus-Ereignisse
+ * @todo: vorher wird schulstart angegeben -> 45 minuten pull und feste uhrzeiten zb 20 Uhr
  *
  * @author Simon Dräger
  * @version 4.3.18
