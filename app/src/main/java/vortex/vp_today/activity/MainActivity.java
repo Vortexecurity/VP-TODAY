@@ -187,18 +187,19 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         try {
-                            //update();
-                            t.start();
+                            update();
+                            //t.start();
 
-                            Log.i("THREAD", "Waiting for t to finish.");
+                            //Log.i("THREAD", "Waiting for t to finish.");
 
-                            t.join();
+                            //t.join();
 
-                            Log.i("THREAD", "t done.");
+                            /*Log.i("THREAD", "t done.");
 
                             Document doc = Jsoup.parse(tmp);
                             String[] content = Util.getCurrentInfo(doc).getContent();
                             txt.setText(TextUtils.join("\n\n", content));
+                            */
 
                             swipe.setRefreshing(false);
                         } catch (Exception ex) {
@@ -211,8 +212,8 @@ public class MainActivity extends AppCompatActivity {
         });
         /**/
 
-        // Funktioniert
-        //txt.setText("test");
+        Calendar c = Calendar.getInstance();
+        date = Util.makeDate(c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.MONTH), c.get(Calendar.YEAR));
     }
 
     @Override
@@ -249,7 +250,12 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.e("STUFE", Util.getSettingStufe(this));
 
-                String[] content = Util.filterHTML(doc, Util.getSettingStufe(getApplicationContext()), Util.getSettingKlasse(getApplicationContext()));
+                String[] content;
+
+                if (!Util.getSettingKlasse(getApplicationContext()).equals(""))
+                    content = Util.filterHTML(doc, Util.getSettingStufe(getApplicationContext()), Util.getSettingKlasse(getApplicationContext()));
+                else
+                    content = Util.filterHTML(doc, Util.getSettingStufe(getApplicationContext()), "");
 
                 txt.setText(TextUtils.join("\n\n", content));
 
