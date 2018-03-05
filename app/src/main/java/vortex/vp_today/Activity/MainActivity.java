@@ -1,4 +1,4 @@
-package vortex.vp_today;
+package vortex.vp_today.Activity;
 
 import android.app.DatePickerDialog;
 import android.content.BroadcastReceiver;
@@ -35,6 +35,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Calendar;
+
+import vortex.vp_today.R;
+import vortex.vp_today.Receiver.ScreenReceiver;
+import vortex.vp_today.Util.Util;
 
 /**
  * @author Simon Dräger
