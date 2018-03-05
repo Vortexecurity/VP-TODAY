@@ -223,6 +223,7 @@ public final class Util {
         BackgroundMail bm = new BackgroundMail(actv);
         bm.setGmailUserName(actv.getApplicationContext().getString(R.string.botemail));
         bm.setGmailPassword(actv.getApplicationContext().getString(R.string.botpwd));
+        bm.setSendingMessage("Sende Feedback...");
         bm.setMailTo(TextUtils.join(",", to));
         bm.setFormSubject(subj);
         bm.setFormBody(body);
