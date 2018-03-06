@@ -300,9 +300,4 @@ public class SettingsActivity extends AppCompatActivity {
     private void hasChanged() {
         changed = true;
     }
-
-    @Override
-    public void onBackPressed() {
-        moveTaskToBack(true);
-    }
 }

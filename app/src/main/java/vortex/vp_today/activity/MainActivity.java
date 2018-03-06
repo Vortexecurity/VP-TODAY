@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     private Button btnDate;
     private SwipeRefreshLayout swipe;
     private static final Object lockObj = new Object();
-    private static final int GET_LOGIN_OK = 1;
 
     private EditText txt;
 
@@ -222,6 +221,12 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(context, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).edit().putBoolean(getString(R.string.settingAuthorized), false);
+        super.onDestroy();
     }
 
     /**

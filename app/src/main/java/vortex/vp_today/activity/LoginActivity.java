@@ -94,11 +94,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        /* Verhindert, dass MainActivity aufgerufen wird. */
-    }
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
@@ -204,7 +199,6 @@ public class LoginActivity extends AppCompatActivity {
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
         private final String mUsrname;
         private final String mPassword;
-        private boolean authorize = false;
 
         UserLoginTask(String usrname, String password) {
             mUsrname = usrname;
@@ -233,8 +227,6 @@ public class LoginActivity extends AppCompatActivity {
                     e.putString(getString(R.string.settingPwd), mPasswordView.getText().toString());
 
                     e.apply();
-
-                    authorize = true;
 
                     MainActivity.show(getApplicationContext());
 
