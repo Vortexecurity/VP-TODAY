@@ -16,6 +16,7 @@ import android.widget.RatingBar;
 import android.widget.Toast;
 
 import vortex.vp_today.R;
+import vortex.vp_today.mail.BackgroundMail;
 import vortex.vp_today.util.Util;
 
 /**
@@ -66,14 +67,25 @@ public class RateActivity extends AppCompatActivity {
 
                         cid = prefs.getString("clientid", "0x0");
 
-                        Util.sendBotEmail(RateActivity.this, Util.getDevEmails(getApplicationContext()), "Client " + cid + " Rating: " + rateBar.getRating() + " Sterne",
-                                "Gesendete Mitteilung: \n\n" + txtSuggest.getText().toString());
-                        new Handler().post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplicationContext(), "Feedback erfolgreich gesendet!", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        Util.sendBotEmail(
+                                RateActivity.this,
+                                Util.getDevEmails(getApplicationContext()),
+                                "Client " + cid + " Rating: " + rateBar.getRating() + " Sterne",
+                                "Gesendete Mitteilung: \n\n" + txtSuggest.getText().toString(),
+                                "Sende Feedback...",
+                                new BackgroundMail.OnSuccessCallback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        successCallback();
+                                    }
+                                },
+                                new BackgroundMail.OnFailCallback() {
+                                    @Override
+                                    public void onFail() {
+                                        failCallback();
+                                    }
+                                }
+                        );
                     } else {
                         new Handler().post(new Runnable() {
                             @Override
@@ -96,6 +108,14 @@ public class RateActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private void successCallback() {
+        Toast.makeText(getApplicationContext(), "Feedback erfolgreich gesendet!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void failCallback() {
+        Toast.makeText(getApplicationContext(), "Es ist ein Fehler beim Senden aufgetreten.", Toast.LENGTH_SHORT).show();
     }
 
     public static void show(@NonNull Context context){

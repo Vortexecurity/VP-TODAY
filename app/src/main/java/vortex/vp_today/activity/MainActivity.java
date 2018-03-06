@@ -1,14 +1,13 @@
 package vortex.vp_today.activity;
 
 import android.app.DatePickerDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -57,22 +56,20 @@ public class MainActivity extends AppCompatActivity {
     private Button btnDate;
     private SwipeRefreshLayout swipe;
     private static final Object lockObj = new Object();
-
     private static final int GET_LOGIN_OK = 1;
 
     private EditText txt;
-
-    private Intent loginIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         SharedPreferences sp = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
 
-        if (!sp.getBoolean(getString(R.string.settingAuthorized), false) || !sp.getBoolean("rememberLogin", false)) {
+        /*if (!sp.getBoolean(getString(R.string.settingAuthorized), false)) {
+            Log.i("MainActivity", "Got false from settingAuthorized");
             loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
             loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivityForResult(loginIntent, GET_LOGIN_OK);
-        }
+        }*/
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -221,6 +218,12 @@ public class MainActivity extends AppCompatActivity {
         date = Util.makeDate(c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.MONTH), c.get(Calendar.YEAR));
     }
 
+    public static void show(@NonNull Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
     /**
      * Updates the Vertretungs-ListView
      * @author Melvin Zähl
@@ -290,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
+    /*@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == GET_LOGIN_OK) {
             if (resultCode == RESULT_OK) {
@@ -299,12 +302,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menuheader, menu);
-
         return true;
     }
 

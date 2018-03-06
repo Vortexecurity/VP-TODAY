@@ -265,7 +265,7 @@ public class SettingsActivity extends AppCompatActivity {
             case android.R.id.home:
                 try {
                     synchronized (lockObj) {
-                        Runnable r = new Runnable() {
+                        /*Runnable r = new Runnable() {
                             @Override
                             public void run() {
                                 if (changed)
@@ -273,7 +273,7 @@ public class SettingsActivity extends AppCompatActivity {
                                 SettingsActivity.this._continue = true;
                             }
                         };
-                        new Handler().post(r);
+                        new Handler().post(r);*/
 
                         // TODO: warten bis r fertig ist
                         //r.wait();
@@ -299,5 +299,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void hasChanged() {
         changed = true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 }

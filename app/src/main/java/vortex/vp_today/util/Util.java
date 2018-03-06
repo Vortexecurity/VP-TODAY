@@ -217,14 +217,26 @@ public final class Util {
         };
     }
 
-    public static void sendBotEmail(Activity actv, String[] to, String subj, String body) {
+    public static void sendBotEmail(@NonNull Activity actv,
+                                    @NonNull String[] to,
+                                    @NonNull String subj,
+                                    @NonNull String body,
+                                    @Nullable String sendingMessage,
+                                    @Nullable BackgroundMail.OnSuccessCallback succ,
+                                    @Nullable BackgroundMail.OnFailCallback fail) {
         BackgroundMail bm = new BackgroundMail(actv);
         bm.setGmailUserName(actv.getApplicationContext().getString(R.string.botemail));
         bm.setGmailPassword(actv.getApplicationContext().getString(R.string.botpwd));
-        bm.setSendingMessage("Sende Feedback...");
+        bm.setSendingMessage(sendingMessage);
         bm.setMailTo(TextUtils.join(",", to));
         bm.setFormSubject(subj);
         bm.setFormBody(body);
+
+        if (succ != null)
+            bm.setOnSuccessCallback(succ);
+        if (fail != null)
+            bm.setOnFailCallback(fail);
+
         bm.send();
     }
 

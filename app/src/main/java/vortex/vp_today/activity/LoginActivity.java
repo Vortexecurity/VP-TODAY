@@ -217,8 +217,6 @@ public class LoginActivity extends AppCompatActivity {
 
             // TODO: hier Server abfragen
 
-            Intent _result = new Intent();
-
             if (mUsrname.equals(SERVER_CREDENTIALS.x)) {
                 if (mPassword.equals(SERVER_CREDENTIALS.y)) {
                     SharedPreferences.Editor e = prefs.edit();
@@ -238,17 +236,13 @@ public class LoginActivity extends AppCompatActivity {
 
                     authorize = true;
 
-                    _result.putExtra("auth", authorize);
-                    setResult(Activity.RESULT_OK, _result);
+                    MainActivity.show(getApplicationContext());
 
                     finish();
 
                     return true;
                 }
             }
-
-            _result.putExtra("auth", authorize);
-            setResult(Activity.RESULT_OK, _result);
 
             return false;
         }

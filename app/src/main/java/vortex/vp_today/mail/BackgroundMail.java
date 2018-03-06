@@ -283,9 +283,7 @@ public class BackgroundMail {
         protected Boolean doInBackground(String... arg0) {
             try {
                 GmailSender sender = new GmailSender(username, password);
-               
                 sender.sendMail(subject, body, username, mailto, type);
-
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;

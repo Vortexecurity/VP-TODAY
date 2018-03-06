@@ -17,11 +17,11 @@
         <activity
             android:name=".activity.MainActivity"
             android:screenOrientation="portrait">
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <activity
             android:name=".activity.SettingsActivity"
@@ -35,30 +35,10 @@
                 android:value="vortex.vp_today.activity.MainActivity" />
         </activity>
 
-        <receiver
-            android:name=".receiver.NetworkReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name=".receiver.BootReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <!-- Cold boot -->
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <!-- Reboot -->
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-            </intent-filter>
-        </receiver>
-
-        <service
+        <!--<service
             android:name=".MainService"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false" />-->
 
         <activity
             android:name=".activity.RateActivity"
@@ -81,8 +61,12 @@
         <activity
             android:name=".activity.LoginActivity"
             android:label="@string/action_sign_in"
-            android:screenOrientation="portrait"
-            android:noHistory="true" >
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!--android:noHistory="true" >-->
             <!--<meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MainActivity" />-->
