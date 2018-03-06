@@ -87,15 +87,13 @@ public class MainActivity extends AppCompatActivity {
         /* Das auf false setzen, damit der MainService aufhört. */
         //sp.edit().putBoolean("fetchHtmlPushes", false).commit();
 
-        if (scrnReceive == null) {
-            /* Den ScreenReceiver registrieren */
+        /*if (scrnReceive == null) {
             IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
             filter.addAction(Intent.ACTION_SCREEN_OFF);
 
             scrnReceive = new ScreenReceiver();
             registerReceiver(scrnReceive, filter);
-            /**/
-        }
+        }*/
 
         /* Thread region */
         t = new Thread(new Runnable() {
@@ -214,14 +212,6 @@ public class MainActivity extends AppCompatActivity {
 
         Calendar c = Calendar.getInstance();
         date = Util.makeDate(c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.MONTH), c.get(Calendar.YEAR));
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        if (scrnReceive != null)
-            unregisterReceiver(scrnReceive);
     }
 
     /**

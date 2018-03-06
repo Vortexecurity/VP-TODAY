@@ -98,16 +98,11 @@
 
     <!-- Strings related to login -->
     <string name="prompt_usr">Benutzername</string>
-    <string name="prompt_password">Password (optional)</string>
+    <string name="prompt_password">Passwort</string>
     <string name="action_sign_in">Anmelden</string>
     <string name="action_sign_in_short">Anmelden</string>
-    <string name="error_invalid_usr">This email address is invalid</string>
-    <string name="error_invalid_pwd">This password is too short</string>
-    <string name="error_incorrect_pwd">Inkorrektes Passwort.</string>
+    <string name="error_incorrect_creds">Inkorrekter Benutzername / Passwort.</string>
     <string name="error_field_required">Dieses Feld ist ein Pflichtfeld.</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
 </resources>

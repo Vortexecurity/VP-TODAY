@@ -63,9 +63,10 @@ public class GmailSender extends javax.mail.Authenticator {
         MimeMessage message = new MimeMessage(session);
         DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), type));
         message.setSender(new InternetAddress(sender));
-        message.setSubject("[VP-TODAY]>> " + subject);
+        message.setSubject(subject);
 
-        message.setText("VP-Today wurde bewertet: " + body);
+        message.setText(body);
+        
         if (recipients.indexOf(',') > 0)
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipients));
         else

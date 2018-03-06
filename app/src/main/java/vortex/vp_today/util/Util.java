@@ -6,7 +6,6 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
@@ -31,10 +30,9 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import vortex.vp_today.DialogResult;
-import vortex.vp_today.DlgResult;
 import vortex.vp_today.R;
 import vortex.vp_today.logic.VPInfo;
 import vortex.vp_today.logic.VPKind;
@@ -44,7 +42,7 @@ import vortex.vp_today.mail.BackgroundMail;
 /**
  * @author Simon Dräger
  * @author Florian Koll
- * @version 5.3.18
+ * @version 6.3.18
  */
 
 public final class Util {
@@ -241,7 +239,7 @@ public final class Util {
     }
 
     public static String generateClientID() {
-        return "0x" + genRandString(16);
+        return UUID.randomUUID().toString();
     }
 
     public static boolean anyMatch(String str, String[] items) {

@@ -2,6 +2,7 @@ package vortex.vp_today.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +20,8 @@ import vortex.vp_today.util.Util;
 
 /**
  * @author Simon Dräger
- * @version 3.3.18
+ * @author Melvin Zähl
+ * @version 6.3.18
  */
 
 public class RateActivity extends AppCompatActivity {
@@ -27,11 +29,14 @@ public class RateActivity extends AppCompatActivity {
     private Button btnSend;
     private EditText txtSuggest;
     private RatingBar rateBar;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rate);
+
+        prefs = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
 
         progBar = findViewById(R.id.progressBar);
         btnSend = findViewById(R.id.btnSend);
@@ -53,8 +58,16 @@ public class RateActivity extends AppCompatActivity {
                     });
                 } else {
                     if (Util.isInternetConnected(getApplicationContext())) {
-                        Util.sendBotEmail(RateActivity.this, Util.getDevEmails(getApplicationContext()), "Rating " + rateBar.getRating() + " Sterne",
-                                txtSuggest.getText().toString());
+                        String cid = prefs.getString("clientid", "0x0");
+
+                        if (cid.equals("0x0")) {
+                            prefs.edit().putString("clientid", Util.generateClientID().toString()).commit();
+                        }
+
+                        cid = prefs.getString("clientid", "0x0");
+
+                        Util.sendBotEmail(RateActivity.this, Util.getDevEmails(getApplicationContext()), "Client " + cid + " Rating: " + rateBar.getRating() + " Sterne",
+                                "Gesendete Mitteilung: \n\n" + txtSuggest.getText().toString());
                         new Handler().post(new Runnable() {
                             @Override
                             public void run() {
