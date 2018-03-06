@@ -3,11 +3,8 @@ package vortex.vp_today.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
@@ -28,7 +25,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -47,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     private AutoCompleteTextView mUsrView;
     private EditText mPasswordView;
     private CheckBox mRememberLogin;
+    private Button mSignInButton;
     private View mProgressView;
     private View mLoginFormView;
 
@@ -59,12 +56,15 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mUsrView = findViewById(R.id.usr);
-        mRememberLogin = findViewById(R.id.saveLogin);
-
         prefs = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
 
+        mUsrView = findViewById(R.id.usr);
+        mRememberLogin = findViewById(R.id.saveLogin);
         mPasswordView = findViewById(R.id.password);
+        mLoginFormView = findViewById(R.id.login_form);
+        mProgressView = findViewById(R.id.login_progress);
+        mSignInButton = findViewById(R.id.usr_sign_in_button);
+
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -76,7 +76,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        Button mSignInButton = findViewById(R.id.usr_sign_in_button);
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,13 +83,10 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
-
-        if (prefs.getBoolean(getString(R.string.saveLogin), false)) {
+        if (prefs.getBoolean(getString(R.string.settingSaveLogin), false)) {
             mUsrView.setText(prefs.getString(getString(R.string.settingUsrname), ""));
             mPasswordView.setText(prefs.getString(getString(R.string.settingPwd), ""));
-            mRememberLogin.setChecked(prefs.getBoolean(getString(R.string.settingSaveLogin), false));
+            mRememberLogin.setChecked(true);
         }
     }
 
@@ -215,12 +211,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (mPassword.equals(SERVER_CREDENTIALS.y)) {
                     SharedPreferences.Editor e = prefs.edit();
 
-                    /* usrAuthorized zeigt an, ob Zugriff besteht. */
-                    e.putBoolean(getString(R.string.settingAuthorized), true);
-
-                    if (mRememberLogin.isChecked()) {
-                        e.putBoolean(getString(R.string.settingSaveLogin), mRememberLogin.isChecked());
-                    }
+                    e.putBoolean(getString(R.string.settingSaveLogin), mRememberLogin.isChecked());
 
                     // TODO: VERSCHLÜSSELN !!!
                     e.putString(getString(R.string.settingUsrname), mUsrView.getText().toString());
