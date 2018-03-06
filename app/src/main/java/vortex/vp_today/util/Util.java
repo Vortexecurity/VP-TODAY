@@ -60,12 +60,12 @@ public final class Util {
         return atomInt.incrementAndGet();
     }
 
-    public static boolean putGsonObject(@NonNull Context ctx, @NonNull String tag, @Nullable Object obj) {
+    public static void putGsonObject(@NonNull Context ctx, @NonNull String tag, @Nullable Object obj) {
         SharedPreferences.Editor prefsEditor = ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).edit();
         Gson gson = new Gson();
         String json = gson.toJson(obj);
         prefsEditor.putString(tag, json);
-        return prefsEditor.commit();
+        prefsEditor.apply();
     }
 
     @Nullable
@@ -424,6 +424,8 @@ public final class Util {
                 VPRow r = new VPRow();
                 Elements subs = e.getAllElements();
 
+                Log.i("getCurrentInfo", "Element: " + e.text());
+
                 switch (subs.select("data-type").get(0).text().toLowerCase()) {
                     case "vertretung":
                         r.setArt(VPKind.VERTRETUNG);
@@ -439,13 +441,29 @@ public final class Util {
                         break;
                 }
 
-                r.setStunde(Integer.parseInt(subs.select("data-hour").get(0).text()));
+                String art = r.getArt().getName();
+                int stunde = Integer.parseInt(subs.select("data-hour").get(0).text());
+                String fach = subs.select("data-subject").get(0).text().replaceAll("\\s+", " ");
+                String klasse = subs.select("data-form").get(0).text().replace("", "");
+                String raum = subs.select("data-room").get(0).text();
+                String statt = subs.select("data-instead").get(0).text();
+                String bemerkung = subs.select("data-notice").get(0).text();
+
+                Log.i("getCurrentInfo", "art: " + art);
+                Log.i("getCurrentInfo", "stunde: " + stunde);
+                Log.i("getCurrentInfo", "fach: " + fach);
+                Log.i("getCurrentInfo", "klasse: " + klasse);
+                Log.i("getCurrentInfo", "raum: " + raum);
+                Log.i("getCurrentInfo", "statt: " + statt);
+                Log.i("getCurrentInfo", "bemerkung: " + bemerkung);
+
+                r.setStunde(stunde);
                 /* Unnötige Leerzeichen wegmachen */
-                r.setFach(subs.select("data-subject").get(0).text().replaceAll("\\s+", " "));
-                r.setKlasse(subs.select("data-form").get(0).text().replace("", ""));
-                r.setRaum(subs.select("data-room").get(0).text());
-                r.setStatt(subs.select("data-instead").get(0).text());
-                r.setBemerkung(subs.select("data-notice").get(0).text());
+                r.setFach(fach);
+                r.setKlasse(klasse);
+                r.setRaum(raum);
+                r.setStatt(statt);
+                r.setBemerkung(bemerkung);
 
                 inf.addRow(r);
             }

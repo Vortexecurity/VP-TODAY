@@ -23,7 +23,7 @@ import javax.crypto.spec.SecretKeySpec;
  */
 
 public final class Crypt {
-    /* RSA */
+    // region RSA
     public static KeyPair BuildRSAKeyPair(final int keyLength) throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(keyLength);
@@ -44,9 +44,9 @@ public final class Crypt {
 
         return cipher.doFinal(encrypted);
     }
-    /**/
+    // endregion
 
-    /* AES */
+    // region AES
     @Nullable
     public static String EncryptAES(@NonNull String value, @NonNull String key, @NonNull String initVector) {
         try {
@@ -118,5 +118,5 @@ public final class Crypt {
 
         return null;
     }
-    /**/
+    // endregion
 }

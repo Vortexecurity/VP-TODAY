@@ -89,7 +89,7 @@ public class MainService extends IntentService {
 
                     /* Die Änderungen speichern */
                     getApplicationContext().getSharedPreferences("vortex.vp_today.app",
-                            Context.MODE_PRIVATE).edit().putStringSet("knownInfos", known).commit();
+                            Context.MODE_PRIVATE).edit().putStringSet("knownInfos", known).apply();
                 }
 
                 /* Jede Sekunde updaten */

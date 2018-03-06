@@ -62,7 +62,7 @@ public class RateActivity extends AppCompatActivity {
                         String cid = prefs.getString("clientid", "0x0");
 
                         if (cid.equals("0x0")) {
-                            prefs.edit().putString("clientid", Util.generateClientID().toString()).commit();
+                            prefs.edit().putString("clientid", Util.generateClientID().toString()).apply();
                         }
 
                         cid = prefs.getString("clientid", "0x0");

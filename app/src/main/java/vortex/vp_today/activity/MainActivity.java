@@ -36,6 +36,7 @@ import java.net.URLConnection;
 import java.util.Calendar;
 
 import vortex.vp_today.R;
+import vortex.vp_today.net.RetrieveVPTask;
 import vortex.vp_today.util.Util;
 
 /**
@@ -52,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView msgOTD;
     private TextView tvVers;
     private volatile String tmp = "";
-    private Thread t;
     private Button btnDate;
     private SwipeRefreshLayout swipe;
     private static final Object lockObj = new Object();
@@ -62,13 +62,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         SharedPreferences sp = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
-
-        /*if (!sp.getBoolean(getString(R.string.settingAuthorized), false)) {
-            Log.i("MainActivity", "Got false from settingAuthorized");
-            loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
-            loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivityForResult(loginIntent, GET_LOGIN_OK);
-        }*/
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -84,66 +77,8 @@ public class MainActivity extends AppCompatActivity {
 
         /* Falls dies der erste Start sein sollte eine Client ID erstellen und speichern. */
         if (sp.getString("clientid", "0x0").equals("0x0")) {
-            sp.edit().putString("clientid", Util.generateClientID()).commit();
+            sp.edit().putString("clientid", Util.generateClientID()).apply();
         }
-
-        /* Das auf false setzen, damit der MainService aufhört. */
-        //sp.edit().putBoolean("fetchHtmlPushes", false).commit();
-
-        /*if (scrnReceive == null) {
-            IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-            filter.addAction(Intent.ACTION_SCREEN_OFF);
-
-            scrnReceive = new ScreenReceiver();
-            registerReceiver(scrnReceive, filter);
-        }*/
-
-        /* Thread region */
-        t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (date.equals("")) {
-                        MainActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplicationContext(), "Ein Fehler ist während des Aktualisiervorgangs aufgetreten!", Toast.LENGTH_LONG);
-                            }
-                        });
-                        return;
-                    }
-
-                    String urlS = "https://vp.gymnasium-odenthal.de/god/" + date;
-                    String authStringEnc = "dnA6Z29kOTIwMQ==";
-
-                    Log.e("LOG", urlS);
-
-                    URL url = new URL(urlS);
-                    URLConnection urlConnection = url.openConnection();
-                    urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
-
-                    InputStream is = urlConnection.getInputStream();
-                    InputStreamReader isr = new InputStreamReader(is);
-
-                    int numCharsRead;
-                    char[] charArray = new char[1024];
-                    StringBuffer sb = new StringBuffer();
-
-                    while ((numCharsRead = isr.read(charArray)) > 0) {
-                        sb.append(charArray, 0, numCharsRead);
-                    }
-
-                    String result = sb.toString();
-
-                    tmp = result;
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        /**/
 
         /* Listener region */
         btnDate.setOnClickListener(new View.OnClickListener() {
@@ -157,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                         MainActivity.this,
                         android.R.style.Theme_Holo_Light_Dialog_MinWidth,
                         mDateSetListener,
-                        year,month,day);
+                        year, month, day);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
             }
@@ -188,15 +123,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         try {
-                            update();
-                            //t.start();
+                            Calendar c = Calendar.getInstance();
+                            txt.setText(new RetrieveVPTask().execute(getApplicationContext(), Util.makeDate(c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.MONTH), c.get(Calendar.YEAR)),
+                                    Util.getSettingStufe(getApplicationContext()),
+                                    Util.getSettingKlasse(getApplicationContext())).get());
 
-                            //Log.i("THREAD", "Waiting for t to finish.");
-
-                            //t.join();
-
-                            /*Log.i("THREAD", "t done.");
-
+                            /*
                             Document doc = Jsoup.parse(tmp);
                             String[] content = Util.getCurrentInfo(doc).getContent();
                             txt.setText(TextUtils.join("\n\n", content));
@@ -223,14 +155,51 @@ public class MainActivity extends AppCompatActivity {
         context.startActivity(intent);
     }
 
-    @Override
-    protected void onDestroy() {
-        getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).edit().putBoolean(getString(R.string.settingAuthorized), false);
-        super.onDestroy();
+    private synchronized void getVPHTML() {
+        try {
+            if (date.equals("")) {
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "Ein Fehler ist während des Aktualisiervorgangs aufgetreten!", Toast.LENGTH_LONG);
+                    }
+                });
+                return;
+            }
+
+            String urlS = "https://vp.gymnasium-odenthal.de/god/" + date;
+            String authStringEnc = "dnA6Z29kOTIwMQ==";
+
+            Log.e("LOG", "URL = " + urlS);
+
+            URL url = new URL(urlS);
+            URLConnection urlConnection = url.openConnection();
+            urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
+
+            InputStream is = urlConnection.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+
+            int numCharsRead;
+            char[] charArray = new char[1024];
+            StringBuffer sb = new StringBuffer();
+
+            while ((numCharsRead = isr.read(charArray)) > 0) {
+                sb.append(charArray, 0, numCharsRead);
+            }
+
+            String result = sb.toString();
+
+            tmp = result;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * Updates the Vertretungs-ListView
+     *
      * @author Melvin Zähl
      * @author Simon Dräger
      */
@@ -238,76 +207,59 @@ public class MainActivity extends AppCompatActivity {
         try {
             /* Auf einen Thread synchronisieren, sonst gibst Fehler */
             //synchronized (lockObj) {
-                try {
-                    if (!t.isAlive()) {
-                        t.start();
-                        Toast.makeText(getApplicationContext(), "Aktualisiere...", Toast.LENGTH_SHORT).show();
+
+            Toast.makeText(getApplicationContext(), "Aktualisiere...", Toast.LENGTH_SHORT).show();
+
+            getVPHTML();
+
+            Toast.makeText(getApplicationContext(), "Aktualisiert!", Toast.LENGTH_SHORT).show();
+
+            Document doc = Jsoup.parse(tmp);
+
+            Log.e("STUFE", Util.getSettingStufe(this));
+
+            String[] content;
+
+            if (!Util.getSettingKlasse(getApplicationContext()).equals(""))
+                content = Util.filterHTML(doc, Util.getSettingStufe(getApplicationContext()), Util.getSettingKlasse(getApplicationContext()));
+            else
+                content = Util.filterHTML(doc, Util.getSettingStufe(getApplicationContext()), "");
+
+            txt.setText(TextUtils.join("\n\n", content));
+
+            Elements elements = doc.select("strong");
+
+            if (elements.first() == null) {
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!", Toast.LENGTH_SHORT).show();
                     }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+                });
+                tvVers.setText("Version: 0");
+                msgOTD.setText("Für diesen Tag gibt es noch keine Vertretungen!");
+                return;
+            } else
+                tvVers.setText("Version: " + elements.first().text());
 
-                t.join();
+            Element e = null;
 
-                Toast.makeText(getApplicationContext(), "Aktualisiert!", Toast.LENGTH_SHORT).show();
-
-                Document doc = Jsoup.parse(tmp);
-
-                Log.e("STUFE", Util.getSettingStufe(this));
-
-                String[] content;
-
-                if (!Util.getSettingKlasse(getApplicationContext()).equals(""))
-                    content = Util.filterHTML(doc, Util.getSettingStufe(getApplicationContext()), Util.getSettingKlasse(getApplicationContext()));
+            if (!doc.is("div.alert")) {
+                e = doc.select("div.alert").first();
+                if (e != null)
+                    msgOTD.setText(e.text());
                 else
-                    content = Util.filterHTML(doc, Util.getSettingStufe(getApplicationContext()), "");
+                    msgOTD.setText("An diesem Tag gibt es (noch) keinen Informationstext!");
+            }
 
-                txt.setText(TextUtils.join("\n\n", content));
-
-                Elements elements = doc.select("strong");
-
-                if (elements.first() == null) {
-                    new Handler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    tvVers.setText("Version: 0");
-                    msgOTD.setText("Für diesen Tag gibt es noch keine Vertretungen!");
-                    return;
-                } else
-                    tvVers.setText("Version: " + elements.first().text());
-
-                Element e = null;
-
-                if (!doc.is("div.alert")) {
-                    e = doc.select("div.alert").first();
-                    if (e != null)
-                        msgOTD.setText(e.text());
-                    else
-                        msgOTD.setText("An diesem Tag gibt es (noch) keinen Informationstext!");
-                }
-
-                e  = doc.selectFirst("p");
-                if(e.text() == "Für diesen Tag existiert derzeit kein Vertretungsplan. Bitten schauen Sie später nochmal vorbei!")
-                    msgOTD.setText("Für diesen Tag existiert derzeit kein Vertretungsplan. Bitten schauen Sie später nochmal vorbei!");
+            e = doc.selectFirst("p");
+            if (e.text() == "Für diesen Tag existiert derzeit kein Vertretungsplan. Bitten schauen Sie später nochmal vorbei!")
+                msgOTD.setText("Für diesen Tag existiert derzeit kein Vertretungsplan. Bitten schauen Sie später nochmal vorbei!");
             //}
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    /*@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == GET_LOGIN_OK) {
-            if (resultCode == RESULT_OK) {
-                if (!data.getBooleanExtra("auth", false)) {
-
-                }
-            }
-        }
-    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -317,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch ( item.getItemId() ) {
+        switch (item.getItemId()) {
             case R.id.settings:
                 SettingsActivity.show(getApplicationContext());
                 return true;
