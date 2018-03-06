@@ -35,7 +35,12 @@
     <string name="settingstufe">stufe</string>
     <string name="settingpushes">receivePushes</string>
     <string name="settingvibrateLS">vibrateOnPushReceiveInLS</string>
+    <string name="settingAuthorized">usrAuthorized</string>
+    <string name="settingSaveLogin">saveLogin</string>
+    <string name="settingUsrname">usrName</string>
+    <string name="settingPwd">passwd</string>
     <string name="selectedkurseindices">selectedKurseIndices</string>
+    <string name="saveLogin">Angaben speichern</string>
     <string-array name="KurseQ1">
         <item>BI G1</item>
         <item>BI G2</item>
@@ -97,10 +102,9 @@
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_usr">Benutzername</string>
-    <string name="prompt_password">Passwort</string>
+    <string name="hintUsrname">Benutzername</string>
+    <string name="hintpwd">Passwort</string>
     <string name="action_sign_in">Anmelden</string>
-    <string name="action_sign_in_short">Anmelden</string>
     <string name="error_incorrect_creds">Inkorrekter Benutzername / Passwort.</string>
     <string name="error_field_required">Dieses Feld ist ein Pflichtfeld.</string>
     <string name="appwidget_text">EXAMPLE</string>

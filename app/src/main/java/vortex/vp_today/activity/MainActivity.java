@@ -37,7 +37,6 @@ import java.net.URLConnection;
 import java.util.Calendar;
 
 import vortex.vp_today.R;
-import vortex.vp_today.receiver.ScreenReceiver;
 import vortex.vp_today.util.Util;
 
 /**
@@ -59,12 +58,22 @@ public class MainActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipe;
     private static final Object lockObj = new Object();
 
+    private static final int GET_LOGIN_OK = 1;
+
     private EditText txt;
 
-    private BroadcastReceiver scrnReceive = null;
+    private Intent loginIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences sp = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
+
+        if (!sp.getBoolean(getString(R.string.settingAuthorized), false) || !sp.getBoolean("rememberLogin", false)) {
+            loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+            loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivityForResult(loginIntent, GET_LOGIN_OK);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -76,8 +85,6 @@ public class MainActivity extends AppCompatActivity {
         swipe = findViewById(R.id.swiperefresh);
         tvVers = findViewById(R.id.tvVers);
         /**/
-
-        SharedPreferences sp = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
 
         /* Falls dies der erste Start sein sollte eine Client ID erstellen und speichern. */
         if (sp.getString("clientid", "0x0").equals("0x0")) {
@@ -280,6 +287,17 @@ public class MainActivity extends AppCompatActivity {
             //}
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == GET_LOGIN_OK) {
+            if (resultCode == RESULT_OK) {
+                if (!data.getBooleanExtra("auth", false)) {
+
+                }
+            }
         }
     }
 

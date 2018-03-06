@@ -3,8 +3,11 @@ package vortex.vp_today.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
@@ -14,11 +17,13 @@ import android.os.Build;
 import android.os.Bundle;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -37,23 +42,27 @@ import vortex.vp_today.util.Tuple;
 
 public class LoginActivity extends AppCompatActivity {
     private UserLoginTask mAuthTask = null;
-    private SharedPreferences prefs = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
+    private SharedPreferences prefs;
 
-    private AutoCompleteTextView mEmailView;
+    private AutoCompleteTextView mUsrView;
     private EditText mPasswordView;
+    private CheckBox mRememberLogin;
     private View mProgressView;
     private View mLoginFormView;
 
     // TODO: Server URL und die Credentials von dem
     private static final String SERVER_URL = "";
-    private static final Tuple<String, String> SERVER_CREDENTIALS = new Tuple<>("", "");
+    private static final Tuple<String, String> SERVER_CREDENTIALS = new Tuple<>("vp", "god9201");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mEmailView = findViewById(R.id.email);
+        mUsrView = findViewById(R.id.usr);
+        mRememberLogin = findViewById(R.id.saveLogin);
+
+        prefs = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
 
         mPasswordView = findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -67,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        Button mSignInButton = findViewById(R.id.email_sign_in_button);
+        Button mSignInButton = findViewById(R.id.usr_sign_in_button);
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,6 +86,17 @@ public class LoginActivity extends AppCompatActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        if (prefs.getBoolean(getString(R.string.saveLogin), false)) {
+            mUsrView.setText(prefs.getString(getString(R.string.settingUsrname), ""));
+            mPasswordView.setText(prefs.getString(getString(R.string.settingPwd), ""));
+            mRememberLogin.setChecked(prefs.getBoolean(getString(R.string.settingSaveLogin), false));
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        /* Verhindert, dass MainActivity aufgerufen wird. */
     }
 
     /**
@@ -89,32 +109,33 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        mEmailView.setError(null);
+        mUsrView.setError(null);
         mPasswordView.setError(null);
 
-        String usr = mEmailView.getText().toString();
+        String usr = mUsrView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-        Tuple<String, String> creds = getCredentials();
+        Tuple<String, String> creds = /*getCredentials()*/ SERVER_CREDENTIALS;
 
         boolean cancel = false;
         View focusView = null;
 
         if (!TextUtils.isEmpty(password)) {
-            if (!mPasswordView.getText().equals(creds.y)) {
+            if (!mPasswordView.getText().toString().equals(creds.y)) {
+                Log.i("attemptLogin", "pwd was " + mPasswordView.getText().toString());
                 mPasswordView.setError(getString(R.string.error_incorrect_creds));
-                return;
+                cancel = true;
             }
             focusView = mPasswordView;
         }
 
         if (TextUtils.isEmpty(usr)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
+            mUsrView.setError(getString(R.string.error_field_required));
+            focusView = mUsrView;
             cancel = true;
         } else if (!usr.equals(creds.x)) {
-            mEmailView.setError(getString(R.string.error_incorrect_creds));
-            focusView = mEmailView;
+            mUsrView.setError(getString(R.string.error_incorrect_creds));
+            focusView = mUsrView;
             cancel = true;
         }
 
@@ -133,7 +154,7 @@ public class LoginActivity extends AppCompatActivity {
             URL url = new URL(SERVER_URL);
             URLConnection urlConnection = url.openConnection();
             urlConnection.setRequestProperty("Authorization", "Basic " + SERVER_CREDENTIALS);
-            // TODO:
+            // TODO
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -181,11 +202,12 @@ public class LoginActivity extends AppCompatActivity {
      * the user.
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-        private final String mEmail;
+        private final String mUsrname;
         private final String mPassword;
+        private boolean authorize = false;
 
-        UserLoginTask(String email, String password) {
-            mEmail = email;
+        UserLoginTask(String usrname, String password) {
+            mUsrname = usrname;
             mPassword = password;
         }
 
@@ -193,15 +215,42 @@ public class LoginActivity extends AppCompatActivity {
         protected Boolean doInBackground(Void... params) {
             // TODO: Login vom Server holen
 
-            try {
-                // TODO: hier Server abfragen
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
+            // TODO: hier Server abfragen
+
+            Intent _result = new Intent();
+
+            if (mUsrname.equals(SERVER_CREDENTIALS.x)) {
+                if (mPassword.equals(SERVER_CREDENTIALS.y)) {
+                    SharedPreferences.Editor e = prefs.edit();
+
+                    /* usrAuthorized zeigt an, ob Zugriff besteht. */
+                    e.putBoolean(getString(R.string.settingAuthorized), true);
+
+                    if (mRememberLogin.isChecked()) {
+                        e.putBoolean(getString(R.string.settingSaveLogin), mRememberLogin.isChecked());
+                    }
+
+                    // TODO: VERSCHLÜSSELN !!!
+                    e.putString(getString(R.string.settingUsrname), mUsrView.getText().toString());
+                    e.putString(getString(R.string.settingPwd), mPasswordView.getText().toString());
+
+                    e.apply();
+
+                    authorize = true;
+
+                    _result.putExtra("auth", authorize);
+                    setResult(Activity.RESULT_OK, _result);
+
+                    finish();
+
+                    return true;
+                }
             }
 
-            /* usrAuthorized zeigt an, ob Zugriff besteht. */
-            return prefs.edit().putBoolean("usrAuthorized", true).commit();
+            _result.putExtra("auth", authorize);
+            setResult(Activity.RESULT_OK, _result);
+
+            return false;
         }
 
         @Override
@@ -212,7 +261,8 @@ public class LoginActivity extends AppCompatActivity {
             if (success) {
                 finish();
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_pwd));
+                mPasswordView.setError(getString(R.string.error_incorrect_creds));
+                mUsrView.setError(getString(R.string.error_incorrect_creds));
                 mPasswordView.requestFocus();
             }
         }

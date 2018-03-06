@@ -80,7 +80,13 @@
         </activity>
         <activity
             android:name=".activity.LoginActivity"
-            android:label="@string/title_activity_login" />
+            android:label="@string/action_sign_in"
+            android:screenOrientation="portrait"
+            android:noHistory="true" >
+            <!--<meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainActivity" />-->
+        </activity>
 
         <receiver android:name=".Display">
             <intent-filter>
