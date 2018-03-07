@@ -91,6 +91,7 @@
                 android:layout_weight="4"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="14sp"
+                android:paddingLeft="10dp"
                 android:textStyle="bold|italic" />
         </LinearLayout>
 
