@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,11 +20,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,18 +40,17 @@ import vortex.vp_today.util.Util;
  */
 
 public class MainActivity extends AppCompatActivity {
-
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private String date = "";
     private TextView textView;
-    private TextView msgOTD;
-    private TextView tvVers;
+    public TextView msgOTD;
+    public TextView tvVers;
     private volatile String tmp = "";
     private Button btnDate;
-    private SwipeRefreshLayout swipe;
+    public SwipeRefreshLayout swipe;
     private static final Object lockObj = new Object();
 
-    private EditText txt;
+    public EditText txt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +105,13 @@ public class MainActivity extends AppCompatActivity {
                 else
                     date = year + "-0" + month + "-0" + day;
                 textView.setText("Deine Vertretungen für : " + day + "." + month + "." + year);
-                update();
+                //update();
+                new RetrieveVPTask().execute(
+                        MainActivity.this,
+                        Util.makeDate(day, month, year),
+                        Util.getSettingStufe(getApplicationContext()),
+                        Util.getSettingKlasse(getApplicationContext())
+                );
             }
         };
 
@@ -124,23 +123,24 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         try {
                             Calendar c = Calendar.getInstance();
-                            txt.setText(new RetrieveVPTask().execute(getApplicationContext(), Util.makeDate(c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.MONTH), c.get(Calendar.YEAR)),
+
+                            new RetrieveVPTask().execute(
+                                    MainActivity.this,
+                                    Util.makeDate(c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.MONTH), c.get(Calendar.YEAR)),
                                     Util.getSettingStufe(getApplicationContext()),
-                                    Util.getSettingKlasse(getApplicationContext())).get());
+                                    Util.getSettingKlasse(getApplicationContext())
+                            );
 
                             /*
                             Document doc = Jsoup.parse(tmp);
                             String[] content = Util.getCurrentInfo(doc).getContent();
                             txt.setText(TextUtils.join("\n\n", content));
                             */
-
-                            swipe.setRefreshing(false);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
                     }
                 });
-                swipe.setRefreshing(false);
             }
         });
         /**/
@@ -203,10 +203,8 @@ public class MainActivity extends AppCompatActivity {
      * @author Melvin Zähl
      * @author Simon Dräger
      */
-    private synchronized void update() {
+    /*private synchronized void update() {
         try {
-            /* Auf einen Thread synchronisieren, sonst gibst Fehler */
-            //synchronized (lockObj) {
 
             Toast.makeText(getApplicationContext(), "Aktualisiere...", Toast.LENGTH_SHORT).show();
 
@@ -253,13 +251,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
             e = doc.selectFirst("p");
-            if (e.text() == "Für diesen Tag existiert derzeit kein Vertretungsplan. Bitten schauen Sie später nochmal vorbei!")
+            if (e.text().equals("Für diesen Tag existiert derzeit kein Vertretungsplan. Bitten schauen Sie später nochmal vorbei!"))
                 msgOTD.setText("Für diesen Tag existiert derzeit kein Vertretungsplan. Bitten schauen Sie später nochmal vorbei!");
-            //}
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

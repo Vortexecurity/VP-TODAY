@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
 
+import vortex.vp_today.util.TriTuple;
 import vortex.vp_today.util.Util;
 
 /**
@@ -46,14 +47,14 @@ public class MainService extends IntentService {
                 Calendar c = Calendar.getInstance();
                 String dt = Util.makeDate(c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.MONTH), c.get(Calendar.YEAR));
                 String unf = Util.fetchUnfiltered(dt);
-                ArrayList<String> infos = new ArrayList<>(Arrays.asList(Util.filterHTML(Jsoup.parse(unf), Util.getSettingStufe(getApplicationContext()), Util.getSettingKlasse(getApplicationContext()))));
+                //ArrayList<TriTuple> infos = new ArrayList<>(Arrays.asList(Util.filterHTML(getApplicationContext(), Jsoup.parse(unf), Util.getSettingStufe(getApplicationContext()), Util.getSettingKlasse(getApplicationContext()))));
 
                 HashSet<String> known =
                         new HashSet<>(getApplicationContext().getSharedPreferences("vortex.vp_today.app",
                                 Context.MODE_PRIVATE).getStringSet("knownInfos", null));
 
                 /* Jeden bereits benachrichtigten Eintrag überspringen */
-                if (known != null) {
+                /*if (known != null) {
                     for (String i : infos) {
                         if (known.contains(i))
                             infos.remove(i);
@@ -78,7 +79,7 @@ public class MainService extends IntentService {
                     if (keyguardManager.inKeyguardRestrictedInputMode() &&
                             getApplicationContext().getSharedPreferences("vortex.vp_today.app",
                                     Context.MODE_PRIVATE).getBoolean("vibrateOnPushReceiveInLS", true)) {
-                        /* 2 mal vibrieren, -1 für nicht wiederholen. */
+                        // 2 mal vibrieren, -1 für nicht wiederholen.
                         vibrator.vibrate(new long[] { 700, 700 }, -1);
                     }
 
@@ -87,10 +88,10 @@ public class MainService extends IntentService {
                     }
                     known.add(str);
 
-                    /* Die Änderungen speichern */
+                    // Die Änderungen speichern
                     getApplicationContext().getSharedPreferences("vortex.vp_today.app",
                             Context.MODE_PRIVATE).edit().putStringSet("knownInfos", known).apply();
-                }
+                }*/
 
                 /* Jede Sekunde updaten */
                 Thread.sleep(1000);

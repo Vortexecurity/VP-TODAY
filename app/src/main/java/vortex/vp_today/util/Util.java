@@ -10,10 +10,12 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -111,11 +113,10 @@ public final class Util {
     }
 
     /**
-     *
      * @param actv
      * @param preselectedItems Look the positions up in strings.xml/KurseQ1 etc. (complete list)
-     * @throws AssertionError wird ausgelöst, wenn preselectedItems != null und Länge != KurseQ1.length
      * @return The selected items
+     * @throws AssertionError wird ausgelöst, wenn preselectedItems != null und Länge != KurseQ1.length
      */
     @Nullable
     public static Tuple<String[], Boolean[]> ShowKurseDialogQ1(@NonNull Activity actv, @Nullable boolean[] preselectedItems) throws AssertionError {
@@ -211,9 +212,9 @@ public final class Util {
     }
 
     public static String[] getDevEmails(Context ctx) {
-        return new String[] { ctx.getResources().getString(R.string.simonemail),
-                              ctx.getResources().getString(R.string.melvinemail),
-                              ctx.getResources().getString(R.string.florianemail)
+        return new String[]{ctx.getResources().getString(R.string.simonemail),
+                ctx.getResources().getString(R.string.melvinemail),
+                ctx.getResources().getString(R.string.florianemail)
         };
     }
 
@@ -255,8 +256,8 @@ public final class Util {
     }
 
     public static boolean anyMatch(String str, String[] items) {
-        for(int i = 0; i < items.length; i++) {
-            if(str.contains(items[i]))
+        for (int i = 0; i < items.length; i++) {
+            if (str.contains(items[i]))
                 return true;
         }
         return false;
@@ -314,7 +315,7 @@ public final class Util {
             String urlS = "https://vp.gymnasium-odenthal.de/god/" + date;
             String authStringEnc = "dnA6Z29kOTIwMQ==";
 
-            Log.e("LOG", urlS);
+            Log.e("fetchUnfiltered", "URL: " + urlS);
 
             URL url = new URL(urlS);
             URLConnection urlConnection = url.openConnection();
@@ -344,13 +345,25 @@ public final class Util {
     }
 
     /**
+     * @param sub Klassenbuchstabe; Bsp 6C
+     * @return TriTuple: 1 = msgotd / error string 2 = version 3 = html content
      * @author Melvin Zähl
      * @author Simon Dräger
-     * @param sub Klassenbuchstabe; Bsp 6C
      */
-    public static synchronized String[] filterHTML(Document d, String stufe, String sub) {
+    @Nullable
+    public static synchronized TriTuple<String, Integer, String[]> filterHTML(@NonNull final Activity actv, Document d, String stufe, String sub) {
+        actv.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(actv.getApplicationContext(), "Aktualisiere...", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         /* Hilfsvariable, sodass stufe nicht direkt verändert wird */
         String _stufe = stufe;
+        String msgotd = null;
+        int version = 0;
+        boolean showedToast = false;
 
         if (_stufe == null || _stufe.equals(""))
             _stufe = "05";
@@ -362,22 +375,62 @@ public final class Util {
         }
 
         Elements elements = d.select("tr[data-index*='" + _stufe + "']");
+        Element strong = d.selectFirst("strong");
+        ArrayList<String> s = null;
 
-        ArrayList<String> s = new ArrayList<>();
+        if (elements.first() == null) {
+            actv.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(actv.getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!", Toast.LENGTH_SHORT).show();
+                }
+            });
+            if (strong != null)
+                version = Integer.parseInt(strong.text());
+            showedToast = true;
+        } else {
+            s = new ArrayList<>();
 
-        for (Element e : elements) {
-            /* Manchmal sind Einträge im VP mehrere Male vorhanden, also nur einmal in die Liste tun. */
-            if(e != null && !(s.contains(e.text())))
-                s.add(e.text())/* e.text() + "\n\n"*/;
+            Element elem = d.selectFirst("p");
+            if (elem.text().equals("Für diesen Tag existiert derzeit kein Vertretungsplan. Bitten schauen Sie später nochmal vorbei!")) {
+                if (elem != null) {
+                    msgotd = elem.text();
+                }
+            } else {
+                Element msg = d.selectFirst("div.alert");
+                if (msg != null)
+                    msgotd = msg.text();
+
+                if (strong != null)
+                    version = Integer.parseInt(strong.text());
+
+                for (Element e : elements) {
+                    /* Manchmal sind Einträge im VP mehrere Male vorhanden, also nur einmal in die Liste tun. */
+                    if (e != null && !(s.contains(e.text())))
+                        s.add(e.text());
+                }
+            }
         }
 
-        return s.toArray(new String[0]);
+        if (!showedToast) {
+            actv.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(actv.getApplicationContext(), "Aktualisiert!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        return new TriTuple<>(msgotd, Integer.valueOf(version), s == null ? null : s.toArray(new String[0]));
     }
 
     /**
      * @author Simon Dräger
      */
-    public static synchronized String[] filterHTML(Document d, String stufe, String[] kurse) {
+    @Nullable
+    public static synchronized String[] filterHTML(@NonNull Context ctx, Document d, String stufe, String[] kurse) {
+        Toast.makeText(ctx, "Aktualisiere...", Toast.LENGTH_SHORT);
+
         String _stufe = stufe;
 
         if (_stufe == null || _stufe.equals(""))
@@ -394,6 +447,8 @@ public final class Util {
             if (e != null && !(s.contains(e.text())) && Util.anyMatch(e.text(), kurse))
                 s.add(e.text());
         }
+
+        Toast.makeText(ctx, "Aktualisiert!", Toast.LENGTH_SHORT);
 
         return s.toArray(new String[0]);
     }
