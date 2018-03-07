@@ -80,7 +80,7 @@
                     android:focusableInTouchMode="false"
                     android:gravity="top"
                     android:inputType="textMultiLine|textNoSuggestions"
-                    android:scrollbars="horizontal|vertical" />
+                    android:scrollbars="vertical" />
 
             </android.support.v4.widget.SwipeRefreshLayout>
 
@@ -93,6 +93,12 @@
                 android:textSize="14sp"
                 android:paddingLeft="10dp"
                 android:textStyle="bold|italic" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/angabenohnegewaehr" />
         </LinearLayout>
 
     </RelativeLayout>

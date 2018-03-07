@@ -41,6 +41,7 @@
     <string name="settingPwd">passwd</string>
     <string name="selectedkurseindices">selectedKurseIndices</string>
     <string name="saveLogin">Angaben speichern</string>
+    <string name="angabenohnegewaehr">Alle Angaben ohne Gewähr!</string>
     <string-array name="KurseQ1">
         <item>BI G1</item>
         <item>BI G2</item>
