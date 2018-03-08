@@ -4,12 +4,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -69,8 +68,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                 if (item.equals("EF") || item.equals("Q1") || item.equals("Q2")) {
                     spinKlassen.setEnabled(false);
-                }
-                else {
+                } else {
                     spinKlassen.setEnabled(true);
                 }
 
@@ -97,8 +95,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        btnApply.setBackgroundColor(Color.GREEN);
-
         btnApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,8 +102,6 @@ public class SettingsActivity extends AppCompatActivity {
                 NavUtils.navigateUpFromSameTask(SettingsActivity.this);
             }
         });
-
-        btnCancel.setBackgroundColor(Color.GREEN);
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,7 +120,7 @@ public class SettingsActivity extends AppCompatActivity {
                 Tuple<String[], Boolean[]> tupSelects = (Tuple<String[], Boolean[]>) Util.getGsonObject(getApplicationContext(), getString(R.string.settingkurse));
 
                 if (tupSelects != null)
-                     selects = Util.BoolToTypeBool(tupSelects.y);
+                    selects = Util.BoolToTypeBool(tupSelects.y);
 
                 currentKurseChanges = Util.ShowKurseDialogQ1(SettingsActivity.this, selects);
                 hasChanged();
@@ -169,7 +163,7 @@ public class SettingsActivity extends AppCompatActivity {
         load();
     }
 
-    public static void show(@NonNull Context context){
+    public static void show(@NonNull Context context) {
         Intent intent = new Intent(context, SettingsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
@@ -261,24 +255,31 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch ( item.getItemId() ) {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 try {
                     synchronized (lockObj) {
-                        /*Runnable r = new Runnable() {
-                            @Override
-                            public void run() {
-                                if (changed)
-                                    DoDialog();
-                                SettingsActivity.this._continue = true;
-                            }
-                        };
-                        new Handler().post(r);*/
-
-                        // TODO: warten bis r fertig ist
-                        //r.wait();
-
-                        NavUtils.navigateUpFromSameTask(this);
+                        if (changed) {
+                            new Handler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Util.ShowYesNoDialog(SettingsActivity.this, "Möchten Sie die ungesicherten Änderungen speichern?",
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    save();
+                                                    goBack();
+                                                }
+                                            },
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    goBack();
+                                                }
+                                            });
+                                }
+                            });
+                        }
                     }
                     return true;
                 } catch (Exception ex) {
@@ -289,15 +290,11 @@ public class SettingsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void DoDialog() {
-        if (changed) {
-            if (Util.ShowYesNoDialog(SettingsActivity.this, "Möchten Sie die ungespeicherten Änderungen speichern?") == DialogInterface.BUTTON_POSITIVE) {
-                save();
-            }
-        }
+    private synchronized void goBack() {
+        NavUtils.navigateUpFromSameTask(this);
     }
 
-    private void hasChanged() {
+    private synchronized void hasChanged() {
         changed = true;
     }
 }

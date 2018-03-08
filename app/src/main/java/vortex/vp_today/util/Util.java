@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -48,7 +47,6 @@ import vortex.vp_today.mail.BackgroundMail;
  */
 
 public final class Util {
-    private static int result;
     private static Random rand;
     private static final String ALPHANUM = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
     private static AtomicInteger atomInt;
@@ -78,17 +76,20 @@ public final class Util {
         return gson.fromJson(json, Object.class);
     }
 
-    public static int ShowYesNoDialog(@NonNull Activity actv, @NonNull String text) {
+    public static synchronized void ShowYesNoDialog(@NonNull Activity actv,
+                                                    @NonNull String text,
+                                                    @NonNull final DialogInterface.OnClickListener positiveClicked,
+                                                    @NonNull final DialogInterface.OnClickListener negativeClicked) {
         try {
             DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     switch (which) {
                         case DialogInterface.BUTTON_POSITIVE:
-                            result = DialogInterface.BUTTON_POSITIVE;
+                            positiveClicked.onClick(dialog, which);
                             break;
                         case DialogInterface.BUTTON_NEGATIVE:
-                            result = DialogInterface.BUTTON_NEGATIVE;
+                            negativeClicked.onClick(dialog, which);
                             break;
                     }
                 }
@@ -98,18 +99,9 @@ public final class Util {
             builder.setMessage(text)
                     .setPositiveButton("Ja", listener)
                     .setNegativeButton("Nein", listener).show();
-            builder.wait();
-
-            int res = result;
-
-            result = 0;
-
-            return res;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
-        return 0;
     }
 
     /**
