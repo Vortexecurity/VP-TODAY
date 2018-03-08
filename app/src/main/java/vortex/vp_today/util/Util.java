@@ -101,14 +101,15 @@ public final class Util {
         String[] lines = unfiltered.split("\n");
         Log.i("getvpdates", "lines length: " + lines.length);
         ArrayList<TwoFormatDate> dates = new ArrayList<>();
-        String href = "<a href=\"/god/";
+        String href = "href=\"/god/";
         SimpleDateFormat format = new SimpleDateFormat("yyyy-M-d", Locale.ENGLISH);
 
         for (String line : lines) {
             Log.i("getvpdates", "reading a line");
             if (line.contains(href)) {
                 String trimmed = line.trim();
-                String extractedDate = trimmed.substring(14, trimmed.length() - 2);
+                String extractedDate = trimmed.substring(trimmed.lastIndexOf("/god/") + 5, trimmed.length() - 2);
+
                 Log.i("getvpdates", "extractedDate: " + extractedDate);
                 try {
                     LocalDate d = new LocalDate(format.parse(extractedDate));
