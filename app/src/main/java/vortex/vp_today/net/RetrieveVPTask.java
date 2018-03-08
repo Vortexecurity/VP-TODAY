@@ -6,8 +6,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.sun.mail.imap.protocol.INTERNALDATE;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -22,7 +20,7 @@ import vortex.vp_today.util.Util;
 
 public class RetrieveVPTask extends AsyncTask<Object, Void, TriTuple<String, Integer, String[]>> {
     private Exception exception = null;
-    private MainActivity main;
+    private MainActivity main = null;
 
     // MainActivity, String date, String stufe, String sub
     @Override
@@ -34,7 +32,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Void, TriTuple<String, Int
 
             String unfiltered = Util.fetchUnfiltered((String) params[1]);
 
-            Log.i("RetrieveVPTask", "got unfiltered");
+            Log.i("RetrieveVPTask", "got unfiltered: " + (unfiltered == null ? "null" : "not null"));
 
             Document doc = Jsoup.parse(unfiltered);
 
@@ -50,13 +48,14 @@ public class RetrieveVPTask extends AsyncTask<Object, Void, TriTuple<String, Int
             }
 
             if (filtered.z == null) {
+                Log.i("doInBackground", "z = null, return novpexist");
                 return new TriTuple<String, Integer, String[]>("novpexist", 0, null);
             }
 
             return filtered;
-        } catch (Exception e) {
-            e.printStackTrace();
-            this.exception = e;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            this.exception = ex;
         }
         return null;
     }
@@ -66,7 +65,8 @@ public class RetrieveVPTask extends AsyncTask<Object, Void, TriTuple<String, Int
         Log.i("onPostExecute", "setting text to result");
         if (result != null) {
             Log.i("onPostExecute", "result != null");
-            Log.i("doInBackground", "filtered.z.length = " + result.z.length);
+            if (result.z != null)
+                Log.i("doInBackground", "filtered.z.length = " + result.z.length);
             if (result.x.equals("novpexist")) {
                 main.tvVers.setText("Version: 0");
                 main.msgOTD.setText("Für diesen Tag gibt es noch keine Vertretungen!");

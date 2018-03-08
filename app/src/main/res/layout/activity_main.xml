@@ -47,15 +47,14 @@
                     android:text="Version:"
                     android:textAlignment="center" />
 
-                <Button
-                    android:id="@+id/btnDate"
+                <Spinner
+                    android:id="@+id/spinDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignBaseline="@+id/textView"
                     android:layout_alignBottom="@+id/textView"
                     android:layout_alignParentEnd="true"
                     android:layout_weight="2.7"
-                    android:text="Datum"
                     android:textSize="9sp" />
 
             </LinearLayout>

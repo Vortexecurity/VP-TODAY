@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import org.joda.time.LocalDate;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -28,8 +29,11 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -74,6 +78,59 @@ public final class Util {
         Gson gson = new Gson();
         String json = prefs.getString(tag, "");
         return gson.fromJson(json, Object.class);
+    }
+
+    public static synchronized String makeVpDate(String actualDate) {
+        try {
+            SimpleDateFormat format1 = new SimpleDateFormat("d.M.yyyy", Locale.ENGLISH);
+            LocalDate localDate = new LocalDate(format1.parse(actualDate));
+
+            Log.i("makeVpDate", "localDate: " + localDate.toString());
+
+            return localDate.toString();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    @SuppressWarnings("deprecated")
+    @Nullable
+    public static synchronized TwoFormatDate[] getVPDates() {
+        String unfiltered = getGod();
+        String[] lines = unfiltered.split("\n");
+        Log.i("getvpdates", "lines length: " + lines.length);
+        ArrayList<TwoFormatDate> dates = new ArrayList<>();
+        String href = "<a href=\"/god/";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-M-d", Locale.ENGLISH);
+
+        for (String line : lines) {
+            Log.i("getvpdates", "reading a line");
+            if (line.contains(href)) {
+                String trimmed = line.trim();
+                String extractedDate = trimmed.substring(14, trimmed.length() - 2);
+                Log.i("getvpdates", "extractedDate: " + extractedDate);
+                try {
+                    LocalDate d = new LocalDate(format.parse(extractedDate));
+                    TwoFormatDate tfd = new TwoFormatDate(extractedDate, d);
+
+                    Log.i("getvpdates", "tfd: " + tfd.toString());
+
+                    if (dates.contains(tfd))
+                        continue;
+
+                    Log.i("getvpdates", "Adding tfd: " + (tfd == null ? "null" : "not null"));
+
+                    dates.add(tfd);
+                } catch (ParseException ex) {
+                    /* Datum wurde falsch geparst, anzunehmen, dass die anderen auch falsch werden */
+                    ex.toString();
+                    return null;
+                }
+            }
+        }
+
+        return dates.toArray(new TwoFormatDate[0]);
     }
 
     public static synchronized void ShowYesNoDialog(@NonNull Activity actv,
@@ -296,15 +353,50 @@ public final class Util {
         return null;
     }
 
+    public static synchronized String getGod() {
+        try {
+
+            String urlS = "https://vp.gymnasium-odenthal.de/god";
+            String authStringEnc = "dnA6Z29kOTIwMQ==";
+
+            Log.e("getGod", "URL: " + urlS);
+
+            URL url = new URL(urlS);
+            URLConnection urlConnection = url.openConnection();
+            urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
+
+            InputStream is = urlConnection.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+
+            int numCharsRead;
+            char[] charArray = new char[1024];
+            StringBuffer sb = new StringBuffer();
+
+            while ((numCharsRead = isr.read(charArray)) > 0) {
+                sb.append(charArray, 0, numCharsRead);
+            }
+
+            String result = sb.toString();
+
+            return result;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     /**
      * @return null on error.
      */
     @Nullable
-    public static synchronized String fetchUnfiltered(@NonNull String date) throws AssertionError {
+    public static synchronized String fetchUnfiltered(@NonNull String vpDate) throws AssertionError {
         try {
-            assert !date.equals("") : "date kann nicht leer sein.";
+            assert !vpDate.equals("") : "vpDate kann nicht leer sein.";
 
-            String urlS = "https://vp.gymnasium-odenthal.de/god/" + date;
+            String urlS = "https://vp.gymnasium-odenthal.de/god/" + vpDate;
             String authStringEnc = "dnA6Z29kOTIwMQ==";
 
             Log.e("fetchUnfiltered", "URL: " + urlS);
@@ -381,6 +473,7 @@ public final class Util {
                 version = Integer.parseInt(strong.text());
             showedToast = true;
         } else {
+            Log.i("filterHTML", "s = new ArrayList");
             s = new ArrayList<>();
 
             Element elem = d.selectFirst("p");

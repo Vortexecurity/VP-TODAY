@@ -33,7 +33,6 @@ import vortex.vp_today.util.Util;
 public class SettingsActivity extends AppCompatActivity {
     private boolean changed = false;
     private static final Object lockObj = new Object();
-    private volatile boolean _continue = false;
 
     private Spinner spinStufen;
     private Spinner spinKlassen;

@@ -41,4 +41,5 @@ dependencies {
     implementation files('libs/activation.jar')
     implementation files('libs/mail.jar')
     implementation files('libs/additional')
+    implementation files('libs/joda-time-2.9.9.jar')
 }
