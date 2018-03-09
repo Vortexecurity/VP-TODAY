@@ -19,10 +19,10 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import es.dmoral.toasty.Toasty;
 import vortex.vp_today.R;
 import vortex.vp_today.util.Tuple;
 import vortex.vp_today.util.Util;
@@ -236,9 +236,9 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         if (e.commit())
-            Toast.makeText(getApplicationContext(), "Einstellungen gesichert!", Toast.LENGTH_SHORT).show();
+            Toasty.success(getApplicationContext(), "Einstellungen gesichert!").show();
         else
-            Toast.makeText(getApplicationContext(), "Speichern fehlgeschlagen!", Toast.LENGTH_SHORT).show();
+            Toasty.error(getApplicationContext(), "Speichern fehlgeschlagen!").show();
     }
 
     private synchronized void load() {

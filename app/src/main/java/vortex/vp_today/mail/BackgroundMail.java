@@ -4,19 +4,18 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.support.annotation.ArrayRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
 import vortex.vp_today.util.Util;
 
 public class BackgroundMail {
@@ -298,14 +297,14 @@ public class BackgroundMail {
                 progressDialog.dismiss();
                 if (result) {
                     if (!TextUtils.isEmpty(sendingMessageSuccess)) {
-                        Toast.makeText(mContext, sendingMessageSuccess, Toast.LENGTH_SHORT).show();
+                        Toasty.success(mContext, sendingMessageSuccess).show();
                     }
                     if (onSuccessCallback != null) {
                         onSuccessCallback.onSuccess();
                     }
-                }else {
+                } else {
                     if (!TextUtils.isEmpty(sendingMessageError)) {
-                        Toast.makeText(mContext, sendingMessageError, Toast.LENGTH_SHORT).show();
+                        Toasty.error(mContext, sendingMessageError).show();
                     }
                     if (onFailCallback != null) {
                         onFailCallback.onFail();

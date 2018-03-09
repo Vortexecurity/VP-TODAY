@@ -3,18 +3,18 @@ package vortex.vp_today.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
-import android.widget.Toast;
 
+import es.dmoral.toasty.Toasty;
 import vortex.vp_today.R;
 import vortex.vp_today.mail.BackgroundMail;
 import vortex.vp_today.util.Util;
@@ -54,7 +54,7 @@ public class RateActivity extends AppCompatActivity {
                     new Handler().post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), "Bitte geben Sie einen Bericht ein!", Toast.LENGTH_SHORT).show();
+                            Toasty.info(getApplicationContext(), "Bitte geben Sie einen Bericht ein!").show();
                         }
                     });
                 } else {
@@ -90,7 +90,7 @@ public class RateActivity extends AppCompatActivity {
                         new Handler().post(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(getApplicationContext(), "Es besteht keine Internetverbindung.", Toast.LENGTH_SHORT).show();
+                                Toasty.error(getApplicationContext(), "Es besteht keine Internetverbindung.").show();
                             }
                         });
                     }
@@ -111,11 +111,11 @@ public class RateActivity extends AppCompatActivity {
     }
 
     private void successCallback() {
-        Toast.makeText(getApplicationContext(), "Feedback erfolgreich gesendet!", Toast.LENGTH_SHORT).show();
+        Toasty.success(getApplicationContext(), "Feedback erfolgreich gesendet!").show();
     }
 
     private void failCallback() {
-        Toast.makeText(getApplicationContext(), "Es ist ein Fehler beim Senden aufgetreten.", Toast.LENGTH_SHORT).show();
+        Toasty.error(getApplicationContext(), "Es ist ein Fehler beim Senden aufgetreten.").show();
     }
 
     public static void show(@NonNull Context context){

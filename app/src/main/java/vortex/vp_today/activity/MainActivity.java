@@ -16,18 +16,10 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.joda.time.LocalDate;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Calendar;
-
+import es.dmoral.toasty.Toasty;
 import vortex.vp_today.R;
 import vortex.vp_today.net.RetrieveDatesTask;
 import vortex.vp_today.net.RetrieveVPTask;
@@ -41,16 +33,11 @@ import vortex.vp_today.util.Util;
  */
 
 public class MainActivity extends AppCompatActivity {
-    //private DatePickerDialog.OnDateSetListener mDateSetListener;
-    private String date = "";
-    private TextView textView;
     public TextView msgOTD;
     public TextView tvVers;
-    private volatile String tmp = "";
     public Spinner spinDate;
     public SwipeRefreshLayout swipe;
     private static final Object lockObj = new Object();
-    private TwoFormatDate[] currentDates;
 
     public EditText txt;
 
@@ -63,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
 
         /* Initialize views */
         txt = findViewById(R.id.text);
-        textView = findViewById(R.id.textView);
         msgOTD = findViewById(R.id.msgOTD);
         spinDate = findViewById(R.id.spinDate);
         swipe = findViewById(R.id.swiperefresh);
@@ -104,8 +90,6 @@ public class MainActivity extends AppCompatActivity {
         });
         /**/
 
-        Calendar c = Calendar.getInstance();
-        date = Util.makeDate(c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.MONTH), c.get(Calendar.YEAR));
         new RetrieveDatesTask().execute(MainActivity.this);
     }
 
@@ -129,60 +113,13 @@ public class MainActivity extends AppCompatActivity {
             MainActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(
-                            getApplicationContext(),
-                            "Es besteht keine Internetverbindung!",
-                            Toast.LENGTH_SHORT
-                    ).show();
+                    Toasty.error(getApplicationContext(), "Es besteht keine Internetverbindung!", 3500).show();
                 }
             });
         }
     }
 
-    private synchronized void getVPHTML() {
-        try {
-            if (date.equals("")) {
-                MainActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "Ein Fehler ist während des Aktualisiervorgangs aufgetreten!", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                return;
-            }
-
-            String urlS = "https://vp.gymnasium-odenthal.de/god/" + date;
-            String authStringEnc = "dnA6Z29kOTIwMQ==";
-
-            Log.e("LOG", "URL = " + urlS);
-
-            URL url = new URL(urlS);
-            URLConnection urlConnection = url.openConnection();
-            urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
-
-            InputStream is = urlConnection.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-
-            int numCharsRead;
-            char[] charArray = new char[1024];
-            StringBuffer sb = new StringBuffer();
-
-            while ((numCharsRead = isr.read(charArray)) > 0) {
-                sb.append(charArray, 0, numCharsRead);
-            }
-
-            String result = sb.toString();
-
-            tmp = result;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void processCurrentDates(TwoFormatDate[] dates) {
-        currentDates = dates;
         String[] actuals = new String[dates.length];
 
         for (int i = 0; i < actuals.length; i++)
@@ -199,66 +136,6 @@ public class MainActivity extends AppCompatActivity {
         spinDate.setAdapter(dateAdapter);
     }
 
-    /**
-     * Updates the Vertretungs-ListView
-     *
-     * @author Melvin Zähl
-     * @author Simon Dräger
-     */
-    /*private synchronized void update() {
-        try {
-
-            Toast.makeText(getApplicationContext(), "Aktualisiere...", Toast.LENGTH_SHORT).show();
-
-            getVPHTML();
-
-            Toast.makeText(getApplicationContext(), "Aktualisiert!", Toast.LENGTH_SHORT).show();
-
-            Document doc = Jsoup.parse(tmp);
-
-            Log.e("STUFE", Util.getSettingStufe(this));
-
-            String[] content;
-
-            if (!Util.getSettingKlasse(getApplicationContext()).equals(""))
-                content = Util.filterHTML(doc, Util.getSettingStufe(getApplicationContext()), Util.getSettingKlasse(getApplicationContext()));
-            else
-                content = Util.filterHTML(doc, Util.getSettingStufe(getApplicationContext()), "");
-
-            txt.setText(TextUtils.join("\n\n", content));
-
-            Elements elements = doc.select("strong");
-
-            if (elements.first() == null) {
-                new Handler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                tvVers.setText("Version: 0");
-                msgOTD.setText("Für diesen Tag gibt es noch keine Vertretungen!");
-                return;
-            } else
-                tvVers.setText("Version: " + elements.first().text());
-
-            Element e = null;
-
-            if (!doc.is("div.alert")) {
-                e = doc.select("div.alert").first();
-                if (e != null)
-                    msgOTD.setText(e.text());
-                else
-                    msgOTD.setText("An diesem Tag gibt es (noch) keinen Informationstext!");
-            }
-
-            e = doc.selectFirst("p");
-            if (e.text().equals("Für diesen Tag existiert derzeit kein Vertretungsplan. Bitten schauen Sie später nochmal vorbei!"))
-                msgOTD.setText("Für diesen Tag existiert derzeit kein Vertretungsplan. Bitten schauen Sie später nochmal vorbei!");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menuheader, menu);

@@ -39,6 +39,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import es.dmoral.toasty.Toasty;
 import vortex.vp_today.R;
 import vortex.vp_today.logic.VPInfo;
 import vortex.vp_today.logic.VPKind;
@@ -474,7 +475,7 @@ public final class Util {
         actv.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(actv.getApplicationContext(), "Aktualisiere...", Toast.LENGTH_SHORT).show();
+                Toasty.info(actv.getApplicationContext(), "Aktualisiere...").show();
             }
         });
 
@@ -501,7 +502,7 @@ public final class Util {
             actv.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(actv.getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!", Toast.LENGTH_SHORT).show();
+                    Toasty.warning(actv.getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!").show();
                 }
             });
             if (strong != null)
@@ -536,7 +537,7 @@ public final class Util {
             actv.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(actv.getApplicationContext(), "Aktualisiert!", Toast.LENGTH_SHORT).show();
+                    Toasty.success(actv.getApplicationContext(), "Aktualisiert!").show();
                 }
             });
         }

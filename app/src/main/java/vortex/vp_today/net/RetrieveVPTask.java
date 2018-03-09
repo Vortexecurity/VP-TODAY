@@ -4,11 +4,11 @@ import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import es.dmoral.toasty.Toasty;
 import vortex.vp_today.activity.MainActivity;
 import vortex.vp_today.util.TriTuple;
 import vortex.vp_today.util.Util;
@@ -79,7 +79,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Void, TriTuple<String, Int
             }
         } else {
             Log.i("onPostExecute", "result = null");
-            Toast.makeText(main.getApplicationContext(), "Fehler beim Aktualisieren!", Toast.LENGTH_SHORT).show();
+            Toasty.error(main.getApplicationContext(), "Fehler beim Aktualisieren!").show();
         }
         Log.i("onPostExecute", "set text to result");
         main.swipe.setRefreshing(false);
