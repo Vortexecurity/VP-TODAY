@@ -22,15 +22,19 @@ public class RetrieveVPTask extends AsyncTask<Object, Void, TriTuple<String, Int
     private Exception exception = null;
     private MainActivity main = null;
 
-    // params: MainActivity, String date (vp style), String stufe, String sub
+    // params: MainActivity, String date (vp style), String stufe, String sub, String[] kurse
     @Override
     protected TriTuple<String, Integer, String[]> doInBackground(Object... params) {
         main = (MainActivity) params[0];
+        String vpDate = (String) params[1];
+        String stufe = (String) params[2];
+        String sub = (String) params[3];
+        String[] kurse = (String[]) params[4];
 
         try {
             Log.i("RetrieveVPTask", "refreshing = true");
 
-            String unfiltered = Util.fetchUnfiltered((String) params[1]);
+            String unfiltered = Util.fetchUnfiltered(vpDate);
 
             Log.i("RetrieveVPTask", "got unfiltered: " + (unfiltered == null ? "null" : "not null"));
 
@@ -38,7 +42,13 @@ public class RetrieveVPTask extends AsyncTask<Object, Void, TriTuple<String, Int
 
             Log.i("RetrieveVPTask", "got doc");
 
-            TriTuple<String, Integer, String[]> filtered = Util.filterHTML(doc, ((String) params[2]), ((String) params[3]));
+            TriTuple<String, Integer, String[]> filtered;
+
+            if (kurse == null) {
+                filtered = Util.filterHTML(doc, stufe, sub);
+            } else {
+                filtered = Util.filterHTML(main, doc, stufe, kurse);
+            }
 
             if (filtered == null) {
                 Log.i("doInBackground", "filtered = null");

@@ -190,13 +190,13 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        ArrayAdapter<String> stufenAdapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> stufenAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
                 Util.getStufen()
         );
 
-        ArrayAdapter<String> klassenAdapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> klassenAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
                 Util.getKlassen()

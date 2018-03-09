@@ -108,7 +108,8 @@ public class MainActivity extends AppCompatActivity {
                     MainActivity.this,
                     Util.makeDate(ldate.getDayOfMonth(), ldate.getMonthOfYear() - 1, ldate.getYear()),
                     Util.getSettingStufe(getApplicationContext()),
-                    Util.getSettingKlasse(getApplicationContext())
+                    Util.getSettingKlasse(getApplicationContext()),
+                    Util.getSelectedKurse(getApplicationContext())
             );
         } else {
             MainActivity.this.runOnUiThread(new Runnable() {

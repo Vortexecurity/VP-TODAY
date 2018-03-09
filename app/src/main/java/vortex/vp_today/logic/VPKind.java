@@ -8,7 +8,7 @@ package vortex.vp_today.logic;
 public enum VPKind {
     VERTRETUNG("Vertretung"),
     ENTFALL("Entfall"),
-    RAUMVERTRETUNG("Raumvertretung"),
+    RAUMVERTRETUNG("Raum-Vertretung"),
     EIGENVARBEITEN("Eigenv. Arbeiten");
 
     private final String name;
