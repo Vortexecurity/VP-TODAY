@@ -8,14 +8,9 @@ import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import org.jsoup.Jsoup;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
 
-import vortex.vp_today.util.TriTuple;
 import vortex.vp_today.util.Util;
 
 /**
@@ -71,8 +66,8 @@ public class MainService extends IntentService {
                         Util.makePushNotification(getApplicationContext(), "Eigenv. Arbeiten:", str);
                     else if (low.contains("vertretung"))
                         Util.makePushNotification(getApplicationContext(), "Vertretung:", str);
-                    else if (low.contains("raumvertretung"))
-                        Util.makePushNotification(getApplicationContext(), "Raumvertretung:", str);
+                    else if (low.contains("raum-vertretung"))
+                        Util.makePushNotification(getApplicationContext(), "Raum-Vertretung:", str);
                     else
                         Util.makePushNotification(getApplicationContext(), "Unbekannt:", str);
 

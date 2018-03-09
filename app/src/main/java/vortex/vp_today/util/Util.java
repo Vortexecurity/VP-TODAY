@@ -14,7 +14,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -94,8 +93,39 @@ public final class Util {
      * @return Eine Liste der Kurse der Q1
      */
     @NonNull
-    public static String[] getKurseQ1(Context ctx) {
+    public static String[] getKurseQ1(@NonNull Context ctx) {
         return ctx.getResources().getStringArray(R.array.KurseQ1);
+    }
+
+    @Nullable
+    public static String[] getSelectedKurse(@NonNull Context ctx) {
+        Tuple<ArrayList<String>, ArrayList<Boolean>> tupSelects = Util.getGsonObject(ctx, ctx.getString(R.string.settingkurse), Tuple.class);
+
+        if (tupSelects.x.get(0) != null) {
+            Log.e("getSelectedKurse", "tupSelects.x type: " + tupSelects.x.getClass().toString());
+            if (tupSelects.x.get(0).equals("")) {
+                Log.e("getSelectedKurse", "Returning null, x get 0 equals \"\"");
+                return null;
+            }
+        }
+
+        ArrayList<String> selectedKurse = null;
+
+        if (tupSelects.x != null) {
+            selectedKurse = new ArrayList<>();
+            for (int i = 0; i < tupSelects.x.size(); i++) {
+                if (tupSelects.y.get(i)) {
+                    selectedKurse.add(tupSelects.x.get(i));
+                }
+            }
+        }
+
+        if (tupSelects == null)
+            Log.e("getSelectedKurse", "Returning null, tupSelects is null");
+        else if (tupSelects.x == null)
+            Log.e("getSelectedKurse", "Returning null, x is null");
+
+        return selectedKurse.toArray(new String[0]);
     }
 
     public static final int getNotificationID() {
@@ -549,29 +579,90 @@ public final class Util {
      * @author Simon Dräger
      */
     @Nullable
-    public static synchronized String[] filterHTML(@NonNull Context ctx, Document d, String stufe, String[] kurse) {
-        Toast.makeText(ctx, "Aktualisiere...", Toast.LENGTH_SHORT);
+    public static synchronized TriTuple<String, Integer, String[]> filterHTML(@NonNull final Activity actv, Document d, String stufe, String[] kurse) {
+        actv.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toasty.info(actv.getApplicationContext(), "Aktualisiere...").show();
+            }
+        });
 
-        String _stufe = stufe;
+        String msgotd = null;
+        int version = 0;
+        boolean showedToast = false;
 
-        if (_stufe == null || _stufe.equals(""))
-            _stufe = "05";
+        assert Character.isLetter(stufe.charAt(0)) : "Die Stufe muss EF oder höher sein.";
 
-        if (!Character.isLetter(_stufe.charAt(0)))
-            _stufe = "0" + _stufe;
+        Elements elements = d.select("tr[data-index*='" + stufe + "']");
+        Element strong = d.selectFirst("strong");
+        ArrayList<String> s = null;
 
-        Elements elements = d.select("tr[data-index*='" + _stufe + "']");
+        if (elements.first() == null) {
+            actv.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toasty.warning(actv.getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!").show();
+                }
+            });
+            if (strong != null)
+                version = Integer.parseInt(strong.text());
+            showedToast = true;
+        } else {
+            Log.i("filterHTML", "s = new ArrayList");
+            s = new ArrayList<>();
 
-        ArrayList<String> s = new ArrayList<>();
+            Element elem = d.selectFirst("p");
+            if (elem.text().equals("Für diesen Tag existiert derzeit kein Vertretungsplan. Bitten schauen Sie später nochmal vorbei!")) {
+                if (elem != null) {
+                    msgotd = elem.text();
+                }
+            } else {
+                Element msg = d.selectFirst("div.alert");
+                if (msg != null)
+                    msgotd = msg.text();
 
-        for (Element e : elements) {
-            if (e != null && !(s.contains(e.text())) && Util.anyMatch(e.text(), kurse))
-                s.add(e.text());
+                if (strong != null)
+                    version = Integer.parseInt(strong.text());
+
+                Element tbody = d.selectFirst("tbody");
+
+                Log.i("filterHTMLkurse", "kurse: " + TextUtils.join(",", kurse));
+
+                if (tbody != null) {
+                    Log.i("filterHTMLkurse", "tbody != null");
+                    /* Für jeden Listeneintrag */
+                    for (Element tr : tbody.children()) {
+                        Log.i("filterHTMLkurse", "tr child: " + tr.text());
+                        String trText = tr.text();
+                        /* Wenn das Element ein unbesuchtes, gültiges ist */
+                        if (tr != null && !s.contains(trText)) {
+                            Log.i("filterHTMLkurse", "child not null, not contained");
+                            /* Wenn das Element ein gesuchter Kurs ist */
+                            if (anyMatch(trText, kurse)) {
+                                /* Wenn die Stufe korrekt ist */
+                                if (trText.contains(stufe)) {
+                                    Log.i("filterHTMLkurse", "anyMatch success, stufe check success, adding");
+                                    s.add(trText);
+                                }
+                            } else
+                                Log.i("filterHTMLkurse", "anyMatch failure");
+                        } else
+                            Log.i("filterHTMLkurse", "tr null or contained");
+                    }
+                }
+            }
         }
 
-        Toast.makeText(ctx, "Aktualisiert!", Toast.LENGTH_SHORT);
+        if (!showedToast) {
+            actv.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toasty.success(actv.getApplicationContext(), "Aktualisiert!").show();
+                }
+            });
+        }
 
-        return s.toArray(new String[0]);
+        return new TriTuple<>(msgotd, Integer.valueOf(version), s == null ? null : s.toArray(new String[0]));
     }
 
     @Nullable
@@ -609,7 +700,7 @@ public final class Util {
                     case "entfall":
                         r.setArt(VPKind.ENTFALL);
                         break;
-                    case "raumvertretung":
+                    case "raum-vertretung":
                         r.setArt(VPKind.RAUMVERTRETUNG);
                         break;
                     case "eigenv. arbeiten":
