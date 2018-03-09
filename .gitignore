@@ -1,6 +1,6 @@
-.iml
+VP-TODAY.iml
 # .gradle
-/app/app.iml
+app/app.iml
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
