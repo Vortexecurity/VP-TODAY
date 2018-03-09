@@ -75,59 +75,16 @@ public class MainActivity extends AppCompatActivity {
             sp.edit().putString("clientid", Util.generateClientID()).apply();
         }
 
-        /* Listener region */
-        /*btnDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar cal = Calendar.getInstance();
-                int year = cal.get(Calendar.YEAR);
-                int month = cal.get(Calendar.MONTH);
-                int day = cal.get(Calendar.DAY_OF_MONTH);
-                DatePickerDialog dialog = new DatePickerDialog(
-                        MainActivity.this,
-                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                        mDateSetListener,
-                        year, month, day);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.show();
-            }
-        });*/
-
-        /*mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                month++;
-
-                if (day >= 10 && month >= 10)
-                    date = year + "-" + month + "-" + day;
-                else if (day < 10 && month >= 10)
-                    date = year + "-" + month + "-0" + day;
-                else if (month < 10 && day >= 10)
-                    date = year + "-0" + month + "-" + day;
-                else
-                    date = year + "-0" + month + "-0" + day;
-                textView.setText("Deine Vertretungen für : " + day + "." + month + "." + year);
-                //update();
-                new RetrieveVPTask().execute(
-                        MainActivity.this,
-                        Util.makeDate(day, month, year),
-                        Util.getSettingStufe(getApplicationContext()),
-                        Util.getSettingKlasse(getApplicationContext())
-                );
-            }
-        };*/
-
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 try {
                     updateListFromSpinner();
-
-                            /*
-                            Document doc = Jsoup.parse(tmp);
-                            String[] content = Util.getCurrentInfo(doc).getContent();
-                            txt.setText(TextUtils.join("\n\n", content));
-                            */
+                    /*
+                     Document doc = Jsoup.parse(tmp);
+                     String[] content = Util.getCurrentInfo(doc).getContent();
+                     txt.setText(TextUtils.join("\n\n", content));
+                     */
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -159,14 +116,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private synchronized void updateListFromSpinner() {
-        LocalDate ldate = new LocalDate(Util.makeVpDate(spinDate.getSelectedItem().toString()/*.replace('.', '-')*/));
-        Log.e("LDATE", ldate.toString());
-        new RetrieveVPTask().execute(
-                MainActivity.this,
-                Util.makeDate(ldate.getDayOfMonth(), ldate.getMonthOfYear() - 1, ldate.getYear()),
-                Util.getSettingStufe(getApplicationContext()),
-                Util.getSettingKlasse(getApplicationContext())
-        );
+        if (Util.isInternetConnected(getApplicationContext())) {
+            LocalDate ldate = new LocalDate(Util.makeVpDate(spinDate.getSelectedItem().toString()/*.replace('.', '-')*/));
+            Log.e("LDATE", ldate.toString());
+            new RetrieveVPTask().execute(
+                    MainActivity.this,
+                    Util.makeDate(ldate.getDayOfMonth(), ldate.getMonthOfYear() - 1, ldate.getYear()),
+                    Util.getSettingStufe(getApplicationContext()),
+                    Util.getSettingKlasse(getApplicationContext())
+            );
+        } else {
+            MainActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "Es besteht keine Internetverbindung!",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+            });
+        }
     }
 
     private synchronized void getVPHTML() {
@@ -175,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getApplicationContext(), "Ein Fehler ist während des Aktualisiervorgangs aufgetreten!", Toast.LENGTH_LONG);
+                        Toast.makeText(getApplicationContext(), "Ein Fehler ist während des Aktualisiervorgangs aufgetreten!", Toast.LENGTH_SHORT).show();
                     }
                 });
                 return;

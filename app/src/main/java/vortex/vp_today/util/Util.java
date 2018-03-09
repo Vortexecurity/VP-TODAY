@@ -32,6 +32,7 @@ import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -54,10 +55,46 @@ public final class Util {
     private static Random rand;
     private static final String ALPHANUM = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
     private static AtomicInteger atomInt;
+    private static List<String> lstStufen;
+    private static List<String> lstKlassen;
 
     static {
         rand = new Random();
         atomInt = new AtomicInteger(0);
+        lstStufen = new ArrayList<>();
+        lstKlassen = new ArrayList<>();
+
+        if (lstStufen.isEmpty()) {
+            lstStufen.addAll(Arrays.asList("5", "6", "7", "8", "9", "EF", "Q1", "Q2"));
+        }
+
+        if (lstKlassen.isEmpty()) {
+            lstKlassen.addAll(Arrays.asList("A", "B", "C", "D"));
+        }
+    }
+
+    /**
+     * @return Die Stufenliste
+     */
+    @NonNull
+    public static String[] getStufen() {
+        return lstStufen.toArray(new String[0]);
+    }
+
+    /**
+     * @return Die Klassenliste in Buchstaben
+     */
+    @NonNull
+    public static String[] getKlassen() {
+        return lstKlassen.toArray(new String[0]);
+    }
+
+    /**
+     * @return Eine Liste der Kurse der Q1
+     */
+    @NonNull
+    public static String[] getKurseQ1(Context ctx) {
+        return ctx.getResources().getStringArray(R.array.KurseQ1);
     }
 
     public static final int getNotificationID() {

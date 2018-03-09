@@ -20,7 +20,6 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import vortex.vp_today.R;
-import vortex.vp_today.logic.SharedLogic;
 import vortex.vp_today.util.Tuple;
 import vortex.vp_today.util.Util;
 
@@ -144,13 +143,13 @@ public class SettingsActivity extends AppCompatActivity {
         ArrayAdapter<String> stufenAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_spinner_item,
-                SharedLogic.getStufen()
+                Util.getStufen()
         );
 
         ArrayAdapter<String> klassenAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_spinner_item,
-                SharedLogic.getKlassen()
+                Util.getKlassen()
         );
 
         stufenAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
