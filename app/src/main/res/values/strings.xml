@@ -23,7 +23,7 @@
                             On need of contacting the publisher, please refer to the following persons:\n
                             <u>Simon Dräger <i>(Head Admin / Developer)</i></u> &lt;%4$s&gt;\n
                             <u>Melvin Zähl <i>(Head Admin / Developer)</i></u> &lt;%3$s&gt;\n
-                            <u>Florian Koll <i>(Customer Support / Project Management)</i></u> &lt;%5$s&gt;
+                            <u>Florian Koll <i>(Customer Support / Project Management / Bug Hunter)</i></u> &lt;%5$s&gt;
     </string>
     <string name="ratehint">(Geben Sie hier einen Feedback-Text ein...)</string>
     <string name="klasse">Klasse:</string>

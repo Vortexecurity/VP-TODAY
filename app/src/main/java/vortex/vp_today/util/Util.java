@@ -101,12 +101,17 @@ public final class Util {
     public static String[] getSelectedKurse(@NonNull Context ctx) {
         Tuple<ArrayList<String>, ArrayList<Boolean>> tupSelects = Util.getGsonObject(ctx, ctx.getString(R.string.settingkurse), Tuple.class);
 
-        if (tupSelects.x.get(0) != null) {
-            Log.e("getSelectedKurse", "tupSelects.x type: " + tupSelects.x.getClass().toString());
-            if (tupSelects.x.get(0).equals("")) {
-                Log.e("getSelectedKurse", "Returning null, x get 0 equals \"\"");
-                return null;
+        try {
+            if (tupSelects.x.get(0) != null) {
+                Log.e("getSelectedKurse", "tupSelects.x type: " + tupSelects.x.getClass().toString());
+                if (tupSelects.x.get(0).equals("")) {
+                    Log.e("getSelectedKurse", "Returning null, x get 0 equals \"\"");
+                    return null;
+                }
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
         }
 
         ArrayList<String> selectedKurse = null;
