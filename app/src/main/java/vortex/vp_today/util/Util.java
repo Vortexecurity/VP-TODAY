@@ -47,6 +47,7 @@ import vortex.vp_today.mail.BackgroundMail;
 
 /**
  * @author Simon Dräger
+ * @author Melvin Zähl
  * @author Florian Koll
  * @version 6.3.18
  */

@@ -14,6 +14,7 @@ import vortex.vp_today.R;
 
 /**
  * @author Simon Dräger
+ * @author Melvin Zähl
  * @version 3.3.18
  */
 

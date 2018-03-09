@@ -11,6 +11,7 @@ import vortex.vp_today.util.Util;
  * Holt die VP-Daten asynchron
  *
  * @author Simon Dräger
+ * @author Melvin Zähl
  * @version 8.3.18
  */
 

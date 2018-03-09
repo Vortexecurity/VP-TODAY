@@ -4,6 +4,7 @@ import org.joda.time.LocalDate;
 
 /**
  * @author Simon Dräger
+ * @author Melvin Zähl
  * @version 8.3.18
  */
 
