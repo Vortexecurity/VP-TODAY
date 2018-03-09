@@ -100,7 +100,66 @@
         <item>PXC 1</item>
         <item>MU G1</item>
         <item>MUB G1</item>
-        <item>PXM 1</item>>
+        <item>PXM 1</item>
+    </string-array>
+    <string name="title_activity_login">Sign in</string>
+
+    <string-array name="KurseQ2">
+        <item>BI G1</item>
+        <item>BI G2</item>
+        <item>BI G3</item>
+        <item>BI L1</item>
+        <item>BI L2</item>
+        <item>IF G1</item>
+        <item>IF L1</item>
+        <item>M G1</item>
+        <item>M G2</item>
+        <item>M G3</item>
+        <item>M G4</item>
+        <item>M L1</item>
+        <item>PL G1</item>
+        <item>PL G2</item>
+        <item>PL L1</item>
+        <item>S0 G1</item>
+        <item>S0 G2</item>
+        <item>GE G1</item>
+        <item>GE G2</item>
+        <item>GE L1</item>
+        <item>PH G1</item>
+        <item>PH G2</item>
+        <item>F G1</item>
+        <item>E G1</item>
+        <item>E G2</item>
+        <item>E G3</item>
+        <item>E G4</item>
+        <item>E L1</item>
+        <item>KU G1</item>
+        <item>KU G2</item>
+        <item>SW G1</item>
+        <item>SW G2</item>
+        <item>SW L1</item>
+        <item>PXM 1</item>
+        <item>D G1</item>
+        <item>D G2</item>
+        <item>D G3</item>
+        <item>D L1</item>
+        <item>D L2</item>
+        <item>EK G1</item>
+        <item>EK G2</item>
+        <item>EK L1</item>
+        <item>CH G1</item>
+        <item>CH G2</item>
+        <item>CH L1</item>
+        <item>ER G1</item>
+        <item>KR G1</item>
+        <item>SP G1</item>
+        <item>SP G2</item>
+        <item>SP G3</item>
+        <item>SP G4</item>
+        <item>SP G5</item>
+        <item>PXC 1</item>
+        <item>MU G1</item>
+        <item>PXM 1</item>
     </string-array>
     <string name="title_activity_login">Sign in</string>
 
