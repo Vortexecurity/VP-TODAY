@@ -22,7 +22,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Void, TriTuple<String, Int
     private Exception exception = null;
     private MainActivity main = null;
 
-    // MainActivity, String date, String stufe, String sub
+    // params: MainActivity, String date (vp style), String stufe, String sub
     @Override
     protected TriTuple<String, Integer, String[]> doInBackground(Object... params) {
         main = (MainActivity) params[0];

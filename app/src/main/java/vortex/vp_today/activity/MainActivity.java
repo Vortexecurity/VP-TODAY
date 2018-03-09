@@ -37,8 +37,6 @@ public class MainActivity extends AppCompatActivity {
     public TextView tvVers;
     public Spinner spinDate;
     public SwipeRefreshLayout swipe;
-    private static final Object lockObj = new Object();
-
     public EditText txt;
 
     @Override
@@ -60,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
         if (sp.getString("clientid", "0x0").equals("0x0")) {
             sp.edit().putString("clientid", Util.generateClientID()).apply();
         }
+
+        swipe.setColorSchemeResources(R.color.colorPrimaryDark);
 
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
     private synchronized void updateListFromSpinner() {
         if (Util.isInternetConnected(getApplicationContext())) {
-            LocalDate ldate = new LocalDate(Util.makeVpDate(spinDate.getSelectedItem().toString()/*.replace('.', '-')*/));
+            LocalDate ldate = new LocalDate(Util.makeVpDate(spinDate.getSelectedItem().toString()));
             Log.e("LDATE", ldate.toString());
             new RetrieveVPTask().execute(
                     MainActivity.this,
@@ -132,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
         );
 
         dateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         spinDate.setAdapter(dateAdapter);
     }
 

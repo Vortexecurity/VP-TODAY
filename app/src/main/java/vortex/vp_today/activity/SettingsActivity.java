@@ -70,8 +70,10 @@ public class SettingsActivity extends AppCompatActivity {
 
                 if (item.equals("EF") || item.equals("Q1") || item.equals("Q2")) {
                     spinKlassen.setEnabled(false);
+                    btnKurse.setEnabled(true);
                 } else {
                     spinKlassen.setEnabled(true);
+                    btnKurse.setEnabled(false);
                 }
 
                 hasChanged();
@@ -250,12 +252,15 @@ public class SettingsActivity extends AppCompatActivity {
         switch (stufe) {
             case "EF":
                 spinStufen.setSelection(5);
+                btnKurse.setEnabled(true);
                 break;
             case "Q1":
                 spinStufen.setSelection(6);
+                btnKurse.setEnabled(true);
                 break;
             case "Q2":
                 spinStufen.setSelection(7);
+                btnKurse.setEnabled(true);
                 break;
             default:
                 if (stufe == null || stufe.equals("")) {
