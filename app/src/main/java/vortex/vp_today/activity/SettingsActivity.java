@@ -137,6 +137,7 @@ public class SettingsActivity extends AppCompatActivity {
                         selects[i] = tupSelects.y.get(i);
                         selectedItems.add(items[i]);
                         boolSelectedItems.add(selects[i]);
+                        Log.i("btnKurseClick", "i = " + i);
                     }
                 } else {
                     Log.i("btnKurseClick", "tupSelects is null");

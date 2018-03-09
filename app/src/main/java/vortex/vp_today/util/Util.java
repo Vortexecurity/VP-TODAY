@@ -112,6 +112,8 @@ public final class Util {
     public static String[] getSelectedKurse() {
         Tuple<ArrayList<String>, ArrayList<Boolean>> tupSelects = Util.getGsonObject(context.getResources().getResourceName(R.string.settingkurse), Tuple.class);
 
+        // FIXME
+
         try {
             if (tupSelects.x.get(0) != null) {
                 Log.e("getSelectedKurse", "tupSelects.x type: " + tupSelects.x.getClass().toString());
