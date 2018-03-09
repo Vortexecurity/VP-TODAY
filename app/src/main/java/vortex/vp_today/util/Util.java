@@ -53,6 +53,10 @@ import vortex.vp_today.mail.BackgroundMail;
  */
 
 public final class Util {
+
+    private static Activity activity;
+    private static Context context;
+
     private static Random rand;
     private static final String ALPHANUM = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
     private static AtomicInteger atomInt;
@@ -72,6 +76,12 @@ public final class Util {
         if (lstKlassen.isEmpty()) {
             lstKlassen.addAll(Arrays.asList("A", "B", "C", "D"));
         }
+    }
+
+    public static void setup(Activity n){
+        activity = n;
+        context = activity.getApplicationContext();
+        Log.i("[UTIL]","Set up >> " + activity.getLocalClassName());
     }
 
     /**
@@ -181,8 +191,7 @@ public final class Util {
         return dates.toArray(new TwoFormatDate[0]);
     }
 
-    public static synchronized void ShowYesNoDialog(@NonNull Activity actv,
-                                                    @NonNull String text,
+    public static synchronized void ShowYesNoDialog(@NonNull String text,
                                                     @NonNull final DialogInterface.OnClickListener positiveClicked,
                                                     @NonNull final DialogInterface.OnClickListener negativeClicked) {
         try {
@@ -200,7 +209,7 @@ public final class Util {
                 }
             };
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(actv);
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setMessage(text)
                     .setPositiveButton("Ja", listener)
                     .setNegativeButton("Nein", listener).show();
@@ -210,17 +219,16 @@ public final class Util {
     }
 
     /**
-     * @param actv
      * @param preselectedItems Look the positions up in strings.xml/KurseQ1 etc. (complete list)
      * @return The selected items
      * @throws AssertionError wird ausgelöst, wenn preselectedItems != null und Länge != KurseQ1.length
      */
     @Nullable
-    public static Tuple<String[], Boolean[]> ShowKurseDialogQ1(@NonNull Activity actv, @Nullable boolean[] preselectedItems,
+    public static Tuple<String[], Boolean[]> ShowKurseDialogQ1(@Nullable boolean[] preselectedItems,
                                                                DialogInterface.OnMultiChoiceClickListener multiListener,
                                                                DialogInterface.OnClickListener positiveClick,
                                                                DialogInterface.OnClickListener negativeClick) throws AssertionError {
-        final Resources res = actv.getApplicationContext().getResources();
+        final Resources res = context.getResources();
         final int q1Len = res.getStringArray(R.array.KurseQ1).length;
         final ArrayList<String> selectedItems = new ArrayList<>(q1Len);
         final ArrayList<Boolean> boolSelectedItems = new ArrayList<>(q1Len);
@@ -242,7 +250,7 @@ public final class Util {
             }
         }
 
-        AlertDialog dialog = new AlertDialog.Builder(actv)
+        AlertDialog dialog = new AlertDialog.Builder(activity)
                 .setTitle("Kurse auswählen...")
                 .setMultiChoiceItems(items, preselectedItems, multiListener)
                 .setPositiveButton("OK", positiveClick)
@@ -303,16 +311,15 @@ public final class Util {
         };
     }
 
-    public static void sendBotEmail(@NonNull Activity actv,
-                                    @NonNull String[] to,
+    public static void sendBotEmail(@NonNull String[] to,
                                     @NonNull String subj,
                                     @NonNull String body,
                                     @Nullable String sendingMessage,
                                     @Nullable BackgroundMail.OnSuccessCallback succ,
                                     @Nullable BackgroundMail.OnFailCallback fail) {
-        BackgroundMail bm = new BackgroundMail(actv);
-        bm.setGmailUserName(actv.getApplicationContext().getString(R.string.botemail));
-        bm.setGmailPassword(actv.getApplicationContext().getString(R.string.botpwd));
+        BackgroundMail bm = new BackgroundMail(activity);
+        bm.setGmailUserName(activity.getApplicationContext().getString(R.string.botemail));
+        bm.setGmailPassword(activity.getApplicationContext().getString(R.string.botpwd));
         bm.setSendingMessage(sendingMessage);
         bm.setMailTo(TextUtils.join(",", to));
         bm.setFormSubject(subj);
@@ -466,16 +473,17 @@ public final class Util {
 
     /**
      * @param sub Klassenbuchstabe; Bsp 6C
+     * @param sub Klassenbuchstabe; Bsp 6C
      * @return TriTuple: 1 = msgotd / error string 2 = version 3 = html content
      * @author Melvin Zähl
      * @author Simon Dräger
      */
     @Nullable
-    public static synchronized TriTuple<String, Integer, String[]> filterHTML(@NonNull final Activity actv, Document d, String stufe, String sub) {
-        actv.runOnUiThread(new Runnable() {
+    public static synchronized TriTuple<String, Integer, String[]> filterHTML(Document d, String stufe, String sub) {
+        activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toasty.info(actv.getApplicationContext(), "Aktualisiere...").show();
+                Toasty.info(activity.getApplicationContext(), "Aktualisiere...").show();
             }
         });
 
@@ -499,10 +507,10 @@ public final class Util {
         ArrayList<String> s = null;
 
         if (elements.first() == null) {
-            actv.runOnUiThread(new Runnable() {
+            activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toasty.warning(actv.getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!").show();
+                    Toasty.warning(activity.getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!").show();
                 }
             });
             if (strong != null)
@@ -534,10 +542,10 @@ public final class Util {
         }
 
         if (!showedToast) {
-            actv.runOnUiThread(new Runnable() {
+            activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toasty.success(actv.getApplicationContext(), "Aktualisiert!").show();
+                    Toasty.success(context, "Aktualisiert!").show();
                 }
             });
         }

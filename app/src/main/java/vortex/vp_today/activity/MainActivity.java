@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         });
         /**/
 
+        Util.setup(this);
         new RetrieveDatesTask().execute(MainActivity.this);
     }
 

@@ -38,7 +38,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Void, TriTuple<String, Int
 
             Log.i("RetrieveVPTask", "got doc");
 
-            TriTuple<String, Integer, String[]> filtered = Util.filterHTML(main, doc, ((String) params[2]), ((String) params[3]));
+            TriTuple<String, Integer, String[]> filtered = Util.filterHTML(doc, ((String) params[2]), ((String) params[3]));
 
             if (filtered == null) {
                 Log.i("doInBackground", "filtered = null");

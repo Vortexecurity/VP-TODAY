@@ -150,7 +150,7 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                 }
 
-                Util.ShowKurseDialogQ1(SettingsActivity.this, selects, new DialogInterface.OnMultiChoiceClickListener() {
+                Util.ShowKurseDialogQ1(selects, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
                         if (isChecked) {
@@ -171,6 +171,7 @@ public class SettingsActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) { }
                 });
+
             }
         });
 
@@ -207,6 +208,7 @@ public class SettingsActivity extends AppCompatActivity {
         spinStufen.setAdapter(stufenAdapter);
         spinKlassen.setAdapter(klassenAdapter);
 
+        Util.setup(this);
         load();
     }
 
@@ -313,7 +315,7 @@ public class SettingsActivity extends AppCompatActivity {
                             new Handler().post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Util.ShowYesNoDialog(SettingsActivity.this, "Möchten Sie die ungesicherten Änderungen speichern?",
+                                    Util.ShowYesNoDialog("Möchten Sie die ungesicherten Änderungen speichern?",
                                             new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
