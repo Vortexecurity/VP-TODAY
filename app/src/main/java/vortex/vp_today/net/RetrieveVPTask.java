@@ -47,7 +47,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Void, TriTuple<String, Int
             if (kurse == null) {
                 filtered = Util.filterHTML(doc, stufe, sub);
             } else {
-                filtered = Util.filterHTML(main, doc, stufe, kurse);
+                filtered = Util.filterHTML(doc, stufe, kurse);
             }
 
             if (filtered == null) {

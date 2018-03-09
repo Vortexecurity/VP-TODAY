@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
     private synchronized void updateListFromSpinner() {
         if (Util.isInternetConnected()) {
-            LocalDate ldate = new LocalDate(Util.makeVpDate(spinDate.getSelectedItem().toString()));
+            LocalDate ldate = new LocalDate(Util.makeVpDate(spinDate.getSelectedItem().toString().substring(4)));
             Log.e("LDATE", ldate.toString());
             new RetrieveVPTask().execute(
                     MainActivity.this,
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         String[] actuals = new String[dates.length];
 
         for (int i = 0; i < actuals.length; i++)
-            actuals[i] = dates[i].getActualDate().getDayOfMonth() + "." + dates[i].getActualDate().getMonthOfYear() + "." + dates[i].getActualDate().getYear();
+            actuals[i] = dates[i].getPrefix() + dates[i].getActualDate().getDayOfMonth() + "." + dates[i].getActualDate().getMonthOfYear() + "." + dates[i].getActualDate().getYear();
 
         ArrayAdapter<String> dateAdapter = new ArrayAdapter<>(
                 this,

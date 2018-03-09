@@ -592,11 +592,11 @@ public final class Util {
      * @author Simon Dräger
      */
     @Nullable
-    public static synchronized TriTuple<String, Integer, String[]> filterHTML(@NonNull final Activity actv, Document d, String stufe, String[] kurse) {
-        actv.runOnUiThread(new Runnable() {
+    public static synchronized TriTuple<String, Integer, String[]> filterHTML(Document d, String stufe, String[] kurse) {
+        activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toasty.info(actv.getApplicationContext(), "Aktualisiere...").show();
+                //Toasty.info(activity.getApplicationContext(), "Aktualisiere...").show();
             }
         });
 
@@ -611,10 +611,10 @@ public final class Util {
         ArrayList<String> s = null;
 
         if (elements.first() == null) {
-            actv.runOnUiThread(new Runnable() {
+            activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toasty.warning(actv.getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!").show();
+                    Toasty.warning(activity.getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!").show();
                 }
             });
             if (strong != null)
@@ -667,10 +667,10 @@ public final class Util {
         }
 
         if (!showedToast) {
-            actv.runOnUiThread(new Runnable() {
+            activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toasty.success(actv.getApplicationContext(), "Aktualisiert!").show();
+                    //Toasty.success(activity.getApplicationContext(), "Aktualisiert!").show();
                 }
             });
         }

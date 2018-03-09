@@ -42,4 +42,28 @@ public class TwoFormatDate {
     public String toString() {
         return vpDate + " ; " + actualDate.toString();
     }
+
+    public String getPrefix(){
+        String prefix = "";
+        switch (getActualDate().getDayOfWeek()){
+            case 1:
+                prefix = "[Mo] ";
+                break;
+            case 2:
+                prefix = "[Di] ";
+                break;
+            case 3:
+                prefix = "[Mi] ";
+                break;
+            case 4:
+                prefix = "[Do] ";
+                break;
+            case 5:
+                prefix = "[Fr] ";
+                break;
+
+        }
+        return prefix;
+    }
+
 }
