@@ -101,15 +101,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private synchronized void updateListFromSpinner() {
-        if (Util.isInternetConnected(getApplicationContext())) {
+        if (Util.isInternetConnected()) {
             LocalDate ldate = new LocalDate(Util.makeVpDate(spinDate.getSelectedItem().toString()));
             Log.e("LDATE", ldate.toString());
             new RetrieveVPTask().execute(
                     MainActivity.this,
                     Util.makeDate(ldate.getDayOfMonth(), ldate.getMonthOfYear() - 1, ldate.getYear()),
-                    Util.getSettingStufe(getApplicationContext()),
-                    Util.getSettingKlasse(getApplicationContext()),
-                    Util.getSelectedKurse(getApplicationContext())
+                    Util.getSettingStufe(),
+                    Util.getSettingKlasse(),
+                    Util.getSelectedKurse()
             );
         } else {
             MainActivity.this.runOnUiThread(new Runnable() {

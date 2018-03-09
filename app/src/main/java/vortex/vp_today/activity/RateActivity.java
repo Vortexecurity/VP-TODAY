@@ -58,7 +58,7 @@ public class RateActivity extends AppCompatActivity {
                         }
                     });
                 } else {
-                    if (Util.isInternetConnected(getApplicationContext())) {
+                    if (Util.isInternetConnected()) {
                         String cid = prefs.getString("clientid", "0x0");
 
                         if (cid.equals("0x0")) {
@@ -68,7 +68,7 @@ public class RateActivity extends AppCompatActivity {
                         cid = prefs.getString("clientid", "0x0");
 
                         Util.sendBotEmail(
-                                Util.getDevEmails(getApplicationContext()),
+                                Util.getDevEmails(),
                                 "Client " + cid + " Rating: " + rateBar.getRating() + " Sterne",
                                 "Gesendete Mitteilung: \n\n" + txtSuggest.getText().toString(),
                                 "Sende Feedback...",

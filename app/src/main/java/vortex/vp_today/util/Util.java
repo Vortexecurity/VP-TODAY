@@ -103,13 +103,13 @@ public final class Util {
      * @return Eine Liste der Kurse der Q1
      */
     @NonNull
-    public static String[] getKurseQ1(@NonNull Context ctx) {
-        return ctx.getResources().getStringArray(R.array.KurseQ1);
+    public static String[] getKurseQ1() {
+        return context.getResources().getStringArray(R.array.KurseQ1);
     }
 
     @Nullable
-    public static String[] getSelectedKurse(@NonNull Context ctx) {
-        Tuple<ArrayList<String>, ArrayList<Boolean>> tupSelects = Util.getGsonObject(ctx, ctx.getString(R.string.settingkurse), Tuple.class);
+    public static String[] getSelectedKurse() {
+        Tuple<ArrayList<String>, ArrayList<Boolean>> tupSelects = Util.getGsonObject(context.getResources().getResourceName(R.string.settingkurse), Tuple.class);
 
         try {
             if (tupSelects.x.get(0) != null) {
@@ -147,8 +147,8 @@ public final class Util {
         return atomInt.incrementAndGet();
     }
 
-    public static void putGsonObject(@NonNull Context ctx, @NonNull String tag, @Nullable Object obj) {
-        SharedPreferences.Editor prefsEditor = ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).edit();
+    public static void putGsonObject(@NonNull String tag, @Nullable Object obj) {
+        SharedPreferences.Editor prefsEditor = context.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).edit();
         Gson gson = new Gson();
         String json = gson.toJson(obj);
         prefsEditor.putString(tag, json);
@@ -156,16 +156,16 @@ public final class Util {
     }
 
     @Nullable
-    public static Object getGsonObject(@NonNull Context ctx, @NonNull String tag) {
-        SharedPreferences prefs = ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
+    public static Object getGsonObject(@NonNull String tag) {
+        SharedPreferences prefs = context.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
         Gson gson = new Gson();
         String json = prefs.getString(tag, "");
         return gson.fromJson(json, Object.class);
     }
 
     @Nullable
-    public static <T extends Object> T getGsonObject(@NonNull Context ctx, @NonNull String tag, Class type) {
-        SharedPreferences prefs = ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
+    public static <T extends Object> T getGsonObject(@NonNull String tag, Class type) {
+        SharedPreferences prefs = context.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
         Gson gson = new Gson();
         String json = prefs.getString(tag, "");
         Log.e("getGsonObject", "json: " + json);
@@ -325,24 +325,24 @@ public final class Util {
         return output;
     }
 
-    public static String getSettingStufe(Context ctx) {
-        return ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getString("stufe", "");
+    public static String getSettingStufe() {
+        return context.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getString("stufe", "");
     }
 
-    public static String getSettingKlasse(Context ctx) {
-        return ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getString("klasse", "");
+    public static String getSettingKlasse() {
+        return context.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getString("klasse", "");
     }
 
-    public static boolean isInternetConnected(Context ctx) {
-        ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+    public static boolean isInternetConnected() {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
     }
 
-    public static String[] getDevEmails(Context ctx) {
-        return new String[]{ctx.getResources().getString(R.string.simonemail),
-                ctx.getResources().getString(R.string.melvinemail),
-                ctx.getResources().getString(R.string.florianemail)
+    public static String[] getDevEmails() {
+        return new String[]{context.getResources().getString(R.string.simonemail),
+                context.getResources().getString(R.string.melvinemail),
+                context.getResources().getString(R.string.florianemail)
         };
     }
 
@@ -390,11 +390,11 @@ public final class Util {
         return false;
     }
 
-    public static void makePushNotification(Context ctx, String title, String text) {
+    public static void makePushNotification(String title, String text) {
         try {
-            NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-            Notification.Builder notify = new Notification.Builder(ctx);
+            Notification.Builder notify = new Notification.Builder(context);
             notify.setContentTitle(title);
             notify.setContentText(text);
             notify.setSmallIcon(R.mipmap.ic_launcher);

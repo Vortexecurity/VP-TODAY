@@ -124,7 +124,7 @@ public class SettingsActivity extends AppCompatActivity {
                 final ArrayList<Boolean> boolSelectedItems = new ArrayList<>(q1Len);
                 final String[] items = res.getStringArray(R.array.KurseQ1);
 
-                Tuple<String[], ArrayList<Boolean>> tupSelects = Util.getGsonObject(getApplicationContext(), getString(R.string.settingkurse), Tuple.class);
+                Tuple<String[], ArrayList<Boolean>> tupSelects = Util.getGsonObject(getString(R.string.settingkurse), Tuple.class);
 
                 if (tupSelects != null) {
                     Log.i("btnKurseClick", "tupSelects not null");
@@ -236,7 +236,7 @@ public class SettingsActivity extends AppCompatActivity {
         e.putBoolean(getString(R.string.settingvibrateLS), switchVibrate.isChecked());
 
         if (currentKurseChanges != null) {
-            Util.putGsonObject(getApplicationContext(), getString(R.string.settingkurse), currentKurseChanges);
+            Util.putGsonObject(getString(R.string.settingkurse), currentKurseChanges);
         }
 
         if (e.commit())
@@ -249,7 +249,7 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences prefs = getApplicationContext().getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
 
         /* Spinner Stufen setting */
-        String stufe = Util.getSettingStufe(getApplicationContext());
+        String stufe = Util.getSettingStufe();
 
         switch (stufe) {
             case "EF":
@@ -275,7 +275,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         /* Spinner Klassen setting */
-        String klasse = Util.getSettingKlasse(getApplicationContext());
+        String klasse = Util.getSettingKlasse();
 
         switch (klasse) {
             case "A":
