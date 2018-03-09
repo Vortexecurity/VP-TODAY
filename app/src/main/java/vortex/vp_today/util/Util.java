@@ -117,6 +117,15 @@ public final class Util {
         return gson.fromJson(json, Object.class);
     }
 
+    @Nullable
+    public static <T extends Object> T getGsonObject(@NonNull Context ctx, @NonNull String tag, Class type) {
+        SharedPreferences prefs = ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = prefs.getString(tag, "");
+        Log.e("getGsonObject", "json: " + json);
+        return ((T)gson.fromJson(json, type));
+    }
+
     public static synchronized String makeVpDate(String actualDate) {
         try {
             SimpleDateFormat format1 = new SimpleDateFormat("d.M.yyyy", Locale.ENGLISH);
@@ -206,7 +215,10 @@ public final class Util {
      * @throws AssertionError wird ausgelöst, wenn preselectedItems != null und Länge != KurseQ1.length
      */
     @Nullable
-    public static Tuple<String[], Boolean[]> ShowKurseDialogQ1(@NonNull Activity actv, @Nullable boolean[] preselectedItems) throws AssertionError {
+    public static Tuple<String[], Boolean[]> ShowKurseDialogQ1(@NonNull Activity actv, @Nullable boolean[] preselectedItems,
+                                                               DialogInterface.OnMultiChoiceClickListener multiListener,
+                                                               DialogInterface.OnClickListener positiveClick,
+                                                               DialogInterface.OnClickListener negativeClick) throws AssertionError {
         final Resources res = actv.getApplicationContext().getResources();
         final int q1Len = res.getStringArray(R.array.KurseQ1).length;
         final ArrayList<String> selectedItems = new ArrayList<>(q1Len);
@@ -223,6 +235,7 @@ public final class Util {
             }
         } else {
             /* Sonst alles auf false setzen */
+            Log.i("ShowKurseDialogQ1", "size: " + boolSelectedItems.size());
             for (int i = 0; i < q1Len; i++) {
                 boolSelectedItems.set(i, false);
             }
@@ -230,26 +243,10 @@ public final class Util {
 
         AlertDialog dialog = new AlertDialog.Builder(actv)
                 .setTitle("Kurse auswählen...")
-                .setMultiChoiceItems(items, preselectedItems, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
-                        if (isChecked) {
-                            selectedItems.set(indexSelected, items[indexSelected]);
-                        } else {
-                            selectedItems.remove(items[indexSelected]);
-                        }
-                    }
-                }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        result.setResult(DialogResult.OK);
-                    }
-                }).setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        result.setResult(DialogResult.CANCEL);
-                    }
-                }).create();
+                .setMultiChoiceItems(items, preselectedItems, multiListener)
+                .setPositiveButton("OK", positiveClick)
+                .setNegativeButton("Abbrechen", negativeClick)
+                .create();
 
         dialog.show();
 

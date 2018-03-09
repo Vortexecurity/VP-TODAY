@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,6 +20,8 @@ import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import vortex.vp_today.R;
 import vortex.vp_today.util.Tuple;
@@ -112,16 +116,59 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 boolean[] selects = null;
+                final Resources res = getApplicationContext().getResources();
+                final int q1Len = res.getStringArray(R.array.KurseQ1).length;
+                final ArrayList<String> selectedItems = new ArrayList<>(q1Len);
+                final ArrayList<Boolean> boolSelectedItems = new ArrayList<>(q1Len);
+                final String[] items = res.getStringArray(R.array.KurseQ1);
 
-                // FIXME: crasht beim laden
+                Tuple<String[], ArrayList<Boolean>> tupSelects = Util.getGsonObject(getApplicationContext(), getString(R.string.settingkurse), Tuple.class);
 
-                Tuple<String[], Boolean[]> tupSelects = (Tuple<String[], Boolean[]>) Util.getGsonObject(getApplicationContext(), getString(R.string.settingkurse));
+                if (tupSelects != null) {
+                    Log.i("btnKurseClick", "tupSelects not null");
+                    Log.i("btnKurseClick", "tupleSelects type: " + tupSelects.getClass().toString());
+                    //Log.i("btnKurseClick", "tupSelects.y type: " + tupSelects.y.getClass().toString());
+                    selects = Util.BoolToTypeBool(tupSelects.y.toArray(new Boolean[0]));
 
-                if (tupSelects != null)
-                    selects = Util.BoolToTypeBool(tupSelects.y);
+                    for (int i = 0; i < q1Len; i++) {
+                        selects[i] = tupSelects.y.get(i).booleanValue();
+                        selectedItems.add(items[i]);
+                        boolSelectedItems.add(selects[i]);
+                    }
+                } else {
+                    Log.i("btnKurseClick", "tupSelects is null");
+                    selects = new boolean[q1Len];
 
-                currentKurseChanges = Util.ShowKurseDialogQ1(SettingsActivity.this, selects);
-                hasChanged();
+                    for (int i = 0; i < q1Len; i++)
+                        selectedItems.add("");
+
+                    for (int i = 0; i < q1Len; i++) {
+                        //selects[i] = false;
+                        boolSelectedItems.add(false);
+                    }
+                }
+
+                Util.ShowKurseDialogQ1(SettingsActivity.this, selects, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
+                        if (isChecked) {
+                            selectedItems.set(indexSelected, items[indexSelected]);
+                            boolSelectedItems.set(indexSelected, true);
+                        } else {
+                            selectedItems.remove(items[indexSelected]);
+                            boolSelectedItems.set(indexSelected, false);
+                        }
+                    }
+                }, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        currentKurseChanges = new Tuple<>(selectedItems.toArray(new String[0]), boolSelectedItems.toArray(new Boolean[0]));
+                        hasChanged();
+                    }
+                }, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) { }
+                });
             }
         });
 
