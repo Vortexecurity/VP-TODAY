@@ -77,7 +77,8 @@
         <item>LI G1</item>
         <item>SW G1</item>
         <item>SW G2</item>
-        <item>PXM1</item>
+        <item>SW L1</item>
+        <item>PXM 1</item>
         <item>D G1</item>
         <item>D G2</item>
         <item>D G3</item>
@@ -98,7 +99,8 @@
         <item>SP G6</item>
         <item>PXC 1</item>
         <item>MU G1</item>
-        <item>MUB 1</item>
+        <item>MUB G1</item>
+        <item>PXM 1</item>>
     </string-array>
     <string name="title_activity_login">Sign in</string>
 
