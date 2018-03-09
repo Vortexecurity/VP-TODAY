@@ -23,7 +23,7 @@
                             On need of contacting the publisher, please refer to the following persons:\n
                             <u>Simon Dräger <i>(Head Admin / Developer)</i></u> &lt;%4$s&gt;\n
                             <u>Melvin Zähl <i>(Head Admin / Developer)</i></u> &lt;%3$s&gt;\n
-                            <u>Florian Koll <i>(Customer Support / Project Management)</i></u> &lt;%5$s&gt;
+                            <u>Florian Koll <i>(Customer Support / Project Management / Bug Hunter)</i></u> &lt;%5$s&gt;
     </string>
     <string name="ratehint">(Geben Sie hier einen Feedback-Text ein...)</string>
     <string name="klasse">Klasse:</string>
@@ -35,7 +35,13 @@
     <string name="settingstufe">stufe</string>
     <string name="settingpushes">receivePushes</string>
     <string name="settingvibrateLS">vibrateOnPushReceiveInLS</string>
+    <string name="settingAuthorized">usrAuthorized</string>
+    <string name="settingSaveLogin">saveLogin</string>
+    <string name="settingUsrname">usrName</string>
+    <string name="settingPwd">passwd</string>
     <string name="selectedkurseindices">selectedKurseIndices</string>
+    <string name="saveLogin">Angaben speichern</string>
+    <string name="angabenohnegewaehr">Alle Angaben ohne Gewähr!</string>
     <string-array name="KurseQ1">
         <item>BI G1</item>
         <item>BI G2</item>
@@ -97,17 +103,11 @@
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_usr">Benutzername</string>
-    <string name="prompt_password">Password (optional)</string>
+    <string name="hintUsrname">Benutzername</string>
+    <string name="hintpwd">Passwort</string>
     <string name="action_sign_in">Anmelden</string>
-    <string name="action_sign_in_short">Anmelden</string>
-    <string name="error_invalid_usr">This email address is invalid</string>
-    <string name="error_invalid_pwd">This password is too short</string>
-    <string name="error_incorrect_pwd">Inkorrektes Passwort.</string>
+    <string name="error_incorrect_creds">Inkorrekter Benutzername / Passwort.</string>
     <string name="error_field_required">Dieses Feld ist ein Pflichtfeld.</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
 </resources>

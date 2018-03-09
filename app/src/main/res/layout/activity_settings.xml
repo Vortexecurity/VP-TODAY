@@ -78,6 +78,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
+                android:theme="@style/Theme.SwitchPrimary"
                 android:paddingLeft="33dp"
                 android:text="@string/receivepushes" />
 
@@ -87,6 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:enabled="false"
+                android:theme="@style/Theme.SwitchPrimary"
                 android:paddingLeft="10dp"
                 android:text="@string/vibrateonreceive"
                 android:textSize="13sp" />
@@ -96,25 +98,37 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
+                android:background="@color/colorPrimary"
                 android:text="@string/selectkurse" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0">
+
+                <Button
+                    android:id="@+id/btnCancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/btnApply"
+                    android:layout_alignBottom="@+id/btnApply"
+                    android:layout_marginEnd="11dp"
+                    android:layout_toStartOf="@+id/btnApply"
+                    android:background="@color/colorPrimary"
+                    android:text="@string/cancel" />
+
+                <Button
+                    android:id="@+id/btnApply"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginBottom="12dp"
+                    android:background="@color/colorPrimary"
+                    android:text="@string/apply" />
+            </RelativeLayout>
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btnApply"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:text="@string/apply" />
-
-        <Button
-            android:id="@+id/btnCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="11dp"
-            android:layout_toStartOf="@+id/btnApply"
-            android:text="@string/cancel" />
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

@@ -4,4 +4,6 @@
     <bool name="switchPushVibrateEnabled">false</bool>
     <bool name="receivePushesEnabled">false</bool>
     <bool name="defaultFetchHtml">true</bool>
+    <string name="defaultKlasse">5</string>
+    <string name="defaultKlasseBuchstabe">A</string>
 </resources>

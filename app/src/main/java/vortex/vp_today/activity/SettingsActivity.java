@@ -4,12 +4,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
+import android.content.res.Resources;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,10 +19,11 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.Toast;
 
+import java.util.ArrayList;
+
+import es.dmoral.toasty.Toasty;
 import vortex.vp_today.R;
-import vortex.vp_today.logic.SharedLogic;
 import vortex.vp_today.util.Tuple;
 import vortex.vp_today.util.Util;
 
@@ -34,7 +36,6 @@ import vortex.vp_today.util.Util;
 public class SettingsActivity extends AppCompatActivity {
     private boolean changed = false;
     private static final Object lockObj = new Object();
-    private volatile boolean _continue = false;
 
     private Spinner spinStufen;
     private Spinner spinKlassen;
@@ -69,9 +70,10 @@ public class SettingsActivity extends AppCompatActivity {
 
                 if (item.equals("EF") || item.equals("Q1") || item.equals("Q2")) {
                     spinKlassen.setEnabled(false);
-                }
-                else {
+                    btnKurse.setEnabled(true);
+                } else {
                     spinKlassen.setEnabled(true);
+                    btnKurse.setEnabled(false);
                 }
 
                 hasChanged();
@@ -97,8 +99,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        btnApply.setBackgroundColor(Color.GREEN);
-
         btnApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,8 +106,6 @@ public class SettingsActivity extends AppCompatActivity {
                 NavUtils.navigateUpFromSameTask(SettingsActivity.this);
             }
         });
-
-        btnCancel.setBackgroundColor(Color.GREEN);
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,16 +118,60 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 boolean[] selects = null;
+                final Resources res = getApplicationContext().getResources();
+                final int q1Len = res.getStringArray(R.array.KurseQ1).length;
+                final ArrayList<String> selectedItems = new ArrayList<>(q1Len);
+                final ArrayList<Boolean> boolSelectedItems = new ArrayList<>(q1Len);
+                final String[] items = res.getStringArray(R.array.KurseQ1);
 
-                // FIXME: crasht beim laden
+                Tuple<String[], ArrayList<Boolean>> tupSelects = Util.getGsonObject(getString(R.string.settingkurse), Tuple.class);
 
-                Tuple<String[], Boolean[]> tupSelects = (Tuple<String[], Boolean[]>) Util.getGsonObject(getApplicationContext(), getString(R.string.settingkurse));
+                if (tupSelects != null) {
+                    Log.i("btnKurseClick", "tupSelects not null");
+                    Log.i("btnKurseClick", "tupleSelects type: " + tupSelects.getClass().toString());
+                    //Log.i("btnKurseClick", "tupSelects.y type: " + tupSelects.y.getClass().toString());
+                    selects = Util.BoolToTypeBool(tupSelects.y.toArray(new Boolean[0]));
 
-                if (tupSelects != null)
-                     selects = Util.BoolToTypeBool(tupSelects.y);
+                    for (int i = 0; i < q1Len; i++) {
+                        selects[i] = tupSelects.y.get(i).booleanValue();
+                        selectedItems.add(items[i]);
+                        boolSelectedItems.add(selects[i]);
+                    }
+                } else {
+                    Log.i("btnKurseClick", "tupSelects is null");
+                    selects = new boolean[q1Len];
 
-                currentKurseChanges = Util.ShowKurseDialogQ1(SettingsActivity.this, selects);
-                hasChanged();
+                    for (int i = 0; i < q1Len; i++)
+                        selectedItems.add("");
+
+                    for (int i = 0; i < q1Len; i++) {
+                        //selects[i] = false;
+                        boolSelectedItems.add(false);
+                    }
+                }
+
+                Util.ShowKurseDialogQ1(selects, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
+                        if (isChecked) {
+                            selectedItems.set(indexSelected, items[indexSelected]);
+                            boolSelectedItems.set(indexSelected, true);
+                        } else {
+                            selectedItems.remove(items[indexSelected]);
+                            boolSelectedItems.set(indexSelected, false);
+                        }
+                    }
+                }, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        currentKurseChanges = new Tuple<>(selectedItems.toArray(new String[0]), boolSelectedItems.toArray(new Boolean[0]));
+                        hasChanged();
+                    }
+                }, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) { }
+                });
+
             }
         });
 
@@ -148,16 +190,16 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        ArrayAdapter<String> stufenAdapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> stufenAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
-                SharedLogic.getStufen()
+                Util.getStufen()
         );
 
-        ArrayAdapter<String> klassenAdapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> klassenAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
-                SharedLogic.getKlassen()
+                Util.getKlassen()
         );
 
         stufenAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -166,10 +208,11 @@ public class SettingsActivity extends AppCompatActivity {
         spinStufen.setAdapter(stufenAdapter);
         spinKlassen.setAdapter(klassenAdapter);
 
+        Util.setup(this);
         load();
     }
 
-    public static void show(@NonNull Context context){
+    public static void show(@NonNull Context context) {
         Intent intent = new Intent(context, SettingsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
@@ -193,30 +236,33 @@ public class SettingsActivity extends AppCompatActivity {
         e.putBoolean(getString(R.string.settingvibrateLS), switchVibrate.isChecked());
 
         if (currentKurseChanges != null) {
-            Util.putGsonObject(getApplicationContext(), getString(R.string.settingkurse), currentKurseChanges);
+            Util.putGsonObject(getString(R.string.settingkurse), currentKurseChanges);
         }
 
         if (e.commit())
-            Toast.makeText(getApplicationContext(), "Einstellungen gesichert!", Toast.LENGTH_SHORT).show();
+            Toasty.success(getApplicationContext(), "Einstellungen gesichert!").show();
         else
-            Toast.makeText(getApplicationContext(), "Speichern fehlgeschlagen!", Toast.LENGTH_SHORT).show();
+            Toasty.error(getApplicationContext(), "Speichern fehlgeschlagen!").show();
     }
 
     private synchronized void load() {
         SharedPreferences prefs = getApplicationContext().getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
 
         /* Spinner Stufen setting */
-        String stufe = Util.getSettingStufe(getApplicationContext());
+        String stufe = Util.getSettingStufe();
 
         switch (stufe) {
             case "EF":
                 spinStufen.setSelection(5);
+                btnKurse.setEnabled(true);
                 break;
             case "Q1":
                 spinStufen.setSelection(6);
+                btnKurse.setEnabled(true);
                 break;
             case "Q2":
                 spinStufen.setSelection(7);
+                btnKurse.setEnabled(true);
                 break;
             default:
                 if (stufe == null || stufe.equals("")) {
@@ -229,7 +275,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         /* Spinner Klassen setting */
-        String klasse = Util.getSettingKlasse(getApplicationContext());
+        String klasse = Util.getSettingKlasse();
 
         switch (klasse) {
             case "A":
@@ -261,24 +307,31 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch ( item.getItemId() ) {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 try {
                     synchronized (lockObj) {
-                        Runnable r = new Runnable() {
-                            @Override
-                            public void run() {
-                                if (changed)
-                                    DoDialog();
-                                SettingsActivity.this._continue = true;
-                            }
-                        };
-                        new Handler().post(r);
-
-                        // TODO: warten bis r fertig ist
-                        //r.wait();
-
-                        NavUtils.navigateUpFromSameTask(this);
+                        if (changed) {
+                            new Handler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Util.ShowYesNoDialog("Möchten Sie die ungesicherten Änderungen speichern?",
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    save();
+                                                    goBack();
+                                                }
+                                            },
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    goBack();
+                                                }
+                                            });
+                                }
+                            });
+                        }
                     }
                     return true;
                 } catch (Exception ex) {
@@ -289,15 +342,11 @@ public class SettingsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void DoDialog() {
-        if (changed) {
-            if (Util.ShowYesNoDialog(SettingsActivity.this, "Möchten Sie die ungespeicherten Änderungen speichern?") == DialogInterface.BUTTON_POSITIVE) {
-                save();
-            }
-        }
+    private synchronized void goBack() {
+        NavUtils.navigateUpFromSameTask(this);
     }
 
-    private void hasChanged() {
+    private synchronized void hasChanged() {
         changed = true;
     }
 }

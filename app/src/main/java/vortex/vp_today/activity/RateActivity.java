@@ -2,24 +2,27 @@ package vortex.vp_today.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
-import android.widget.Toast;
 
+import es.dmoral.toasty.Toasty;
 import vortex.vp_today.R;
+import vortex.vp_today.mail.BackgroundMail;
 import vortex.vp_today.util.Util;
 
 /**
  * @author Simon Dräger
- * @version 3.3.18
+ * @author Melvin Zähl
+ * @version 6.3.18
  */
 
 public class RateActivity extends AppCompatActivity {
@@ -27,11 +30,14 @@ public class RateActivity extends AppCompatActivity {
     private Button btnSend;
     private EditText txtSuggest;
     private RatingBar rateBar;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rate);
+
+        prefs = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
 
         progBar = findViewById(R.id.progressBar);
         btnSend = findViewById(R.id.btnSend);
@@ -48,24 +54,42 @@ public class RateActivity extends AppCompatActivity {
                     new Handler().post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), "Bitte geben Sie einen Bericht ein!", Toast.LENGTH_SHORT).show();
+                            Toasty.info(getApplicationContext(), "Bitte geben Sie einen Bericht ein!").show();
                         }
                     });
                 } else {
-                    if (Util.isInternetConnected(getApplicationContext())) {
-                        Util.sendBotEmail(RateActivity.this, Util.getDevEmails(getApplicationContext()), "Rating " + rateBar.getRating() + " Sterne",
-                                txtSuggest.getText().toString());
-                        new Handler().post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplicationContext(), "Feedback erfolgreich gesendet!", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                    if (Util.isInternetConnected()) {
+                        String cid = prefs.getString("clientid", "0x0");
+
+                        if (cid.equals("0x0")) {
+                            prefs.edit().putString("clientid", Util.generateClientID().toString()).apply();
+                        }
+
+                        cid = prefs.getString("clientid", "0x0");
+
+                        Util.sendBotEmail(
+                                Util.getDevEmails(),
+                                "Client " + cid + " Rating: " + rateBar.getRating() + " Sterne",
+                                "Gesendete Mitteilung: \n\n" + txtSuggest.getText().toString(),
+                                "Sende Feedback...",
+                                new BackgroundMail.OnSuccessCallback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        successCallback();
+                                    }
+                                },
+                                new BackgroundMail.OnFailCallback() {
+                                    @Override
+                                    public void onFail() {
+                                        failCallback();
+                                    }
+                                }
+                        );
                     } else {
                         new Handler().post(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(getApplicationContext(), "Es besteht keine Internetverbindung.", Toast.LENGTH_SHORT).show();
+                                Toasty.error(getApplicationContext(), "Es besteht keine Internetverbindung.").show();
                             }
                         });
                     }
@@ -83,6 +107,15 @@ public class RateActivity extends AppCompatActivity {
                 return false;
             }
         });
+        Util.setup(this);
+    }
+
+    private void successCallback() {
+        Toasty.success(getApplicationContext(), "Feedback erfolgreich gesendet!").show();
+    }
+
+    private void failCallback() {
+        Toasty.error(getApplicationContext(), "Es ist ein Fehler beim Senden aufgetreten.").show();
     }
 
     public static void show(@NonNull Context context){
