@@ -13,7 +13,7 @@ public enum VPKind {
 
     private final String name;
 
-    VPKind(String strEquiv) {
+    VPKind (String strEquiv) {
         name = strEquiv;
     }
 

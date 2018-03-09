@@ -102,8 +102,6 @@
         <item>MUB G1</item>
         <item>PXM 1</item>
     </string-array>
-    <string name="title_activity_login">Sign in</string>
-
     <string-array name="KurseQ2">
         <item>BI G1</item>
         <item>BI G2</item>

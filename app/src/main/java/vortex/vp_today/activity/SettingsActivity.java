@@ -132,8 +132,9 @@ public class SettingsActivity extends AppCompatActivity {
                     //Log.i("btnKurseClick", "tupSelects.y type: " + tupSelects.y.getClass().toString());
                     selects = Util.BoolToTypeBool(tupSelects.y.toArray(new Boolean[0]));
 
+                    Log.i("btnKurseClick", "tupSelects.y lenght " + tupSelects.y.toArray(new Boolean[0]).length);
                     for (int i = 0; i < q1Len; i++) {
-                        selects[i] = tupSelects.y.get(i).booleanValue();
+                        selects[i] = tupSelects.y.get(i);
                         selectedItems.add(items[i]);
                         boolSelectedItems.add(selects[i]);
                     }

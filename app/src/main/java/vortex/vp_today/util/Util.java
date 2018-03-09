@@ -609,7 +609,7 @@ public final class Util {
 
         Elements elements = d.select("tr[data-index*='" + stufe + "']");
         Element strong = d.selectFirst("strong");
-        ArrayList<String> s = null;
+        ArrayList<VPRow> s = null;
 
         if (elements.first() == null) {
             activity.runOnUiThread(new Runnable() {
@@ -647,13 +647,43 @@ public final class Util {
                     /* Für jeden Listeneintrag */
                     for (Element tr : tbody.children()) {
                         Log.i("filterHTMLkurse", "tr child: " + tr.text());
-                        String trText = tr.text();
-                        /* Wenn das Element ein unbesuchtes, gültiges ist */
+                        //String trText = tr.text();
+                        VPInfo info = new VPInfo();
+
+                        for (Element tds : tr.children()) {
+                            Element dataType = tds.selectFirst("data-type");
+                            Log.i("filterHTMLkurse", "dataType: " + dataType.text());
+                            Element dataHour = tds.selectFirst("data-hour");
+                            Log.i("filterHTMLkurse", "datahour " + dataHour.text());
+                            Element dataSubject = tds.selectFirst("data-subject");
+                            Log.i("filterHTMLkurse", "datasubject " + dataSubject.text());
+                            Element dataAgent = tds.selectFirst("hidden-xs data-agent");
+                            Element dataForm = tds.selectFirst("data-form");
+                            Element dataRoom = tds.selectFirst("hidden-xs data-room");
+                            Element dataInstead = tds.selectFirst("hidden-xs data-instead");
+                            Element dataNotice = tds.selectFirst("hidden-xs data-notice");
+
+                            VPRow row = new VPRow();
+                            row.setArt(VPKind.valueOf(dataType.text().toLowerCase()));
+                            row.setStunde(Integer.parseInt(dataHour.text()));
+                            row.setFach(dataSubject.text());
+                            row.setVertreter(dataAgent.text());
+                            row.setKlasse(dataForm.text().replace("0", ""));
+                            row.setRaum(dataRoom.text());
+                            row.setStatt(dataInstead.text());
+                            row.setBemerkung(dataNotice.text());
+
+                            if (tr != null && !s.contains(row)) {
+                                info.addRow(row);
+                            }
+                        }
+
+                        /* Wenn das Element ein unbesuchtes, gültiges ist
                         if (tr != null && !s.contains(trText)) {
                             Log.i("filterHTMLkurse", "child not null, not contained");
-                            /* Wenn das Element ein gesuchter Kurs ist */
+                            // Wenn das Element ein gesuchter Kurs ist
                             if (anyMatch(trText, kurse)) {
-                                /* Wenn die Stufe korrekt ist */
+                                // Wenn die Stufe korrekt ist
                                 if (trText.contains(stufe)) {
                                     Log.i("filterHTMLkurse", "anyMatch success, stufe check success, adding");
                                     s.add(trText);
@@ -661,7 +691,7 @@ public final class Util {
                             } else
                                 Log.i("filterHTMLkurse", "anyMatch failure");
                         } else
-                            Log.i("filterHTMLkurse", "tr null or contained");
+                            Log.i("filterHTMLkurse", "tr null or contained");*/
                     }
                 }
             }
