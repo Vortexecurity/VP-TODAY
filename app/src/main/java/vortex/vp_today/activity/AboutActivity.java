@@ -2,8 +2,6 @@ package vortex.vp_today.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,7 +12,6 @@ import com.danielstone.materialaboutlibrary.items.MaterialAboutActionItem;
 import com.danielstone.materialaboutlibrary.model.MaterialAboutCard;
 import com.danielstone.materialaboutlibrary.model.MaterialAboutList;
 
-import vortex.vp_today.BuildConfig;
 import vortex.vp_today.R;
 
 /**
@@ -29,9 +26,9 @@ public class AboutActivity extends MaterialAboutActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.Theme_Mal_Light_DarkActionBar);
+        //setTheme(R.style.Theme_Mal_Light_DarkActionBar);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about);
+        /*setContentView(R.layout.activity_about);
 
         txtV = findViewById(R.id.txtAbout);
 
@@ -49,7 +46,7 @@ public class AboutActivity extends MaterialAboutActivity {
                 getString(R.string.simonemail),
                 getString(R.string.florianemail)
         ));
-        txtV.setFocusable(false);
+        txtV.setFocusable(false);*/
     }
 
     @NonNull

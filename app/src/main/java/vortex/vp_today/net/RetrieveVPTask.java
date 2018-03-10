@@ -105,41 +105,46 @@ public class RetrieveVPTask extends AsyncTask<Object, Void, TriTuple<String, Int
 
     @Override
     protected void onPostExecute(TriTuple<String, Integer, VPInfo> result) {
-        Log.i("onPostExecute", "setting text to result");
-        if (result != null) {
-            Log.i("onPostExecute", "result != null");
-            try {
-                Log.i("onPostExecute", "result: " + result.z.getRows().get(0).toString());
-            } catch (NullPointerException ex) {
-                Log.i("onPostExecute", "result: null");
-            }
-            //if (result.z != null)
-                //Log.i("doInBackground", "filtered.z.length = " + result.z.length);
-            if (result.x.equals("novpexist")) {
-                main.tvVers.setText("Version: 0");
-                main.msgOTD.setText("Für diesen Tag gibt es noch keine Vertretungen!");
-            } else if (result.x != null && result.z != null && !result.z.isEmpty()) {
-                Log.i("onPostExecute", "result not empty");
-                main.txt.setText("");
-                if (result.z.assumeKursVersion()) {
-                    Log.i("onPostExecute", "assuming kurse version");
-                    for (VPRow row : result.z.getRows()) {
-                        Log.i("onPostExecute", "adding row: " + row.getLinearContent());
-                        main.txt.append(row.getLinearContent());
-                    }
-                } else {
-                    Log.i("onPostExecute", "not assuming, adding result.z.getContent");
-                    main.txt.setText(TextUtils.join("\n\n", result.z.getContent()));
+        try {
+            Log.i("onPostExecute", "setting text to result");
+            if (result != null) {
+                Log.i("onPostExecute", "result != null");
+                try {
+                    Log.i("onPostExecute", "result: " + result.z.getRows().get(0).toString());
+                } catch (Exception ex) {
+                    Log.i("onPostExecute", "result: null");
                 }
-                main.msgOTD.setText(result.x);
-                main.tvVers.setText("Version: " + result.y.intValue());
+                //if (result.z != null)
+                //Log.i("doInBackground", "filtered.z.length = " + result.z.length);
+                if (result.x.equals("novpexist")) {
+                    main.tvVers.setText("Version: 0");
+                    main.msgOTD.setText("Für diesen Tag gibt es noch keine Vertretungen!");
+                } else if (result.x != null && result.z != null && !result.z.isEmpty()) {
+                    Log.i("onPostExecute", "result not empty");
+                    main.txt.setText("");
+                    if (result.z.assumeKursVersion()) {
+                        Log.i("onPostExecute", "assuming kurse version");
+                        for (VPRow row : result.z.getRows()) {
+                            Log.i("onPostExecute", "adding row: " + row.getLinearContent());
+                            main.txt.append(row.getLinearContent());
+                        }
+                    } else {
+                        Log.i("onPostExecute", "not assuming, adding result.z.getContent");
+                        main.txt.setText(TextUtils.join("\n\n", result.z.getContent()));
+                    }
+                    main.msgOTD.setText(result.x);
+                    main.tvVers.setText("Version: " + result.y.intValue());
+                } else {
+                    Log.i("onPostExecute", "in else: result.x = null -> " + (result.x == null) + " y = 0 -> " + (result.y == 0) + " z = null -> " + (result.z == null));
+                }
             } else {
-                Log.i("onPostExecute", "in else: result.x = null -> " + (result.x == null) + " y = 0 -> " + (result.y == 0) + " z = null -> " + (result.z == null));
+                Log.i("onPostExecute", "result = null");
+                Toasty.error(main.getApplicationContext(), "Fehler beim Aktualisieren!").show();
             }
-        } else {
-            Log.i("onPostExecute", "result = null");
-            Toasty.error(main.getApplicationContext(), "Fehler beim Aktualisieren!").show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
+
         Log.i("onPostExecute", "set text to result");
         main.swipe.setRefreshing(false);
         Log.i("onPostExecute", "set refreshing to false");

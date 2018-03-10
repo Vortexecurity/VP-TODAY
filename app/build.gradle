@@ -1,15 +1,49 @@
 apply plugin: 'com.android.application'
 
+int minVersion
+int midVersion
+int majVersion
+
 android {
     compileSdkVersion 26
-    defaultConfig {
-        applicationId "vortex.vp_today"
-        minSdkVersion 19
-        targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    def versionPropsFile = file('version.properties')
+
+    if (versionPropsFile.canRead()) {
+        def Properties versionProps = new Properties()
+
+        versionProps.load(new FileInputStream(versionPropsFile))
+
+        def maj = versionProps['BUILD_MAJOR'].toInteger()
+        def mid = versionProps['BUILD_MID'].toInteger()
+        def min = versionProps['BUILD_MINOR'].toInteger() + 1
+
+        minVersion = min
+        midVersion = mid
+        majVersion = maj
+
+        versionProps['BUILD_MINOR']=min.toString()
+        versionProps['BUILD_MID']=mid.toString()
+        versionProps['BUILD_MAJOR']=maj.toString()
+        versionProps['VERSION']=maj + "." + mid + "." + min
+        versionProps.store(versionPropsFile.newWriter(), null)
+
+        defaultConfig {
+            applicationId "vortex.vp_today"
+            minSdkVersion 19
+            targetSdkVersion 26
+            versionCode 1
+            versionName "1.0"
+            testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+            buildConfigField "int", "buildMin", "minVersion"
+            buildConfigField "int", "buildMid", "midVersion"
+            buildConfigField "int", "buildMaj", "majVersion"
+        }
     }
+    else {
+        throw new GradleException("Could not read version.properties!")
+    }
+
     buildTypes {
         release {
             minifyEnabled false

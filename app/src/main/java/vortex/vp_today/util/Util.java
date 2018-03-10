@@ -78,8 +78,8 @@ public final class Util {
         }
     }
 
-    public static void setup(Activity n){
-        activity = n;
+    public static void setup(@NonNull Activity actv) {
+        activity = actv;
         context = activity.getApplicationContext();
         Log.i("[UTIL]","Set up >> " + activity.getLocalClassName());
     }
@@ -115,10 +115,6 @@ public final class Util {
         try {
             if (tupSelects.x.get(0) != null) {
                 Log.e("getSelectedKurse", "tupSelects.x type: " + tupSelects.x.getClass().toString());
-                /*if (tupSelects.x.get(0).equals("")) {
-                    Log.e("getSelectedKurse", "Returning null, x get 0 equals \"\"");
-                    return null;
-                }*/
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -166,11 +162,14 @@ public final class Util {
 
     @Nullable
     public static <T extends Object> T getGsonObject(@NonNull String tag, Class type) {
-        SharedPreferences prefs = context.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = prefs.getString(tag, "");
-        Log.e("getGsonObject", "json: " + json);
-        return ((T)gson.fromJson(json, type));
+        try {
+            SharedPreferences prefs = context.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
+            Gson gson = new Gson();
+            String json = prefs.getString(tag, null);
+            Log.e("getGsonObject", "json: " + json);
+            return ((T) gson.fromJson(json, type));
+        } catch (Exception ex) { }
+        return null;
     }
 
     public static synchronized String makeVpDate(String actualDate) {
@@ -725,7 +724,7 @@ public final class Util {
 
         if (info != null) {
             Log.i("filterHTMLkurse", "info != null");
-            Log.i("filterHTMLkurse", "info.getRows().get(0): " + info.getRows().get(0).toString());
+            //Log.i("filterHTMLkurse", "info.getRows().get(0): " + info.getRows().get(0).toString());
         }
         else {
             Log.i("filterHTMLkurse", "info = null");

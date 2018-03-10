@@ -23,6 +23,7 @@ import es.dmoral.toasty.Toasty;
 import vortex.vp_today.R;
 import vortex.vp_today.net.RetrieveDatesTask;
 import vortex.vp_today.net.RetrieveVPTask;
+import vortex.vp_today.util.Tuple;
 import vortex.vp_today.util.TwoFormatDate;
 import vortex.vp_today.util.Util;
 
@@ -56,6 +57,21 @@ public class MainActivity extends AppCompatActivity {
 
         /* Falls dies der erste Start sein sollte eine Client ID erstellen und speichern. */
         if (sp.getString("clientid", "0x0").equals("0x0")) {
+            String setKurse = getString(R.string.settingkurse);
+            int q1Len = setKurse.length();
+            Tuple<String[], Boolean[]> putTuple;
+
+            String[] strs = new String[q1Len];
+            Boolean[] bools = new Boolean[q1Len];
+
+            for (int i = 0; i < q1Len; i++) {
+                strs[i] = "";
+                bools[i] = false;
+            }
+
+            putTuple = new Tuple<>(strs, bools);
+
+            Util.putGsonObject(getString(R.string.settingkurse), putTuple);
             sp.edit().putString("clientid", Util.generateClientID()).apply();
         }
 
