@@ -4,10 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.EditText;
+
+import com.danielstone.materialaboutlibrary.MaterialAboutActivity;
+import com.danielstone.materialaboutlibrary.items.MaterialAboutActionItem;
+import com.danielstone.materialaboutlibrary.model.MaterialAboutCard;
+import com.danielstone.materialaboutlibrary.model.MaterialAboutList;
 
 import vortex.vp_today.BuildConfig;
 import vortex.vp_today.R;
@@ -18,13 +23,13 @@ import vortex.vp_today.R;
  * @version 3.3.18
  */
 
-public class AboutActivity extends AppCompatActivity {
-
+public class AboutActivity extends MaterialAboutActivity {
     /* Main TextView */
     private EditText txtV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.Theme_Mal_Light_DarkActionBar);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
@@ -45,6 +50,28 @@ public class AboutActivity extends AppCompatActivity {
                 getString(R.string.florianemail)
         ));
         txtV.setFocusable(false);
+    }
+
+    @NonNull
+    @Override
+    protected MaterialAboutList getMaterialAboutList(@NonNull Context context) {
+        MaterialAboutList list = new MaterialAboutList();
+
+        MaterialAboutCard c1 = new MaterialAboutCard.Builder()
+                .title("VP-TODAY")
+                .titleColor(getResources().getColor(R.color.colorPrimaryDark))
+                .addItem(new MaterialAboutActionItem.Builder()
+                .text("VP-TODAY").build()).build();
+
+        return new MaterialAboutList.Builder()
+                .addCard(c1)
+                .build();
+    }
+
+    @Nullable
+    @Override
+    protected CharSequence getActivityTitle() {
+        return getString(R.string.about);
     }
 
     public static void show(@NonNull Context context){

@@ -11,28 +11,32 @@ import android.support.annotation.Nullable;
 public class VPRow {
     private VPKind art;
     private int stunde;
+    private int[] stunden;
     private String fach;
     private String vertreter;
     private String klasse;
     private String raum;
     private String statt;
     private String bemerkung;
+    private String content;
 
     public static final String DELIMITER = " | ";
 
     public VPRow() {
         art = null;
         stunde = 0;
+        stunden = null;
         fach = null;
         vertreter = null;
         klasse = null;
         raum = null;
         statt = null;
         bemerkung = null;
+        content = null;
     }
 
     @Nullable
-    public String getContent() {
+    public String getLinearContent() {
         if (art != null) {
             return art + DELIMITER +
                     String.valueOf(stunde) +
@@ -44,6 +48,26 @@ public class VPRow {
                     DELIMITER + bemerkung;
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        if (isKurseVersion())
+            return getLinearContent();
+        return getContent();
+    }
+
+    @Nullable
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public boolean isKurseVersion() {
+        return content == null;
     }
 
     public VPKind getArt() {
@@ -60,6 +84,19 @@ public class VPRow {
 
     public void setStunde(int stunde) {
         this.stunde = stunde;
+    }
+
+    public int getStundenCount() {
+        return stunden == null ? 1 : stunden.length;
+    }
+
+    @Nullable
+    public int[] getStunden() {
+        return stunden;
+    }
+
+    public void setStunden(int[] stunden) {
+        this.stunden = stunden;
     }
 
     public String getFach() {
@@ -121,6 +158,7 @@ public class VPRow {
                     row.getRaum().equals(raum) &&
                     row.getStatt().equals(statt) &&
                     row.getStunde() == stunde &&
+                    row.getStunden() == stunden &&
                     row.getVertreter().equals(vertreter)) {
                 return true;
             }

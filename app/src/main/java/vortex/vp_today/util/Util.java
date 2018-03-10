@@ -110,17 +110,15 @@ public final class Util {
 
     @Nullable
     public static String[] getSelectedKurse() {
-        Tuple<ArrayList<String>, ArrayList<Boolean>> tupSelects = Util.getGsonObject(context.getResources().getResourceName(R.string.settingkurse), Tuple.class);
-
-        // FIXME
+        Tuple<ArrayList<String>, ArrayList<Boolean>> tupSelects = Util.getGsonObject(context.getString(R.string.settingkurse), Tuple.class);
 
         try {
             if (tupSelects.x.get(0) != null) {
                 Log.e("getSelectedKurse", "tupSelects.x type: " + tupSelects.x.getClass().toString());
-                if (tupSelects.x.get(0).equals("")) {
+                /*if (tupSelects.x.get(0).equals("")) {
                     Log.e("getSelectedKurse", "Returning null, x get 0 equals \"\"");
                     return null;
-                }
+                }*/
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -595,23 +593,18 @@ public final class Util {
      * @author Simon Dräger
      */
     @Nullable
-    public static synchronized TriTuple<String, Integer, String[]> filterHTML(Document d, String stufe, String[] kurse) {
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                //Toasty.info(activity.getApplicationContext(), "Aktualisiere...").show();
-            }
-        });
+    public static synchronized TriTuple<String, Integer, VPInfo> filterHTML(Document d, String stufe, String[] kurse) throws AssertionError {
+        assert stufe.equalsIgnoreCase("EF") ||
+                stufe.equalsIgnoreCase("Q1") ||
+                stufe.equalsIgnoreCase("Q2")
+                : "Die Stufe muss EF oder höher sein";
 
         String msgotd = null;
         int version = 0;
-        boolean showedToast = false;
-
-        assert Character.isLetter(stufe.charAt(0)) : "Die Stufe muss EF oder höher sein.";
 
         Elements elements = d.select("tr[data-index*='" + stufe + "']");
         Element strong = d.selectFirst("strong");
-        ArrayList<VPRow> s = null;
+        VPInfo info = new VPInfo();
 
         if (elements.first() == null) {
             activity.runOnUiThread(new Runnable() {
@@ -622,11 +615,7 @@ public final class Util {
             });
             if (strong != null)
                 version = Integer.parseInt(strong.text());
-            showedToast = true;
         } else {
-            Log.i("filterHTML", "s = new ArrayList");
-            s = new ArrayList<>();
-
             Element elem = d.selectFirst("p");
             if (elem.text().equals("Für diesen Tag existiert derzeit kein Vertretungsplan. Bitten schauen Sie später nochmal vorbei!")) {
                 if (elem != null) {
@@ -646,69 +635,113 @@ public final class Util {
 
                 if (tbody != null) {
                     Log.i("filterHTMLkurse", "tbody != null");
-                    /* Für jeden Listeneintrag */
-                    for (Element tr : tbody.children()) {
+
+                    /* Für jeden Listeneintrag am Tag */
+                    for (Element tr : tbody.select("tr")) {
+                        Log.i("filterHTMLkurse", "tr child != null");
                         Log.i("filterHTMLkurse", "tr child: " + tr.text());
-                        //String trText = tr.text();
-                        VPInfo info = new VPInfo();
 
-                        for (Element tds : tr.children()) {
-                            Element dataType = tds.selectFirst("data-type");
-                            Log.i("filterHTMLkurse", "dataType: " + dataType.text());
-                            Element dataHour = tds.selectFirst("data-hour");
-                            Log.i("filterHTMLkurse", "datahour " + dataHour.text());
-                            Element dataSubject = tds.selectFirst("data-subject");
-                            Log.i("filterHTMLkurse", "datasubject " + dataSubject.text());
-                            Element dataAgent = tds.selectFirst("hidden-xs data-agent");
-                            Element dataForm = tds.selectFirst("data-form");
-                            Element dataRoom = tds.selectFirst("hidden-xs data-room");
-                            Element dataInstead = tds.selectFirst("hidden-xs data-instead");
-                            Element dataNotice = tds.selectFirst("hidden-xs data-notice");
+                        VPRow row = new VPRow();
+                        boolean breakk = false;
 
-                            VPRow row = new VPRow();
-                            row.setArt(VPKind.valueOf(dataType.text().toLowerCase()));
-                            row.setStunde(Integer.parseInt(dataHour.text()));
-                            row.setFach(dataSubject.text());
-                            row.setVertreter(dataAgent.text());
-                            row.setKlasse(dataForm.text().replace("0", ""));
-                            row.setRaum(dataRoom.text());
-                            row.setStatt(dataInstead.text());
-                            row.setBemerkung(dataNotice.text());
+                        for (Element td : tr.select("td")) {
+                            String selector = td.cssSelector();
+                            Log.i("filterHTMLkurse", "cssSelector: " + selector);
 
-                            if (tr != null && !s.contains(row)) {
-                                info.addRow(row);
+                            if (selector.contains("td.data-form")) {
+                                Element dataForm = td.selectFirst("td.data-form");
+                                String formTxt = dataForm.text();
+                                if (!formTxt.equals(stufe)) {
+                                    Log.i("filterHTMLkurse", "class was: " + formTxt);
+                                    breakk = true;
+                                    break;
+                                }
+                                Log.i("filterHTMLkurse", "correct class: " + formTxt);
+                                row.setKlasse(formTxt);
+                            } else if (selector.contains("td.data-type")) {
+                                Element dataType = td.selectFirst("td.data-type");
+                                VPKind art = VPKind.fromString(dataType.text());
+                                if (art == VPKind.PAUSENAUFSICHT ||
+                                        art == VPKind.KLAUSUR ||
+                                        art == VPKind.BETREUUNG ||
+                                        art == VPKind.LEHRERTAUSCH)
+                                    continue;
+                                Log.i("filterHTMLkurse", "dataType: " + dataType.text());
+                                row.setArt(VPKind.fromString(dataType.text()));
+                            } else if (selector.contains("td.data-hour")) {
+                                Element dataHour = td.selectFirst("td.data-hour");
+                                Log.i("filterHTMLkurse", "datahour " + dataHour.text());
+
+                                String txt = dataHour.text();
+
+                                if (txt.contains("/")) {
+                                    row.setStunden(StrArrToIntArr(txt.split("/")));
+                                    continue;
+                                }
+
+                                row.setStunde(Integer.parseInt(dataHour.text()));
+                            } else if (selector.contains("td.data-subject")) {
+                                Element dataSubject = td.selectFirst("td.data-subject");
+                                String txtSubject = dataSubject.text();
+                                Log.i("filterHTMLkurse", "datasubject " + dataSubject.text());
+
+                                if (!anyMatch(txtSubject, kurse)) {
+                                    Log.i("filterHTMLkurse", "not matching subject: " + txtSubject);
+                                    breakk = true;
+                                    break;
+                                }
+
+                                row.setFach(dataSubject.text());
+                            } else if (selector.contains("td.hidden-xs data-agent")) {
+                                Element dataAgent = td.selectFirst("td.hidden-xs.data-agent");
+                                row.setVertreter(dataAgent.text());
+                            } else if (selector.contains("td.hidden-xs.data-room")) {
+                                Element dataRoom = td.selectFirst("td.hidden-xs.data-room");
+                                row.setRaum(dataRoom.text());
+                            } else if (selector.contains("td.hidden-xs.data-instead")) {
+                                Element dataInstead = td.selectFirst("td.hidden-xs.data-instead");
+                                row.setStatt(dataInstead.text());
+                            } else if (selector.contains("td.hidden-xs.data-notice")) {
+                                Element dataNotice = td.selectFirst("td.hidden-xs.data-notice");
+                                row.setBemerkung(dataNotice.text());
                             }
                         }
 
-                        /* Wenn das Element ein unbesuchtes, gültiges ist
-                        if (tr != null && !s.contains(trText)) {
-                            Log.i("filterHTMLkurse", "child not null, not contained");
-                            // Wenn das Element ein gesuchter Kurs ist
-                            if (anyMatch(trText, kurse)) {
-                                // Wenn die Stufe korrekt ist
-                                if (trText.contains(stufe)) {
-                                    Log.i("filterHTMLkurse", "anyMatch success, stufe check success, adding");
-                                    s.add(trText);
-                                }
-                            } else
-                                Log.i("filterHTMLkurse", "anyMatch failure");
-                        } else
-                            Log.i("filterHTMLkurse", "tr null or contained");*/
+                        if (tr != null && !info.contains(row) && !breakk) {
+                            Log.i("filterHTMLkurse", "row not contained, adding");
+                            info.addRow(row);
+                        } else {
+                            if (breakk) {
+                                Log.i("filterHTMLkurse", "Incorrect class, skipping");
+                            } else {
+                                Log.i("filterHTMLkurse", "row contained, skipping");
+                            }
+                        }
+
                     }
                 }
             }
         }
 
-        if (!showedToast) {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    //Toasty.success(activity.getApplicationContext(), "Aktualisiert!").show();
-                }
-            });
+        if (info != null) {
+            Log.i("filterHTMLkurse", "info != null");
+            Log.i("filterHTMLkurse", "info.getRows().get(0): " + info.getRows().get(0).toString());
+        }
+        else {
+            Log.i("filterHTMLkurse", "info = null");
         }
 
-        return new TriTuple<>(msgotd, Integer.valueOf(version), s == null ? null : s.toArray(new String[0]));
+        return new TriTuple<String, Integer, VPInfo>(msgotd, version, info);
+    }
+
+    public static int[] StrArrToIntArr(@NonNull String[] arr) {
+        int[] out = new int[arr.length];
+
+        for (int i = 0; i < out.length; i++) {
+            out[i] = Integer.parseInt(arr[i].trim());
+        }
+
+        return out;
     }
 
     @Nullable

@@ -40,7 +40,8 @@ dependencies {
     implementation files('libs/gson-2.8.2.jar')
     implementation files('libs/activation.jar')
     implementation files('libs/mail.jar')
-    implementation files('libs/additional')
+    implementation files('libs/additional.jar')
     implementation files('libs/joda-time-2.9.9.jar')
     compile 'com.github.GrenderG:Toasty:1.2.5'
+    compile 'com.github.daniel-stoneuk:material-about-library:2.2.5'
 }

@@ -24,6 +24,33 @@ public class VPInfo {
         rows.add(row);
     }
 
+    public void addAll(VPRow[] additionalRows) {
+        for (VPRow r : additionalRows) {
+            rows.add(r);
+        }
+    }
+
+    public boolean isEmpty() {
+        if (rows == null ||
+                rows.isEmpty() ||
+                rows.size() == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean contains(VPRow row) {
+        return rows.contains(row);
+    }
+
+    public boolean assumeKursVersion() {
+        for (VPRow r : rows) {
+            if (r.isKurseVersion())
+                return true;
+        }
+        return false;
+    }
+
     @Nullable
     public String[] getContent() {
         ArrayList<String> temp = new ArrayList<>(rows.size());
