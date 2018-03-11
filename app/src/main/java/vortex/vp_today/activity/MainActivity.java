@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     public Spinner spinDate;
     public SwipeRefreshLayout swipe;
     public EditText txt;
+    public ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         spinDate = findViewById(R.id.spinDate);
         swipe = findViewById(R.id.swiperefresh);
         tvVers = findViewById(R.id.tvVers);
+        progressBar = findViewById(R.id.vpProg);
         /**/
 
         /* Falls dies der erste Start sein sollte eine Client ID erstellen und speichern. */
@@ -74,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
             Util.putGsonObject(getString(R.string.settingkurse), putTuple);
             sp.edit().putString("clientid", Util.generateClientID()).apply();
         }
+
+        progressBar.setProgressDrawable(getResources().getDrawable(android.R.drawable.progress_horizontal));
+        progressBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), android.graphics.PorterDuff.Mode.SRC_IN);
 
         swipe.setColorSchemeResources(R.color.colorPrimaryDark);
 

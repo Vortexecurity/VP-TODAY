@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -12,6 +13,7 @@ import es.dmoral.toasty.Toasty;
 import vortex.vp_today.activity.MainActivity;
 import vortex.vp_today.logic.VPInfo;
 import vortex.vp_today.logic.VPRow;
+import vortex.vp_today.util.ProgressCallback;
 import vortex.vp_today.util.TriTuple;
 import vortex.vp_today.util.Util;
 
@@ -21,12 +23,18 @@ import vortex.vp_today.util.Util;
  */
 
 // params: Object, progress: Void, return: TriTuple: String Integer String[] || String Integer VPInfo[]
-public class RetrieveVPTask extends AsyncTask<Object, Void, TriTuple<String, Integer, VPInfo>> {
+public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, Integer, VPInfo>> {
     private Exception exception = null;
     private MainActivity main = null;
 
+    @Override
+    protected void onProgressUpdate(Integer... values) {
+        main.progressBar.setProgress(values[0]);
+    }
+
     // params: MainActivity, String date (vp style), String stufe, String sub, String[] kurse
     @Override
+    @SuppressWarnings("ResourceTypes")
     protected TriTuple<String, Integer, VPInfo> doInBackground(Object... params) {
         main = (MainActivity) params[0];
         String vpDate = (String) params[1];
@@ -36,6 +44,19 @@ public class RetrieveVPTask extends AsyncTask<Object, Void, TriTuple<String, Int
 
         try {
             Log.i("RetrieveVPTask", "refreshing = true");
+
+            main.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    main.progressBar.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            main.progressBar.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    //Log.i("RetrieveVPTask", "visibility: " + main.progressBar.getVisibility());
+                }
+            });
 
             String unfiltered = Util.fetchUnfiltered(vpDate);
 
@@ -53,7 +74,17 @@ public class RetrieveVPTask extends AsyncTask<Object, Void, TriTuple<String, Int
                 filtered = Util.filterHTML(doc, stufe, sub);
             } else {
                 Log.i("RVPT/doInBackground", "kurse not null, doing filterHTML kurse");
-                filteredInfo = Util.filterHTML(doc, stufe, kurse);
+                filteredInfo = Util.filterHTML(doc, stufe, kurse, new ProgressCallback() {
+                    @Override
+                    public void onProgress(int percent) {
+                        publishProgress(percent);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
             }
 
             if (filtered == null) {
@@ -115,6 +146,12 @@ public class RetrieveVPTask extends AsyncTask<Object, Void, TriTuple<String, Int
     @Override
     protected void onPostExecute(TriTuple<String, Integer, VPInfo> result) {
         try {
+            main.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    main.progressBar.setVisibility(View.GONE);
+                }
+            });
             Log.i("onPostExecute", "setting text to result");
             if (result != null) {
                 Log.i("onPostExecute", "result != null");
