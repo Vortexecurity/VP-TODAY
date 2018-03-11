@@ -49,8 +49,10 @@ public class RetrieveVPTask extends AsyncTask<Object, Void, TriTuple<String, Int
             TriTuple<String, Integer, VPInfo> filteredInfo = null;
 
             if (kurse == null) {
+                Log.i("RVPT/doInBackground", "kurse = null, doing filterHTML sub");
                 filtered = Util.filterHTML(doc, stufe, sub);
             } else {
+                Log.i("RVPT/doInBackground", "kurse not null, doing filterHTML kurse");
                 filteredInfo = Util.filterHTML(doc, stufe, kurse);
             }
 
@@ -68,9 +70,16 @@ public class RetrieveVPTask extends AsyncTask<Object, Void, TriTuple<String, Int
             Log.i("RDT/doInBackground", "filteredInfo" + (filteredInfo == null));
 
             try {
-                if (filteredInfo.z == null) {
-                    Log.i("doInBackground", "z = null, return novpexist");
-                    return new TriTuple<String, Integer, VPInfo>("novpexist", 0, null);
+                if (filtered != null) {
+                    if (filtered.z == null) {
+                        Log.i("doInBackground", "filtered.z = null, return novpexist");
+                        return new TriTuple<String, Integer, VPInfo>("novpexist", 0, null);
+                    }
+                } else if (filteredInfo != null) {
+                    if (filteredInfo.z == null) {
+                        Log.i("doInBackground", "filteredInfo.z = null, return novpexist");
+                        return new TriTuple<String, Integer, VPInfo>("novpexist", 0, null);
+                    }
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

@@ -35,9 +35,9 @@ android {
             versionCode 1
             versionName "1.0"
             testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-            buildConfigField "int", "buildMin", "minVersion"
-            buildConfigField "int", "buildMid", "midVersion"
-            buildConfigField "int", "buildMaj", "majVersion"
+            buildConfigField "int", "buildMin", minVersion.toString()
+            buildConfigField "int", "buildMid", midVersion.toString()
+            buildConfigField "int", "buildMaj", majVersion.toString()
         }
     }
     else {

@@ -124,13 +124,25 @@ public class MainActivity extends AppCompatActivity {
             Log.i("updateListFromSpinner", "vp: " + vp);
             LocalDate ldate = new LocalDate(vp);
             Log.e("LDATE", ldate.toString());
-            new RetrieveVPTask().execute(
-                    MainActivity.this,
-                    Util.makeDate(ldate.getDayOfMonth(), ldate.getMonthOfYear() - 1, ldate.getYear()),
-                    Util.getSettingStufe(),
-                    Util.getSettingKlasse(),
-                    Util.getSelectedKurse()
-            );
+            if (Util.getSettingStufe().equals("EF") ||
+                    Util.getSettingStufe().equals("Q1") ||
+                    Util.getSettingStufe().equals("Q2")) {
+                new RetrieveVPTask().execute(
+                        MainActivity.this,
+                        Util.makeDate(ldate.getDayOfMonth(), ldate.getMonthOfYear() - 1, ldate.getYear()),
+                        Util.getSettingStufe(),
+                        Util.getSettingKlasse(),
+                        Util.getSelectedKurse()
+                );
+            } else {
+                new RetrieveVPTask().execute(
+                        MainActivity.this,
+                        Util.makeDate(ldate.getDayOfMonth(), ldate.getMonthOfYear() - 1, ldate.getYear()),
+                        Util.getSettingStufe(),
+                        Util.getSettingKlasse(),
+                        null
+                );
+            }
         } else {
             MainActivity.this.runOnUiThread(new Runnable() {
                 @Override
