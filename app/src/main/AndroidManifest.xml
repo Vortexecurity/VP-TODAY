@@ -46,7 +46,8 @@
             android:name=".activity.AboutActivity"
             android:label="@string/about"
             android:parentActivityName=".activity.MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.MaterialAboutActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="vortex.vp_today.activity.MainActivity" />

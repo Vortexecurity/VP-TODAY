@@ -38,6 +38,7 @@ android {
             buildConfigField "int", "buildMin", minVersion.toString()
             buildConfigField "int", "buildMid", midVersion.toString()
             buildConfigField "int", "buildMaj", majVersion.toString()
+            buildConfigField "String", "buildVersion", ("\"" + majVersion.toString() + "." + midVersion.toString() + "." + minVersion.toString() + "\"")
         }
     }
     else {
@@ -78,4 +79,6 @@ dependencies {
     implementation files('libs/joda-time-2.9.9.jar')
     compile 'com.github.GrenderG:Toasty:1.2.5'
     compile 'com.github.daniel-stoneuk:material-about-library:2.2.5'
+    implementation "com.mikepenz:iconics-core:3.0.3@aar"
+    implementation 'com.mikepenz:community-material-typeface:2.0.46.1@aar'
 }

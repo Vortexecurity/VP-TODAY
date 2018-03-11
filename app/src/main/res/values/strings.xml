@@ -25,6 +25,15 @@
                             <u>Melvin Zähl <i>(Head Admin / Developer)</i></u> &lt;%3$s&gt;\n
                             <u>Florian Koll <i>(Customer Support / Project Management / Bug Hunter)\n</i></u> &lt;%5$s&gt;
     </string>
+    <string name="license">
+        <b>License</b>\n
+        <u>All rights are reserved to</u> <i>VorteX Dev. Corp.</i>.\n
+        The underlying Application is delivered under absolute closed-source copyright.\n
+        Any attempts of decompilation or unauthorized distribution are strictly prohibited.\n
+        The authors are not responsible for any consequences drawn from unintentionally faulty information produced by the Application.\n
+        <b>All information is subject to change.</b>\n
+        End of License.
+    </string>
     <string name="ratehint">(Geben Sie hier einen Feedback-Text ein...)</string>
     <string name="klasse">Klasse:</string>
     <string name="vibrateonreceive">Beim Erhalt einer Benachrichtigung vibrieren</string>

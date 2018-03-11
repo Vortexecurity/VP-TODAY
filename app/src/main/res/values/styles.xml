@@ -31,4 +31,10 @@
         <item name="mal_toolbarTheme">@style/Theme.Mal.Toolbar.Dark</item>
         <item name="mal_toolbarPopupTheme">@style/Theme.Mal.Toolbar.Dark</item>
     </style>
+
+    <style name="AppTheme.MaterialAboutActivity" parent="Theme.Mal.Light">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
 </resources>

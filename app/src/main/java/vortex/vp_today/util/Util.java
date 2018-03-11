@@ -14,6 +14,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 
@@ -216,7 +218,7 @@ public final class Util {
 
                     dates.add(tfd);
                 } catch (ParseException ex) {
-                    /* Datum wurde falsch geparst, anzunehmen, dass die anderen auch falsch werden */
+                    /* Datum wurde falsch geparst, annehmen, dass die anderen auch falsch werden */
                     ex.toString();
                     return null;
                 }
@@ -224,6 +226,24 @@ public final class Util {
         }
 
         return dates.toArray(new TwoFormatDate[0]);
+    }
+
+    public static synchronized void ShowLicenseDialog(@NonNull Activity actv) {
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(actv);
+            builder.setTitle("License");
+
+            TextView myMsg = new TextView(actv);
+            myMsg.setText(actv.getString(R.string.license));
+            myMsg.setGravity(Gravity.CENTER_HORIZONTAL);
+            builder.setView(myMsg);
+
+            builder.setPositiveButton("OK", null);
+
+            builder.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public static synchronized void ShowYesNoDialog(@NonNull String text,
