@@ -25,11 +25,11 @@ public class RetrieveDatesTask extends AsyncTask<Object, Void, TwoFormatDate[]> 
         main = (MainActivity) params[0];
 
         try {
-            Log.i("RetrieveDatesTask", "in try block");
+            if (Util.D) Log.i("RetrieveDatesTask", "in try block");
             main.spinDate.setEnabled(false);
-            Log.i("RetrieveDatesTask", "setenabled false");
+            if (Util.D) Log.i("RetrieveDatesTask", "setenabled false");
             TwoFormatDate[] dates = Util.getVPDates();
-            Log.i("RetrieveDatesTask", "got dates: " + (dates == null ? "null" : "not null"));
+            if (Util.D) Log.i("RetrieveDatesTask", "got dates: " + (dates == null ? "null" : "not null"));
             return dates;
         } catch (Exception ex) {
             ex.printStackTrace();

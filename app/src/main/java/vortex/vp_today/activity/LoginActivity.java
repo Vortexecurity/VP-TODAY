@@ -112,8 +112,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (!TextUtils.isEmpty(password)) {
             if (!mPasswordView.getText().toString().equals(creds.y)) {
-                if (Util.D)
-                    Log.i("attemptLogin", "pwd was " + mPasswordView.getText().toString());
+                if (Util.D) Log.i("attemptLogin", "pwd was " + mPasswordView.getText().toString());
                 mPasswordView.setError(getString(R.string.error_incorrect_creds));
                 cancel = true;
             }

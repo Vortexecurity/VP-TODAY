@@ -83,10 +83,11 @@
                 android:textStyle="bold|italic" />
 
             <ProgressBar
+                style="@android:style/Widget.ProgressBar.Horizontal"
                 android:id="@+id/vpProg"
+                android:progressDrawable="@drawable/progress"
                 android:layout_width="match_parent"
                 android:layout_height="10dp"
-                android:indeterminate="true"
                 android:visibility="visible" />
 
             <TextView

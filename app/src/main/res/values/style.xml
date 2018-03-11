@@ -7,4 +7,9 @@
         <!-- colorPrimaryDark is used for the status bar -->
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     </style>
+
+    <style name="Theme.GreenProgressBar" parent="@android:style/Widget.ProgressBar.Horizontal">
+        <item name="android:background">@color/colorPrimaryDark</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
 </resources>

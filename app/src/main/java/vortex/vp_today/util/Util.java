@@ -85,8 +85,7 @@ public final class Util {
     public static void setup(@NonNull Activity actv) {
         activity = actv;
         context = activity.getApplicationContext();
-        if (Util.D)
-            Log.i("[UTIL]","Set up >> " + activity.getLocalClassName());
+        if (Util.D) Log.i("[UTIL]","Set up >> " + activity.getLocalClassName());
     }
 
     /**

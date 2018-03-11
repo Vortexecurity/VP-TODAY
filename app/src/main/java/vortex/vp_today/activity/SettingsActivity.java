@@ -126,21 +126,24 @@ public class SettingsActivity extends AppCompatActivity {
 
                 Tuple<String[], ArrayList<Boolean>> tupSelects = Util.getGsonObject(getString(R.string.settingkurse), Tuple.class);
 
-                if (tupSelects != null) {
-                    Log.i("btnKurseClick", "tupSelects not null");
-                    Log.i("btnKurseClick", "tupleSelects type: " + tupSelects.getClass().toString());
-                    //Log.i("btnKurseClick", "tupSelects.y type: " + tupSelects.y.getClass().toString());
-                    selects = Util.BoolToTypeBool(tupSelects.y.toArray(new Boolean[0]));
+                Log.i("setOnClickListener", "tupSelects.y size: " + tupSelects.y.size());
 
-                    Log.i("btnKurseClick", "tupSelects.y lenght " + tupSelects.y.toArray(new Boolean[0]).length);
+                if (tupSelects != null) {
+                    if (Util.D) Log.i("btnKurseClick", "tupSelects not null");
+                    if (Util.D) Log.i("btnKurseClick", "tupleSelects type: " + tupSelects.getClass().toString());
+                    //if (Util.D) Log.i("btnKurseClick", "tupSelects.y type: " + tupSelects.y.getClass().toString());
+                    //selects = Util.BoolToTypeBool(tupSelects.y.toArray(new Boolean[0]));
+                    selects = new boolean[q1Len];
+
+                    if (Util.D) Log.i("btnKurseClick", "tupSelects.y lenght " + tupSelects.y.toArray(new Boolean[0]).length);
                     for (int i = 0; i < q1Len; i++) {
                         selects[i] = tupSelects.y.get(i);
                         selectedItems.add(items[i]);
                         boolSelectedItems.add(selects[i]);
-                        Log.i("btnKurseClick", "i = " + i);
+                        if (Util.D) Log.i("btnKurseClick", "i = " + i);
                     }
                 } else {
-                    Log.i("btnKurseClick", "tupSelects is null");
+                    if (Util.D) Log.i("btnKurseClick", "tupSelects is null");
                     selects = new boolean[q1Len];
 
                     for (int i = 0; i < q1Len; i++)

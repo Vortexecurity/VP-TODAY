@@ -28,8 +28,13 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
     private MainActivity main = null;
 
     @Override
-    protected void onProgressUpdate(Integer... values) {
-        main.progressBar.setProgress(values[0]);
+    protected void onProgressUpdate(final Integer... values) {
+        main.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                main.progressBar.setProgress(values[0]);
+            }
+        });
     }
 
     // params: MainActivity, String date (vp style), String stufe, String sub, String[] kurse
@@ -43,8 +48,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
         String[] kurse = (String[]) params[4];
 
         try {
-            if (Util.D)
-                Log.i("RetrieveVPTask", "refreshing = true");
+            if (Util.D) Log.i("RetrieveVPTask", "refreshing = true");
 
             main.runOnUiThread(new Runnable() {
                 @Override
@@ -55,30 +59,26 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                             main.progressBar.setVisibility(View.VISIBLE);
                         }
                     });
-                    //Log.i("RetrieveVPTask", "visibility: " + main.progressBar.getVisibility());
+                    //if (Util.D) Log.i("RetrieveVPTask", "visibility: " + main.progressBar.getVisibility());
                 }
             });
 
             String unfiltered = Util.fetchUnfiltered(vpDate);
 
-            if (Util.D)
-                Log.i("RetrieveVPTask", "got unfiltered: " + (unfiltered == null ? "null" : "not null"));
+            if (Util.D) Log.i("RetrieveVPTask", "got unfiltered: " + (unfiltered == null ? "null" : "not null"));
 
             Document doc = Jsoup.parse(unfiltered);
 
-            if (Util.D)
-                Log.i("RetrieveVPTask", "got doc");
+            if (Util.D) Log.i("RetrieveVPTask", "got doc");
 
             TriTuple<String, Integer, String[]> filtered = null;
             TriTuple<String, Integer, VPInfo> filteredInfo = null;
 
             if (kurse == null) {
-                if (Util.D)
-                    Log.i("RVPT/doInBackground", "kurse = null, doing filterHTML sub");
+                if (Util.D) Log.i("RVPT/doInBackground", "kurse = null, doing filterHTML sub");
                 filtered = Util.filterHTML(doc, stufe, sub);
             } else {
-                if (Util.D)
-                    Log.i("RVPT/doInBackground", "kurse not null, doing filterHTML kurse");
+                if (Util.D) Log.i("RVPT/doInBackground", "kurse not null, doing filterHTML kurse");
                 filteredInfo = Util.filterHTML(doc, stufe, kurse, new ProgressCallback() {
                     @Override
                     public void onProgress(int percent) {
@@ -94,19 +94,16 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
 
             if (filtered == null) {
                 if (filteredInfo == null) {
-                    if (Util.D)
-                        Log.i("RDT/doInBackground", "filtered & filteredInfo = null");
+                    if (Util.D) Log.i("RDT/doInBackground", "filtered & filteredInfo = null");
                     return null;
                 } else {
                     if (Util.D) Log.i("RDT/doInBackground", "Chose filteredInfo, not null");
                 }
             } else {
-                if (Util.D)
-                    Log.i("RDT/doInBackground", "filtered != null msgotd = " + filtered.x);
+                if (Util.D) Log.i("RDT/doInBackground", "filtered != null msgotd = " + filtered.x);
             }
 
-            if (Util.D)
-                Log.i("RDT/doInBackground", "filteredInfo" + (filteredInfo == null));
+            if (Util.D) Log.i("RDT/doInBackground", "filteredInfo" + (filteredInfo == null));
 
             try {
                 if (filtered != null) {

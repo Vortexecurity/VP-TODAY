@@ -58,10 +58,12 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.vpProg);
         /**/
 
+        Util.setup(this);
+
         /* Falls dies der erste Start sein sollte eine Client ID erstellen und speichern. */
         if (sp.getString("clientid", "0x0").equals("0x0")) {
-            String setKurse = getString(R.string.settingkurse);
-            int q1Len = setKurse.length();
+            String[] setKurse = getResources().getStringArray(R.array.KurseQ1);
+            int q1Len = setKurse.length;
             Tuple<String[], Boolean[]> putTuple;
 
             String[] strs = new String[q1Len];
@@ -74,12 +76,15 @@ public class MainActivity extends AppCompatActivity {
 
             putTuple = new Tuple<>(strs, bools);
 
+            Log.i("MainActivity", "strs length: " + strs.length);
+            Log.i("MainActivity", "bools length: " + bools.length);
+
             Util.putGsonObject(getString(R.string.settingkurse), putTuple);
             sp.edit().putString("clientid", Util.generateClientID()).apply();
         }
 
-        progressBar.setProgressDrawable(getResources().getDrawable(android.R.drawable.progress_horizontal));
-        progressBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), android.graphics.PorterDuff.Mode.SRC_IN);
+        //progressBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), android.graphics.PorterDuff.Mode.SRC_IN);
+        //progressBar.getProgressDrawable().setColorFilter(Color.WHITE, android.graphics.PorterDuff.Mode.SRC_IN);
 
         swipe.setColorSchemeResources(R.color.colorPrimaryDark);
 
@@ -112,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
         });
         /**/
 
-        Util.setup(this);
         new RetrieveDatesTask().execute(MainActivity.this);
     }
 
@@ -125,14 +129,16 @@ public class MainActivity extends AppCompatActivity {
     private synchronized void updateListFromSpinner() {
         if (Util.isInternetConnected()) {
             String str = spinDate.getSelectedItem().toString().substring(4).trim();
-            if (Util.D)
-                Log.i("updateListfromSpinner", "str: " + str.trim());
+
+            if (Util.D) Log.i("updateListfromSpinner", "str: " + str.trim());
+
             String vp = Util.makeVpDate(str);
-            if (Util.D)
-                Log.i("updateListFromSpinner", "vp: " + vp);
+
+            if (Util.D) Log.i("updateListFromSpinner", "vp: " + vp);
+
             LocalDate ldate = new LocalDate(vp);
-            if (Util.D)
-                Log.e("LDATE", ldate.toString());
+
+            if (Util.D) Log.e("LDATE", ldate.toString());
             if (Util.getSettingStufe().equals("EF") ||
                     Util.getSettingStufe().equals("Q1") ||
                     Util.getSettingStufe().equals("Q2")) {
