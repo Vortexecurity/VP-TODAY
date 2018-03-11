@@ -38,14 +38,17 @@ public class VPRow {
     @Nullable
     public String getLinearContent() {
         if (art != null) {
-            return art + DELIMITER +
-                    String.valueOf(stunde) +
-                    DELIMITER + fach +
-                    DELIMITER + vertreter +
-                    DELIMITER + klasse +
-                    DELIMITER + raum +
-                    DELIMITER + statt +
-                    DELIMITER + bemerkung;
+            String out = String.valueOf(stunde) + DELIMITER + fach + DELIMITER + art.getName() + DELIMITER;
+            if(vertreter != null)
+                out += vertreter + DELIMITER;
+            //if(!klasse.equals("---")) out+= klasse + DELIMITER; >> Eigentlich eine nicht notwendige Info für den Schüler oder?
+            if(!raum.equals("---"))
+                out += raum + DELIMITER;
+            if(!statt.equals("---"))
+                out += statt + DELIMITER;
+            if(!bemerkung.equals("---"))
+                out += bemerkung + DELIMITER;
+            return out.substring(0, out.length() - 2) + "\n\n";
         }
         return null;
     }
