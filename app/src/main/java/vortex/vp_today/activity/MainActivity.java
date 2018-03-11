@@ -125,11 +125,14 @@ public class MainActivity extends AppCompatActivity {
     private synchronized void updateListFromSpinner() {
         if (Util.isInternetConnected()) {
             String str = spinDate.getSelectedItem().toString().substring(4).trim();
-            Log.i("updateListfromSpinner", "str: " + str.trim());
+            if (Util.D)
+                Log.i("updateListfromSpinner", "str: " + str.trim());
             String vp = Util.makeVpDate(str);
-            Log.i("updateListFromSpinner", "vp: " + vp);
+            if (Util.D)
+                Log.i("updateListFromSpinner", "vp: " + vp);
             LocalDate ldate = new LocalDate(vp);
-            Log.e("LDATE", ldate.toString());
+            if (Util.D)
+                Log.e("LDATE", ldate.toString());
             if (Util.getSettingStufe().equals("EF") ||
                     Util.getSettingStufe().equals("Q1") ||
                     Util.getSettingStufe().equals("Q2")) {

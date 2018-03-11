@@ -5,14 +5,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
-
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -30,6 +27,7 @@ import java.net.URLConnection;
 
 import vortex.vp_today.R;
 import vortex.vp_today.util.Tuple;
+import vortex.vp_today.util.Util;
 
 /**
  * @author Simon Dräger
@@ -114,7 +112,8 @@ public class LoginActivity extends AppCompatActivity {
 
         if (!TextUtils.isEmpty(password)) {
             if (!mPasswordView.getText().toString().equals(creds.y)) {
-                Log.i("attemptLogin", "pwd was " + mPasswordView.getText().toString());
+                if (Util.D)
+                    Log.i("attemptLogin", "pwd was " + mPasswordView.getText().toString());
                 mPasswordView.setError(getString(R.string.error_incorrect_creds));
                 cancel = true;
             }

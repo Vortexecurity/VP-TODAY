@@ -34,7 +34,8 @@ public class MainService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        Log.i("INFO", "Entering onHandleIntent...");
+        if (Util.D)
+            Log.i("INFO", "Entering onHandleIntent...");
 
         while (getApplicationContext().getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getBoolean("fetchHtmlPushes",
                 getResources().getBoolean(R.bool.defaultFetchHtml))) {
@@ -95,6 +96,7 @@ public class MainService extends IntentService {
             }
         }
         getApplicationContext().getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).edit().remove("fetchHtmlPushes").apply();
-        Log.i("INFO", "Leaving onHandleIntent...");
+        if (Util.D)
+            Log.i("INFO", "Leaving onHandleIntent...");
     }
 }

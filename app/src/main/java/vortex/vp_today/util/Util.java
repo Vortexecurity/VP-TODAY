@@ -65,6 +65,8 @@ public final class Util {
     private static List<String> lstStufen;
     private static List<String> lstKlassen;
 
+    public static final boolean D = false;
+
     static {
         rand = new Random();
         atomInt = new AtomicInteger(0);
@@ -83,7 +85,8 @@ public final class Util {
     public static void setup(@NonNull Activity actv) {
         activity = actv;
         context = activity.getApplicationContext();
-        Log.i("[UTIL]","Set up >> " + activity.getLocalClassName());
+        if (Util.D)
+            Log.i("[UTIL]","Set up >> " + activity.getLocalClassName());
     }
 
     /**
@@ -116,7 +119,7 @@ public final class Util {
 
         try {
             if (tupSelects.x.get(0) != null) {
-                Log.e("getSelectedKurse", "tupSelects.x type: " + tupSelects.x.getClass().toString());
+                if (Util.D) Log.e("getSelectedKurse", "tupSelects.x type: " + tupSelects.x.getClass().toString());
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -135,9 +138,9 @@ public final class Util {
         }
 
         if (tupSelects == null)
-            Log.e("getSelectedKurse", "Returning null, tupSelects is null");
+            if (Util.D) Log.e("getSelectedKurse", "Returning null, tupSelects is null");
         else if (tupSelects.x == null)
-            Log.e("getSelectedKurse", "Returning null, x is null");
+            if (Util.D) Log.e("getSelectedKurse", "Returning null, x is null");
 
         return selectedKurse.toArray(new String[0]);
     }
@@ -168,7 +171,7 @@ public final class Util {
             SharedPreferences prefs = context.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
             Gson gson = new Gson();
             String json = prefs.getString(tag, null);
-            Log.e("getGsonObject", "json: " + json);
+            if (D) Log.e("getGsonObject", "json: " + json);
             return ((T) gson.fromJson(json, type));
         } catch (Exception ex) { }
         return null;
@@ -179,7 +182,7 @@ public final class Util {
             SimpleDateFormat format1 = new SimpleDateFormat("d.M.yyyy", Locale.ENGLISH);
             LocalDate localDate = new LocalDate(format1.parse(actualDate));
 
-            Log.i("makeVpDate", "localDate: " + localDate.toString());
+            if (D) Log.i("makeVpDate", "localDate: " + localDate.toString());
 
             return localDate.toString();
         } catch (Exception ex) {
@@ -193,28 +196,30 @@ public final class Util {
     public static synchronized TwoFormatDate[] getVPDates() {
         String unfiltered = getGod();
         String[] lines = unfiltered.split("\n");
-        Log.i("getvpdates", "lines length: " + lines.length);
+
+        if (D) Log.i("getvpdates", "lines length: " + lines.length);
+
         ArrayList<TwoFormatDate> dates = new ArrayList<>();
         String href = "href=\"/god/";
         SimpleDateFormat format = new SimpleDateFormat("yyyy-M-d", Locale.ENGLISH);
 
         for (String line : lines) {
-            Log.i("getvpdates", "reading a line");
+            if (D) Log.i("getvpdates", "reading a line");
             if (line.contains(href)) {
                 String trimmed = line.trim();
                 String extractedDate = trimmed.substring(trimmed.lastIndexOf("/god/") + 5, trimmed.length() - 2);
 
-                Log.i("getvpdates", "extractedDate: " + extractedDate);
+                if (D) Log.i("getvpdates", "extractedDate: " + extractedDate);
                 try {
                     LocalDate d = new LocalDate(format.parse(extractedDate));
                     TwoFormatDate tfd = new TwoFormatDate(extractedDate, d);
 
-                    Log.i("getvpdates", "tfd: " + tfd.toString());
+                    if (D) Log.i("getvpdates", "tfd: " + tfd.toString());
 
                     if (dates.contains(tfd))
                         continue;
 
-                    Log.i("getvpdates", "Adding tfd: " + (tfd == null ? "null" : "not null"));
+                    if (D) Log.i("getvpdates", "Adding tfd: " + (tfd == null ? "null" : "not null"));
 
                     dates.add(tfd);
                 } catch (ParseException ex) {
@@ -299,7 +304,7 @@ public final class Util {
             }
         } else {
             /* Sonst alles auf false setzen */
-            Log.i("ShowKurseDialogQ1", "size: " + boolSelectedItems.size());
+            if (D) Log.i("ShowKurseDialogQ1", "size: " + boolSelectedItems.size());
             for (int i = 0; i < q1Len; i++) {
                 boolSelectedItems.set(i, false);
             }
@@ -457,7 +462,7 @@ public final class Util {
             String urlS = "https://vp.gymnasium-odenthal.de/god";
             String authStringEnc = "dnA6Z29kOTIwMQ==";
 
-            Log.e("getGod", "URL: " + urlS);
+            if (D) Log.e("getGod", "URL: " + urlS);
 
             URL url = new URL(urlS);
             URLConnection urlConnection = url.openConnection();
@@ -497,7 +502,7 @@ public final class Util {
             String urlS = "https://vp.gymnasium-odenthal.de/god/" + vpDate;
             String authStringEnc = "dnA6Z29kOTIwMQ==";
 
-            Log.e("fetchUnfiltered", "URL: " + urlS);
+            if (D) Log.e("fetchUnfiltered", "URL: " + urlS);
 
             URL url = new URL(urlS);
             URLConnection urlConnection = url.openConnection();
@@ -572,7 +577,7 @@ public final class Util {
                 version = Integer.parseInt(strong.text());
             showedToast = true;
         } else {
-            Log.i("filterHTML", "s = new ArrayList");
+            if (D) Log.i("filterHTML", "s = new ArrayList");
             s = new ArrayList<>();
 
             Element elem = d.selectFirst("p");
@@ -650,32 +655,32 @@ public final class Util {
 
                 Element tbody = d.selectFirst("tbody");
 
-                Log.i("filterHTMLkurse", "kurse: " + TextUtils.join(",", kurse));
+                if (D) Log.i("filterHTMLkurse", "kurse: " + TextUtils.join(",", kurse));
 
                 if (tbody != null) {
-                    Log.i("filterHTMLkurse", "tbody != null");
+                    if (D) Log.i("filterHTMLkurse", "tbody != null");
 
                     /* Für jeden Listeneintrag am Tag */
                     for (Element tr : tbody.select("tr")) {
-                        Log.i("filterHTMLkurse", "tr child != null");
-                        Log.i("filterHTMLkurse", "tr child: " + tr.text());
+                        if (D) Log.i("filterHTMLkurse", "tr child != null");
+                        if (D) Log.i("filterHTMLkurse", "tr child: " + tr.text());
 
                         VPRow row = new VPRow();
                         boolean breakk = false;
 
                         for (Element td : tr.select("td")) {
                             String selector = td.cssSelector();
-                            Log.i("filterHTMLkurse", "cssSelector: " + selector);
+                            if (D) Log.i("filterHTMLkurse", "cssSelector: " + selector);
 
                             if (selector.contains("td.data-form")) {
                                 Element dataForm = td.selectFirst("td.data-form");
                                 String formTxt = dataForm.text();
                                 if (!formTxt.equals(stufe)) {
-                                    Log.i("filterHTMLkurse", "class was: " + formTxt);
+                                    if (D) Log.i("filterHTMLkurse", "class was: " + formTxt);
                                     breakk = true;
                                     break;
                                 }
-                                Log.i("filterHTMLkurse", "correct class: " + formTxt);
+                                if (D) Log.i("filterHTMLkurse", "correct class: " + formTxt);
                                 row.setKlasse(formTxt);
                             } else if (selector.contains("td.data-type")) {
                                 Element dataType = td.selectFirst("td.data-type");
@@ -685,11 +690,11 @@ public final class Util {
                                         art == VPKind.BETREUUNG ||
                                         art == VPKind.LEHRERTAUSCH)
                                     continue;
-                                Log.i("filterHTMLkurse", "dataType: " + dataType.text());
+                                if (D) Log.i("filterHTMLkurse", "dataType: " + dataType.text());
                                 row.setArt(VPKind.fromString(dataType.text()));
                             } else if (selector.contains("td.data-hour")) {
                                 Element dataHour = td.selectFirst("td.data-hour");
-                                Log.i("filterHTMLkurse", "datahour " + dataHour.text());
+                                if (D) Log.i("filterHTMLkurse", "datahour " + dataHour.text());
 
                                 String txt = dataHour.text();
 
@@ -702,10 +707,10 @@ public final class Util {
                             } else if (selector.contains("td.data-subject")) {
                                 Element dataSubject = td.selectFirst("td.data-subject");
                                 String txtSubject = dataSubject.text();
-                                Log.i("filterHTMLkurse", "datasubject " + dataSubject.text());
+                                if (D) Log.i("filterHTMLkurse", "datasubject " + dataSubject.text());
 
                                 if (!anyMatch(txtSubject, kurse)) {
-                                    Log.i("filterHTMLkurse", "not matching subject: " + txtSubject);
+                                    if (D) Log.i("filterHTMLkurse", "not matching subject: " + txtSubject);
                                     breakk = true;
                                     break;
                                 }
@@ -727,13 +732,13 @@ public final class Util {
                         }
 
                         if (tr != null && !info.contains(row) && !breakk) {
-                            Log.i("filterHTMLkurse", "row not contained, adding");
+                            if (D) Log.i("filterHTMLkurse", "row not contained, adding");
                             info.addRow(row);
                         } else {
                             if (breakk) {
-                                Log.i("filterHTMLkurse", "Incorrect class, skipping");
+                                if (D) Log.i("filterHTMLkurse", "Incorrect class, skipping");
                             } else {
-                                Log.i("filterHTMLkurse", "row contained, skipping");
+                                if (D) Log.i("filterHTMLkurse", "row contained, skipping");
                             }
                         }
 
@@ -743,11 +748,11 @@ public final class Util {
         }
 
         if (info != null) {
-            Log.i("filterHTMLkurse", "info != null");
-            //Log.i("filterHTMLkurse", "info.getRows().get(0): " + info.getRows().get(0).toString());
+            if (D) Log.i("filterHTMLkurse", "info != null");
+            //if (D) Log.i("filterHTMLkurse", "info.getRows().get(0): " + info.getRows().get(0).toString());
         }
         else {
-            Log.i("filterHTMLkurse", "info = null");
+            if (D) Log.i("filterHTMLkurse", "info = null");
         }
 
         return new TriTuple<String, Integer, VPInfo>(msgotd, version, info);
@@ -795,10 +800,10 @@ public final class Util {
 
                 Element tbody = d.selectFirst("tbody");
 
-                Log.i("filterHTMLkurse", "kurse: " + TextUtils.join(",", kurse));
+                if (D) Log.i("filterHTMLkurse", "kurse: " + TextUtils.join(",", kurse));
 
                 if (tbody != null) {
-                    Log.i("filterHTMLkurse", "tbody != null");
+                    if (D) Log.i("filterHTMLkurse", "tbody != null");
 
                     Elements trs = tbody.select("tr");
                     int totalTRs = trs.size();
@@ -806,8 +811,8 @@ public final class Util {
 
                     /* Für jeden Listeneintrag am Tag */
                     for (Element tr : trs) {
-                        Log.i("filterHTMLkurse", "tr child != null");
-                        Log.i("filterHTMLkurse", "tr child: " + tr.text());
+                        if (D) Log.i("filterHTMLkurse", "tr child != null");
+                        if (D) Log.i("filterHTMLkurse", "tr child: " + tr.text());
 
                         VPRow row = new VPRow();
                         boolean breakk = false;
@@ -816,31 +821,34 @@ public final class Util {
 
                         for (Element td : tds) {
                             String selector = td.cssSelector();
-                            Log.i("filterHTMLkurse", "cssSelector: " + selector);
+                            if (D) Log.i("filterHTMLkurse", "cssSelector: " + selector);
 
                             if (selector.contains("td.data-form")) {
                                 Element dataForm = td.selectFirst("td.data-form");
                                 String formTxt = dataForm.text();
                                 if (!formTxt.equals(stufe)) {
-                                    Log.i("filterHTMLkurse", "class was: " + formTxt);
+                                    if (D) Log.i("filterHTMLkurse", "class was: " + formTxt);
                                     breakk = true;
                                     break;
                                 }
-                                Log.i("filterHTMLkurse", "correct class: " + formTxt);
+                                if (D) Log.i("filterHTMLkurse", "correct class: " + formTxt);
                                 row.setKlasse(formTxt);
                             } else if (selector.contains("td.data-type")) {
                                 Element dataType = td.selectFirst("td.data-type");
                                 VPKind art = VPKind.fromString(dataType.text());
+
                                 if (art == VPKind.PAUSENAUFSICHT ||
                                         art == VPKind.KLAUSUR ||
                                         art == VPKind.BETREUUNG ||
-                                        art == VPKind.LEHRERTAUSCH)
+                                        art == VPKind.LEHRERTAUSCH ||
+                                        art == VPKind.SONDEREINSATZ)
                                     continue;
-                                Log.i("filterHTMLkurse", "dataType: " + dataType.text());
+
+                                if (D) Log.i("filterHTMLkurse", "dataType: " + dataType.text());
                                 row.setArt(VPKind.fromString(dataType.text()));
                             } else if (selector.contains("td.data-hour")) {
                                 Element dataHour = td.selectFirst("td.data-hour");
-                                Log.i("filterHTMLkurse", "datahour " + dataHour.text());
+                                if (D) Log.i("filterHTMLkurse", "datahour " + dataHour.text());
 
                                 String txt = dataHour.text();
 
@@ -853,10 +861,10 @@ public final class Util {
                             } else if (selector.contains("td.data-subject")) {
                                 Element dataSubject = td.selectFirst("td.data-subject");
                                 String txtSubject = dataSubject.text();
-                                Log.i("filterHTMLkurse", "datasubject " + dataSubject.text());
+                                if (D) Log.i("filterHTMLkurse", "datasubject " + dataSubject.text());
 
                                 if (!anyMatch(txtSubject, kurse)) {
-                                    Log.i("filterHTMLkurse", "not matching subject: " + txtSubject);
+                                    if (D) Log.i("filterHTMLkurse", "not matching subject: " + txtSubject);
                                     breakk = true;
                                     break;
                                 }
@@ -879,17 +887,17 @@ public final class Util {
 
                         processedTRs++;
                         int process = (processedTRs * 100) / totalTRs;
-                        Log.i("filterHTMLkurse", "processed: " + process + "%");
+                        if (D) Log.i("filterHTMLkurse", "processed: " + process + "%");
                         callback.onProgress(process);
 
                         if (tr != null && !info.contains(row) && !breakk) {
-                            Log.i("filterHTMLkurse", "row not contained, adding");
+                            if (D) Log.i("filterHTMLkurse", "row not contained, adding");
                             info.addRow(row);
                         } else {
                             if (breakk) {
-                                Log.i("filterHTMLkurse", "Incorrect class, skipping");
+                                if (D) Log.i("filterHTMLkurse", "Incorrect class, skipping");
                             } else {
-                                Log.i("filterHTMLkurse", "row contained, skipping");
+                                if (D) Log.i("filterHTMLkurse", "row contained, skipping");
                             }
                         }
 
@@ -902,11 +910,11 @@ public final class Util {
         }
 
         if (info != null) {
-            Log.i("filterHTMLkurse", "info != null");
-            //Log.i("filterHTMLkurse", "info.getRows().get(0): " + info.getRows().get(0).toString());
+            if (D) Log.i("filterHTMLkurse", "info != null");
+            //if (D) Log.i("filterHTMLkurse", "info.getRows().get(0): " + info.getRows().get(0).toString());
         }
         else {
-            Log.i("filterHTMLkurse", "info = null");
+            if (D) Log.i("filterHTMLkurse", "info = null");
         }
 
         return new TriTuple<String, Integer, VPInfo>(msgotd, version, info);
@@ -941,14 +949,14 @@ public final class Util {
 
         VPInfo inf = new VPInfo();
 
-        //Log.i("getCurrentInfo/elements", ArrListToArr(elements.eachText()));
+        //if (D) Log.i("getCurrentInfo/elements", ArrListToArr(elements.eachText()));
 
         for (Element e : elements) {
             if (e != null && !(inf.getRows().contains(e.text()))) {
                 VPRow r = new VPRow();
                 Elements subs = e.getAllElements();
 
-                Log.i("getCurrentInfo", "Element: " + e.text());
+                if (D) Log.i("getCurrentInfo", "Element: " + e.text());
 
                 switch (subs.select("data-type").get(0).text().toLowerCase()) {
                     case "vertretung":
@@ -973,13 +981,13 @@ public final class Util {
                 String statt = subs.select("data-instead").get(0).text();
                 String bemerkung = subs.select("data-notice").get(0).text();
 
-                Log.i("getCurrentInfo", "art: " + art);
-                Log.i("getCurrentInfo", "stunde: " + stunde);
-                Log.i("getCurrentInfo", "fach: " + fach);
-                Log.i("getCurrentInfo", "klasse: " + klasse);
-                Log.i("getCurrentInfo", "raum: " + raum);
-                Log.i("getCurrentInfo", "statt: " + statt);
-                Log.i("getCurrentInfo", "bemerkung: " + bemerkung);
+                if (D) Log.i("getCurrentInfo", "art: " + art);
+                if (D) Log.i("getCurrentInfo", "stunde: " + stunde);
+                if (D) Log.i("getCurrentInfo", "fach: " + fach);
+                if (D) Log.i("getCurrentInfo", "klasse: " + klasse);
+                if (D) Log.i("getCurrentInfo", "raum: " + raum);
+                if (D) Log.i("getCurrentInfo", "statt: " + statt);
+                if (D) Log.i("getCurrentInfo", "bemerkung: " + bemerkung);
 
                 r.setStunde(stunde);
                 /* Unnötige Leerzeichen wegmachen */
