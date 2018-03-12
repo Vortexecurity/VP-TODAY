@@ -1015,4 +1015,20 @@ public final class Util {
 
         return inf;
     }
+
+    /**
+     *  Gibt aktuellen Context zurück
+     * @return context
+     */
+    public static Context getContext(){
+        return context;
+    }
+
+    /**
+     *  Gibt aktuelle Activity zurück
+     * @return activity
+     */
+    public static Activity getActivity(){
+        return activity;
+    }
 }

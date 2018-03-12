@@ -162,6 +162,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                     Log.i("onPostExecute", "result: " + result.z.getRows().get(0).toString());
                 } catch (Exception ex) {
                     main.txt.setText("");
+                    Toasty.info(Util.getContext(), "Du hast an diesem Tag keine Vertretungen!").show();
                     if (Util.D) Log.i("onPostExecute", "result: null");
                 }
 
@@ -181,6 +182,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                             if (Util.D) Log.i("onPostExecute", "adding row: " + row.getLinearContent());
                             main.txt.append(row.getLinearContent());
                         }
+                        Toasty.success(Util.getContext(), "Aktualisiert!").show();
                     } else {
                         if (Util.D) Log.i("onPostExecute", "not assuming, adding result.z.getContent");
 
