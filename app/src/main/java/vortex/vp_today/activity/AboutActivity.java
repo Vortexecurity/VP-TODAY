@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.danielstone.materialaboutlibrary.MaterialAboutActivity;
@@ -23,7 +24,7 @@ import vortex.vp_today.util.Util;
 /**
  * @author Simon Dräger
  * @author Melvin Zähl
- * @version 3.3.18
+ * @version 11.3.18
  */
 
 public class AboutActivity extends MaterialAboutActivity {
@@ -33,6 +34,7 @@ public class AboutActivity extends MaterialAboutActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Util.setup(this);
         /*setContentView(R.layout.activity_about);
 
         txtV = findViewById(R.id.txtAbout);
@@ -72,7 +74,7 @@ public class AboutActivity extends MaterialAboutActivity {
                                 .sizeDp(18))
                         .build())
                 .addItem(new MaterialAboutActionItem.Builder()
-                .text("License")
+                .text("Lizenz")
                 .icon(new IconicsDrawable(getApplicationContext())
                         .icon(CommunityMaterial.Icon.cmd_book)
                         .sizeDp(18))
@@ -86,21 +88,41 @@ public class AboutActivity extends MaterialAboutActivity {
                 .build();
 
         MaterialAboutCard cAuthor = new MaterialAboutCard.Builder()
-                .title("Author")
-                .addItem(new MaterialAboutActionItem.Builder()
+                .title("Entwickler")
+                .addItem(new MaterialAboutTitleItem.Builder()
                 .text("VorteX Dev. Corp.:")
+                .desc("© 2018")
+                .icon(R.mipmap.logo)
                 .build())
                 .addItem(new MaterialAboutActionItem.Builder()
                 .text("Simon Dräger")
                 .subText(R.string.simonemail)
+                .setOnClickAction(new MaterialAboutItemOnClickAction() {
+                    @Override
+                    public void onClick() {
+                        Log.e("CLICK", "CLICK SIMON");
+                    }
+                })
                 .build())
                 .addItem(new MaterialAboutActionItem.Builder()
                 .text("Melvin Zähl")
                 .subText(R.string.melvinemail)
+                        .setOnClickAction(new MaterialAboutItemOnClickAction() {
+                            @Override
+                            public void onClick() {
+                                Log.e("CLICK", "CLICK MELVIN");
+                            }
+                        })
                 .build())
                 .addItem(new MaterialAboutActionItem.Builder()
                 .text("Florian Koll")
                 .subText(R.string.florianemail)
+                        .setOnClickAction(new MaterialAboutItemOnClickAction() {
+                            @Override
+                            public void onClick() {
+                                Log.e("CLICK", "CLICK FLORIAN");
+                            }
+                        })
                 .build())
                 .build();
 
