@@ -6,4 +6,5 @@
     <bool name="defaultFetchHtml">true</bool>
     <string name="defaultKlasse">5</string>
     <string name="defaultKlasseBuchstabe">A</string>
+    <integer name="defaultRefreshIntervalMin">45</integer>
 </resources>

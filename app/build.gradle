@@ -81,4 +81,5 @@ dependencies {
     compile 'com.github.daniel-stoneuk:material-about-library:2.2.5'
     implementation "com.mikepenz:iconics-core:3.0.3@aar"
     implementation 'com.mikepenz:community-material-typeface:2.0.46.1@aar'
+    compile "me.leolin:ShortcutBadger:1.1.21@aar"
 }

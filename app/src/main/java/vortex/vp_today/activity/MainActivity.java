@@ -84,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //progressBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), android.graphics.PorterDuff.Mode.SRC_IN);
-        //progressBar.getProgressDrawable().setColorFilter(Color.WHITE, android.graphics.PorterDuff.Mode.SRC_IN);
 
         swipe.setColorSchemeResources(R.color.colorPrimaryDark);
 
@@ -92,12 +91,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 try {
+                    if (spinDate.getSelectedItem() == null) {
+                        new RetrieveDatesTask().execute(MainActivity.this);
+                    }
                     updateListFromSpinner();
-                    /*
-                     Document doc = Jsoup.parse(tmp);
-                     String[] content = Util.getCurrentInfo(doc).getContent();
-                     txt.setText(TextUtils.join("\n\n", content));
-                     */
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -117,7 +114,16 @@ public class MainActivity extends AppCompatActivity {
         });
         /**/
 
-        new RetrieveDatesTask().execute(MainActivity.this);
+        if (Util.isInternetConnected()) {
+            new RetrieveDatesTask().execute(MainActivity.this);
+        } else {
+            MainActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toasty.error(getApplicationContext(), "Es besteht keine Internetverbindung!").show();
+                }
+            });
+        }
     }
 
     public static void show(@NonNull Context context) {
@@ -162,13 +168,18 @@ public class MainActivity extends AppCompatActivity {
             MainActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toasty.error(getApplicationContext(), "Es besteht keine Internetverbindung!", 3500).show();
+                    Toasty.error(getApplicationContext(), "Es besteht keine Internetverbindung!").show();
                 }
             });
         }
     }
 
     public void processCurrentDates(TwoFormatDate[] dates) {
+        if (dates == null) {
+            if (Util.D) Log.i("processCurrentDates", "dates = null");
+            return;
+        }
+
         String[] actuals = new String[dates.length];
 
         for (int i = 0; i < actuals.length; i++)

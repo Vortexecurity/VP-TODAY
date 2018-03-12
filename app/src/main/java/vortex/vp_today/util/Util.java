@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import es.dmoral.toasty.Toasty;
@@ -86,6 +87,18 @@ public final class Util {
         activity = actv;
         context = activity.getApplicationContext();
         if (Util.D) Log.i("[UTIL]","Set up >> " + activity.getLocalClassName());
+    }
+
+    public static int MillisToSecs(int millis) {
+        return (millis / 1000);
+    }
+
+    public int SecsToMins(int secs) {
+        return ((secs % 3600) / 60);
+    }
+
+    public long MinsToMillis(int mins) {
+        return TimeUnit.MINUTES.toMillis(mins);
     }
 
     /**

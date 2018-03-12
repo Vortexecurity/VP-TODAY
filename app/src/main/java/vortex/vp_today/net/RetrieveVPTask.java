@@ -19,7 +19,7 @@ import vortex.vp_today.util.Util;
 
 /**
  * @author Simon Dräger
- * @version 7.3.18
+ * @version 12.3.18
  */
 
 // params: Object, progress: Void, return: TriTuple: String Integer String[] || String Integer VPInfo[]
@@ -53,12 +53,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
             main.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    main.progressBar.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            main.progressBar.setVisibility(View.VISIBLE);
-                        }
-                    });
+                    main.progressBar.setVisibility(View.VISIBLE);
                     //if (Util.D) Log.i("RetrieveVPTask", "visibility: " + main.progressBar.getVisibility());
                 }
             });
@@ -140,6 +135,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
 
                 return out;
             }
+
             return filteredInfo;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -157,7 +153,9 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                     main.progressBar.setVisibility(View.GONE);
                 }
             });
+
             if (Util.D) Log.i("onPostExecute", "setting text to result");
+
             if (result != null) {
                 if (Util.D) Log.i("onPostExecute", "result != null");
                 try {
@@ -166,8 +164,10 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                     main.txt.setText("");
                     if (Util.D) Log.i("onPostExecute", "result: null");
                 }
+
                 //if (result.z != null)
                 //if (Util.D) Log.i("doInBackground", "filtered.z.length = " + result.z.length);
+
                 if (result.x.equals("novpexist")) {
                     main.tvVers.setText("Version: 0");
                     main.msgOTD.setText("Für diesen Tag gibt es noch keine Vertretungen!");
@@ -176,6 +176,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                     main.txt.setText("");
                     if (result.z.assumeKursVersion()) {
                         if (Util.D) Log.i("onPostExecute", "assuming kurse version");
+
                         for (VPRow row : result.z.getRows()) {
                             if (Util.D) Log.i("onPostExecute", "adding row: " + row.getLinearContent());
                             main.txt.append(row.getLinearContent());
@@ -186,7 +187,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                         main.txt.setText(TextUtils.join("\n\n", result.z.getContent()));
                     }
                 } else {
-                    if (Util.D)  Log.i("onPostExecute", "in else: result.x = null -> " + (result.x == null) + " y = 0 -> " + (result.y == 0) + " z = null -> " + (result.z == null));
+                    if (Util.D) Log.i("onPostExecute", "in else: result.x = null -> " + (result.x == null) + " y = 0 -> " + (result.y == 0) + " z = null -> " + (result.z == null));
                 }
             } else {
                 if (Util.D) Log.i("onPostExecute", "result = null");
@@ -195,11 +196,14 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
         main.msgOTD.setText(result.x);
         main.tvVers.setText("Version: " + result.y.intValue());
 
         if (Util.D) Log.i("onPostExecute", "set text to result");
+
         main.swipe.setRefreshing(false);
+
         if (Util.D) Log.i("onPostExecute", "set refreshing to false");
     }
 
