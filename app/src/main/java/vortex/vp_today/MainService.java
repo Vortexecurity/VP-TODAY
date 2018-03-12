@@ -13,8 +13,10 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
 import vortex.vp_today.logic.VPInfo;
 import vortex.vp_today.logic.VPRow;
+import vortex.vp_today.net.MainServiceVPTask;
 import vortex.vp_today.util.Util;
 
 /**
@@ -37,10 +39,6 @@ public class MainService extends IntentService {
         prefs = getApplicationContext().getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
     }
 
-    public void publishInfo(VPInfo inf) {
-        info = inf;
-    }
-
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         if (Util.D) Log.i("MainService", "Entering onHandleIntent...");
@@ -48,6 +46,10 @@ public class MainService extends IntentService {
         while (prefs.getBoolean("fetchHtmlPushes", getResources().getBoolean(R.bool.defaultFetchHtml)) &&
                 !isForeground()) {
             try {
+                info = new MainServiceVPTask().execute().get().z;
+
+                assert info != null : "info.z darf nicht null sein";
+
                 Context ctx = getApplicationContext();
                 ArrayList<VPRow> known = Util.getGsonObject(ctx, "knownInfos", ArrayList.class);
 
@@ -71,6 +73,12 @@ public class MainService extends IntentService {
                         Util.sendNotification(ctx, "VP-TODAY: " + fachOrKurs + " | " + art,
                                 row.getLinearContent());
 
+                        // Die Zahl am launcher inkrementieren
+                        int badgeCount = prefs.getInt(getString(R.string.currentBadges), 0);
+
+                        ShortcutBadger.applyCount(ctx, ++badgeCount);
+
+                        prefs.edit().putInt(getString(R.string.currentBadges), badgeCount).apply();
                     }
 
                     if (known == null) {
@@ -82,10 +90,13 @@ public class MainService extends IntentService {
                     // Die Änderungen speichern
                     Util.putGsonObject(getApplicationContext(), "knownInfos", known);
                 }
-
-                /* Jede X (default 45) Minuten updaten */
-                Thread.sleep(prefs.getInt(getString(R.string.settingRefreshIntervalMin), getResources().getInteger(R.integer.defaultRefreshIntervalMin)));
             } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            try {
+            /* Jede X (default 45) Minuten updaten */
+                Thread.sleep(prefs.getInt(getString(R.string.settingRefreshIntervalMin), getResources().getInteger(R.integer.defaultRefreshIntervalMin)));
+            } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
         }

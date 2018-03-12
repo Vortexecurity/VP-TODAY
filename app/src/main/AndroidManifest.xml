@@ -28,10 +28,10 @@
                 android:value="vortex.vp_today.activity.MainActivity" />
         </activity>
 
-        <!--<service
+        <service
             android:name=".MainService"
             android:enabled="true"
-            android:exported="false" />-->
+            android:exported="false" />
 
         <activity
             android:name=".activity.RateActivity"

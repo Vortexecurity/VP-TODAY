@@ -52,6 +52,7 @@
     <string name="saveLogin">Angaben speichern</string>
     <string name="angabenohnegewaehr">Alle Angaben ohne Gewähr! (Alpha Build)</string>
     <string name="settingRefreshIntervalMin">refreshIntervalMin</string>
+    <string name="currentBadges">currentBadges</string>
     <string-array name="KurseQ1">
         <item>BI G1</item>
         <item>BI G2</item>

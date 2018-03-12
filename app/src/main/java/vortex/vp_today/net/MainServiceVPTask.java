@@ -2,7 +2,6 @@ package vortex.vp_today.net;
 
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -93,7 +92,7 @@ public class MainServiceVPTask extends AsyncTask<Object, Integer, TriTuple<Strin
         return null;
     }
 
-    @Override
+    /*@Override
     protected void onPostExecute(TriTuple<String, Integer, VPInfo> result) {
         try {
             if (result != null) {
@@ -102,7 +101,7 @@ public class MainServiceVPTask extends AsyncTask<Object, Integer, TriTuple<Strin
 
                     srvs.publishInfo(result.z);
 
-                    /*if (result.z.assumeKursVersion()) {
+                    /+if (result.z.assumeKursVersion()) {
                         if (Util.D) Log.i("onPostExecute", "assuming kurse version");
 
                         for (VPRow row : result.z.getRows()) {
@@ -117,7 +116,7 @@ public class MainServiceVPTask extends AsyncTask<Object, Integer, TriTuple<Strin
                         if (Util.D) Log.i("onPostExecute", "not assuming, adding result.z.getContent");
 
                         main.txt.setText(TextUtils.join("\n\n", result.z.getContent()));
-                    }*/
+                    }+/
                 } else {
                     if (Util.D) Log.i("onPostExecute", "in else: result.x = null -> " + (result.x == null) + " y = 0 -> " + (result.y == 0) + " z = null -> " + (result.z == null));
                 }
@@ -127,7 +126,7 @@ public class MainServiceVPTask extends AsyncTask<Object, Integer, TriTuple<Strin
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
+    }*/
 
     @Nullable
     public Exception getException() {
