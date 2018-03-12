@@ -161,8 +161,9 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
             if (result != null) {
                 if (Util.D) Log.i("onPostExecute", "result != null");
                 try {
-                    if (Util.D) Log.i("onPostExecute", "result: " + result.z.getRows().get(0).toString());
+                    Log.i("onPostExecute", "result: " + result.z.getRows().get(0).toString());
                 } catch (Exception ex) {
+                    main.txt.setText("");
                     if (Util.D) Log.i("onPostExecute", "result: null");
                 }
                 //if (result.z != null)
@@ -181,10 +182,9 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                         }
                     } else {
                         if (Util.D) Log.i("onPostExecute", "not assuming, adding result.z.getContent");
+
                         main.txt.setText(TextUtils.join("\n\n", result.z.getContent()));
                     }
-                    main.msgOTD.setText(result.x);
-                    main.tvVers.setText("Version: " + result.y.intValue());
                 } else {
                     if (Util.D)  Log.i("onPostExecute", "in else: result.x = null -> " + (result.x == null) + " y = 0 -> " + (result.y == 0) + " z = null -> " + (result.z == null));
                 }
@@ -195,6 +195,8 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        main.msgOTD.setText(result.x);
+        main.tvVers.setText("Version: " + result.y.intValue());
 
         if (Util.D) Log.i("onPostExecute", "set text to result");
         main.swipe.setRefreshing(false);

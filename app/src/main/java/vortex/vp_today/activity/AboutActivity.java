@@ -100,7 +100,7 @@ public class AboutActivity extends MaterialAboutActivity {
                 .setOnClickAction(new MaterialAboutItemOnClickAction() {
                     @Override
                     public void onClick() {
-                        Log.e("CLICK", "CLICK SIMON");
+                        Log.i("CLICK", "CLICK SIMON");
                     }
                 })
                 .build())
@@ -110,7 +110,7 @@ public class AboutActivity extends MaterialAboutActivity {
                         .setOnClickAction(new MaterialAboutItemOnClickAction() {
                             @Override
                             public void onClick() {
-                                Log.e("CLICK", "CLICK MELVIN");
+                                Log.i("CLICK", "CLICK MELVIN");
                             }
                         })
                 .build())
@@ -120,7 +120,7 @@ public class AboutActivity extends MaterialAboutActivity {
                         .setOnClickAction(new MaterialAboutItemOnClickAction() {
                             @Override
                             public void onClick() {
-                                Log.e("CLICK", "CLICK FLORIAN");
+                                Log.i("CLICK", "CLICK FLORIAN");
                             }
                         })
                 .build())
