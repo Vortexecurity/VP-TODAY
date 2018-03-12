@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     public EditText txt;
     public ProgressBar progressBar;
 
+    private static boolean activityVisible;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         SharedPreferences sp = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
@@ -130,6 +132,18 @@ public class MainActivity extends AppCompatActivity {
         context.startActivity(intent);
     }
 
+    public static boolean isActivityVisible() {
+        return activityVisible;
+    }
+
+    private static void activityResumed() {
+        activityVisible = true;
+    }
+
+    private static void activityPaused() {
+        activityVisible = false;
+    }
+
     private synchronized void updateListFromSpinner() {
         if (Util.isInternetConnected(getApplicationContext())) {
             String str = spinDate.getSelectedItem().toString().substring(4).trim();
@@ -191,6 +205,18 @@ public class MainActivity extends AppCompatActivity {
 
         dateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinDate.setAdapter(dateAdapter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        activityPaused();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        activityResumed();
     }
 
     @Override

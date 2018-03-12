@@ -30,6 +30,14 @@ public class VPInfo {
         }
     }
 
+    public void removeRow(int index) {
+        rows.remove(index);
+    }
+
+    public void removeRow(VPRow row) {
+        rows.remove(row);
+    }
+
     public boolean isEmpty() {
         if (rows == null ||
                 rows.isEmpty() ||

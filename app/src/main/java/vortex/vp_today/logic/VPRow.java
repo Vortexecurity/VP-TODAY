@@ -41,7 +41,6 @@ public class VPRow {
             String out = String.valueOf(stunde) + DELIMITER + fach + DELIMITER + art.getName() + DELIMITER;
             if(vertreter != null)
                 out += vertreter + DELIMITER;
-            //if(!klasse.equals("---")) out+= klasse + DELIMITER; >> Eigentlich eine nicht notwendige Info für den Schüler oder?
             if(!raum.equals("---"))
                 out += raum + DELIMITER;
             if(!statt.equals("---"))

@@ -1,6 +1,7 @@
 package vortex.vp_today.util;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.content.Context;
@@ -79,6 +80,21 @@ public final class Util {
         if (lstKlassen.isEmpty()) {
             lstKlassen.addAll(Arrays.asList("A", "B", "C", "D"));
         }
+    }
+
+    public static boolean isAppRunning(final Context context, final String packageName) {
+        final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        final List<ActivityManager.RunningAppProcessInfo> procInfos = activityManager.getRunningAppProcesses();
+
+        if (procInfos != null) {
+            for (final ActivityManager.RunningAppProcessInfo processInfo : procInfos) {
+                if (processInfo.processName.equals(packageName)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public static int MillisToSecs(int millis) {
@@ -603,6 +619,62 @@ public final class Util {
     }
 
     /**
+     * Service-Version
+     * @author Simon Dräger
+     */
+    @Nullable
+    public static synchronized TriTuple<String, Integer, String[]> filterHTMLService(Document d, String stufe, String sub) {
+        /* Hilfsvariable, sodass stufe nicht direkt verändert wird */
+        String _stufe = stufe;
+        String msgotd = null;
+        int version = 0;
+        boolean showedToast = false;
+
+        if (_stufe == null || _stufe.equals(""))
+            _stufe = "05";
+
+        /* Wenn 5 <= stufe < EF */
+        if (!Character.isLetter(_stufe.charAt(0))) {
+            _stufe = "0" + _stufe;
+            _stufe = _stufe + sub;
+        }
+
+        Elements elements = d.select("tr[data-index*='" + _stufe + "']");
+        Element strong = d.selectFirst("strong");
+        ArrayList<String> s = null;
+
+        if (elements.first() == null) {
+            if (strong != null)
+                version = Integer.parseInt(strong.text());
+        } else {
+            if (D) Log.i("filterHTML", "s = new ArrayList");
+            s = new ArrayList<>();
+
+            Element elem = d.selectFirst("p");
+            if (elem.text().equals("Für diesen Tag existiert derzeit kein Vertretungsplan. Bitten schauen Sie später nochmal vorbei!")) {
+                if (elem != null) {
+                    msgotd = elem.text();
+                }
+            } else {
+                Element msg = d.selectFirst("div.alert");
+                if (msg != null)
+                    msgotd = msg.text();
+
+                if (strong != null)
+                    version = Integer.parseInt(strong.text());
+
+                for (Element e : elements) {
+                    /* Manchmal sind Einträge im VP mehrere Male vorhanden, also nur einmal in die Liste tun. */
+                    if (e != null && !(s.contains(e.text())))
+                        s.add(e.text());
+                }
+            }
+        }
+
+        return new TriTuple<>(msgotd, Integer.valueOf(version), s == null ? null : s.toArray(new String[0]));
+    }
+
+    /**
      * @author Simon Dräger
      */
     @Nullable
@@ -745,6 +817,139 @@ public final class Util {
         }
         else {
             if (D) Log.i("filterHTMLkurse", "info = null");
+        }
+
+        return new TriTuple<String, Integer, VPInfo>(msgotd, version, info);
+    }
+
+    /**
+     * @author Simon Dräger
+     */
+    @Nullable
+    public static synchronized TriTuple<String, Integer, VPInfo> filterHTMLService(Document d,
+                                                                            String stufe,
+                                                                            String[] kurse) throws AssertionError {
+        assert stufe.equalsIgnoreCase("EF") ||
+                stufe.equalsIgnoreCase("Q1") ||
+                stufe.equalsIgnoreCase("Q2")
+                : "Die Stufe muss EF oder höher sein";
+
+        String msgotd = null;
+        int version = 0;
+
+        Elements elements = d.select("tr[data-index*='" + stufe + "']");
+        Element strong = d.selectFirst("strong");
+        VPInfo info = new VPInfo();
+
+        if (elements.first() == null) {
+            if (strong != null)
+                version = Integer.parseInt(strong.text());
+        } else {
+            Element elem = d.selectFirst("p");
+            if (elem.text().equals("Für diesen Tag existiert derzeit kein Vertretungsplan. Bitten schauen Sie später nochmal vorbei!")) {
+                if (elem != null) {
+                    msgotd = elem.text();
+                }
+            } else {
+                Element msg = d.selectFirst("div.alert");
+                if (msg != null)
+                    msgotd = msg.text();
+
+                if (strong != null)
+                    version = Integer.parseInt(strong.text());
+
+                Element tbody = d.selectFirst("tbody");
+
+                if (D) Log.i("filterHTMLkurse", "kurse: " + TextUtils.join(",", kurse));
+
+                if (tbody != null) {
+                    if (D) Log.i("filterHTMLkurse", "tbody != null");
+
+                    /* Für jeden Listeneintrag am Tag */
+                    for (Element tr : tbody.select("tr")) {
+                        if (D) Log.i("filterHTMLkurse", "tr child != null");
+                        if (D) Log.i("filterHTMLkurse", "tr child: " + tr.text());
+
+                        VPRow row = new VPRow();
+                        boolean breakk = false;
+
+                        for (Element td : tr.select("td")) {
+                            String selector = td.cssSelector();
+                            if (D) Log.i("filterHTMLkurse", "cssSelector: " + selector);
+
+                            if (selector.contains("td.data-form")) {
+                                Element dataForm = td.selectFirst("td.data-form");
+                                String formTxt = dataForm.text();
+                                if (!formTxt.equals(stufe)) {
+                                    if (D) Log.i("filterHTMLkurse", "class was: " + formTxt);
+                                    breakk = true;
+                                    break;
+                                }
+                                if (D) Log.i("filterHTMLkurse", "correct class: " + formTxt);
+                                row.setKlasse(formTxt);
+                            } else if (selector.contains("td.data-type")) {
+                                Element dataType = td.selectFirst("td.data-type");
+                                VPKind art = VPKind.fromString(dataType.text());
+                                if (art == VPKind.PAUSENAUFSICHT ||
+                                        art == VPKind.KLAUSUR ||
+                                        art == VPKind.BETREUUNG ||
+                                        art == VPKind.LEHRERTAUSCH)
+                                    continue;
+                                if (D) Log.i("filterHTMLkurse", "dataType: " + dataType.text());
+                                row.setArt(VPKind.fromString(dataType.text()));
+                            } else if (selector.contains("td.data-hour")) {
+                                Element dataHour = td.selectFirst("td.data-hour");
+                                if (D) Log.i("filterHTMLkurse", "datahour " + dataHour.text());
+
+                                String txt = dataHour.text();
+
+                                if (txt.contains("/")) {
+                                    row.setStunden(StrArrToIntArr(txt.split("/")));
+                                    continue;
+                                }
+
+                                row.setStunde(Integer.parseInt(dataHour.text()));
+                            } else if (selector.contains("td.data-subject")) {
+                                Element dataSubject = td.selectFirst("td.data-subject");
+                                String txtSubject = dataSubject.text();
+                                if (D) Log.i("filterHTMLkurse", "datasubject " + dataSubject.text());
+
+                                if (!anyMatch(txtSubject, kurse)) {
+                                    if (D) Log.i("filterHTMLkurse", "not matching subject: " + txtSubject);
+                                    breakk = true;
+                                    break;
+                                }
+
+                                row.setFach(dataSubject.text());
+                            } else if (selector.contains("td.hidden-xs data-agent")) {
+                                Element dataAgent = td.selectFirst("td.hidden-xs.data-agent");
+                                row.setVertreter(dataAgent.text());
+                            } else if (selector.contains("td.hidden-xs.data-room")) {
+                                Element dataRoom = td.selectFirst("td.hidden-xs.data-room");
+                                row.setRaum(dataRoom.text());
+                            } else if (selector.contains("td.hidden-xs.data-instead")) {
+                                Element dataInstead = td.selectFirst("td.hidden-xs.data-instead");
+                                row.setStatt(dataInstead.text());
+                            } else if (selector.contains("td.hidden-xs.data-notice")) {
+                                Element dataNotice = td.selectFirst("td.hidden-xs.data-notice");
+                                row.setBemerkung(dataNotice.text());
+                            }
+                        }
+
+                        if (tr != null && !info.contains(row) && !breakk) {
+                            if (D) Log.i("filterHTMLkurse", "row not contained, adding");
+                            info.addRow(row);
+                        } else {
+                            if (breakk) {
+                                if (D) Log.i("filterHTMLkurse", "Incorrect class, skipping");
+                            } else {
+                                if (D) Log.i("filterHTMLkurse", "row contained, skipping");
+                            }
+                        }
+
+                    }
+                }
+            }
         }
 
         return new TriTuple<String, Integer, VPInfo>(msgotd, version, info);
