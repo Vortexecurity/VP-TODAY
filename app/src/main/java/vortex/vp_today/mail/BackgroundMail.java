@@ -254,7 +254,7 @@ public class BackgroundMail {
         if (TextUtils.isEmpty(subject)) {
             throw new IllegalArgumentException("You didn't set a subject");
         }
-        if (!Util.isInternetConnected()) {
+        if (!Util.isInternetConnected(mContext)) {
             Log.d(TAG, "you need internet connection to send the email");
         }
         new SendEmailTask().execute();

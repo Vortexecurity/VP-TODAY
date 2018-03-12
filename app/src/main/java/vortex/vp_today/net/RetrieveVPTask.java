@@ -71,10 +71,10 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
 
             if (kurse == null) {
                 if (Util.D) Log.i("RVPT/doInBackground", "kurse = null, doing filterHTML sub");
-                filtered = Util.filterHTML(doc, stufe, sub);
+                filtered = Util.filterHTML(main, doc, stufe, sub);
             } else {
                 if (Util.D) Log.i("RVPT/doInBackground", "kurse not null, doing filterHTML kurse");
-                filteredInfo = Util.filterHTML(doc, stufe, kurse, new ProgressCallback() {
+                filteredInfo = Util.filterHTML(main, doc, stufe, kurse, new ProgressCallback() {
                     @Override
                     public void onProgress(int percent) {
                         publishProgress(percent);
@@ -151,6 +151,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                 @Override
                 public void run() {
                     main.progressBar.setVisibility(View.GONE);
+                    main.progressBar.setProgress(0);
                 }
             });
 
@@ -162,7 +163,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                     Log.i("onPostExecute", "result: " + result.z.getRows().get(0).toString());
                 } catch (Exception ex) {
                     main.txt.setText("");
-                    Toasty.info(Util.getContext(), "Du hast an diesem Tag keine Vertretungen!").show();
+                    Toasty.info(main.getApplicationContext(), "Du hast an diesem Tag keine Vertretungen!").show();
                     if (Util.D) Log.i("onPostExecute", "result: null");
                 }
 
@@ -174,15 +175,18 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                     main.msgOTD.setText("Für diesen Tag gibt es noch keine Vertretungen!");
                 } else if (result.x != null && result.z != null && !result.z.isEmpty()) {
                     if (Util.D) Log.i("onPostExecute", "result not empty");
+
                     main.txt.setText("");
+
                     if (result.z.assumeKursVersion()) {
                         if (Util.D) Log.i("onPostExecute", "assuming kurse version");
 
                         for (VPRow row : result.z.getRows()) {
-                            if (Util.D) Log.i("onPostExecute", "adding row: " + row.getLinearContent());
-                            main.txt.append(row.getLinearContent());
+                            String linearContent = row.getLinearContent();
+                            if (Util.D) Log.i("onPostExecute", "adding row: " + linearContent);
+                            main.txt.append(linearContent);
                         }
-                        Toasty.success(Util.getContext(), "Aktualisiert!").show();
+                        Toasty.success(main.getApplicationContext(), "Aktualisiert!").show();
                     } else {
                         if (Util.D) Log.i("onPostExecute", "not assuming, adding result.z.getContent");
 

@@ -2,9 +2,7 @@ package vortex.vp_today.util;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Notification;
 import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -60,9 +58,6 @@ import vortex.vp_today.mail.BackgroundMail;
 
 public final class Util {
 
-    private static Activity activity;
-    private static Context context;
-
     private static Random rand;
     private static final String ALPHANUM = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
     private static AtomicInteger atomInt;
@@ -84,12 +79,6 @@ public final class Util {
         if (lstKlassen.isEmpty()) {
             lstKlassen.addAll(Arrays.asList("A", "B", "C", "D"));
         }
-    }
-
-    public static void setup(@NonNull Activity actv) {
-        activity = actv;
-        context = activity.getApplicationContext();
-        if (Util.D) Log.i("[UTIL]","Set up >> " + activity.getLocalClassName());
     }
 
     public static int MillisToSecs(int millis) {
@@ -124,13 +113,13 @@ public final class Util {
      * @return Eine Liste der Kurse der Q1
      */
     @NonNull
-    public static String[] getKurseQ1() {
-        return context.getResources().getStringArray(R.array.KurseQ1);
+    public static String[] getKurseQ1(@NonNull Context ctx) {
+        return ctx.getResources().getStringArray(R.array.KurseQ1);
     }
 
     @Nullable
-    public static String[] getSelectedKurse() {
-        Tuple<ArrayList<String>, ArrayList<Boolean>> tupSelects = Util.getGsonObject(context.getString(R.string.settingkurse), Tuple.class);
+    public static String[] getSelectedKurse(@NonNull Context ctx) {
+        Tuple<ArrayList<String>, ArrayList<Boolean>> tupSelects = Util.getGsonObject(ctx, ctx.getString(R.string.settingkurse), Tuple.class);
 
         try {
             if (tupSelects.x.get(0) != null) {
@@ -164,8 +153,8 @@ public final class Util {
         return atomInt.incrementAndGet();
     }
 
-    public static void putGsonObject(@NonNull String tag, @Nullable Object obj) {
-        SharedPreferences.Editor prefsEditor = context.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).edit();
+    public static void putGsonObject(@NonNull Context ctx, @NonNull String tag, @Nullable Object obj) {
+        SharedPreferences.Editor prefsEditor = ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).edit();
         Gson gson = new Gson();
         String json = gson.toJson(obj);
         prefsEditor.putString(tag, json);
@@ -173,17 +162,17 @@ public final class Util {
     }
 
     @Nullable
-    public static Object getGsonObject(@NonNull String tag) {
-        SharedPreferences prefs = context.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
+    public static Object getGsonObject(@NonNull Context ctx, @NonNull String tag) {
+        SharedPreferences prefs = ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
         Gson gson = new Gson();
-        String json = prefs.getString(tag, "");
+        String json = prefs.getString(tag, null);
         return gson.fromJson(json, Object.class);
     }
 
     @Nullable
-    public static <T extends Object> T getGsonObject(@NonNull String tag, Class type) {
+    public static <T extends Object> T getGsonObject(@NonNull Context ctx, @NonNull String tag, @NonNull Class type) {
         try {
-            SharedPreferences prefs = context.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
+            SharedPreferences prefs = ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
             Gson gson = new Gson();
             String json = prefs.getString(tag, null);
             if (D) Log.e("getGsonObject", "json: " + json);
@@ -266,7 +255,8 @@ public final class Util {
         }
     }
 
-    public static synchronized void ShowYesNoDialog(@NonNull String text,
+    public static synchronized void ShowYesNoDialog(@NonNull Activity actv,
+                                                    @NonNull String text,
                                                     @NonNull final DialogInterface.OnClickListener positiveClicked,
                                                     @NonNull final DialogInterface.OnClickListener negativeClicked) {
         try {
@@ -284,7 +274,7 @@ public final class Util {
                 }
             };
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            AlertDialog.Builder builder = new AlertDialog.Builder(actv);
             builder.setMessage(text)
                     .setPositiveButton("Ja", listener)
                     .setNegativeButton("Nein", listener).show();
@@ -298,12 +288,16 @@ public final class Util {
      * @return The selected items
      * @throws AssertionError wird ausgelöst, wenn preselectedItems != null und Länge != KurseQ1.length
      */
-    @Nullable
-    public static Tuple<String[], Boolean[]> ShowKurseDialogQ1(@Nullable boolean[] preselectedItems,
-                                                               DialogInterface.OnMultiChoiceClickListener multiListener,
-                                                               DialogInterface.OnClickListener positiveClick,
-                                                               DialogInterface.OnClickListener negativeClick) throws AssertionError {
-        final Resources res = context.getResources();
+    public static void ShowKurseDialogQ1
+        (
+            @NonNull Activity actv,
+            @Nullable boolean[] preselectedItems,
+            DialogInterface.OnMultiChoiceClickListener multiListener,
+            DialogInterface.OnClickListener positiveClick,
+            DialogInterface.OnClickListener negativeClick
+        ) throws AssertionError {
+
+        final Resources res = actv.getApplicationContext().getResources();
         final int q1Len = res.getStringArray(R.array.KurseQ1).length;
         final ArrayList<String> selectedItems = new ArrayList<>(q1Len);
         final ArrayList<Boolean> boolSelectedItems = new ArrayList<>(q1Len);
@@ -325,7 +319,7 @@ public final class Util {
             }
         }
 
-        AlertDialog dialog = new AlertDialog.Builder(activity)
+        AlertDialog dialog = new AlertDialog.Builder(actv)
                 .setTitle("Kurse auswählen...")
                 .setMultiChoiceItems(items, preselectedItems, multiListener)
                 .setPositiveButton("OK", positiveClick)
@@ -333,10 +327,6 @@ public final class Util {
                 .create();
 
         dialog.show();
-
-        if (result.getResult() == DialogResult.OK)
-            return new Tuple<>(selectedItems.toArray(new String[0]), boolSelectedItems.toArray(new Boolean[0]));
-        return null;
     }
 
     @Nullable
@@ -365,36 +355,37 @@ public final class Util {
         return output;
     }
 
-    public static String getSettingStufe() {
-        return context.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getString("stufe", "");
+    public static String getSettingStufe(@NonNull Context ctx) {
+        return ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getString("stufe", "");
     }
 
-    public static String getSettingKlasse() {
-        return context.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getString("klasse", "");
+    public static String getSettingKlasse(@NonNull Context ctx) {
+        return ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).getString("klasse", "");
     }
 
-    public static boolean isInternetConnected() {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    public static boolean isInternetConnected(@NonNull Context ctx) {
+        ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
     }
 
-    public static String[] getDevEmails() {
-        return new String[]{context.getResources().getString(R.string.simonemail),
-                context.getResources().getString(R.string.melvinemail),
-                context.getResources().getString(R.string.florianemail)
+    public static String[] getDevEmails(@NonNull Context ctx) {
+        return new String[]{ctx.getResources().getString(R.string.simonemail),
+                ctx.getResources().getString(R.string.melvinemail),
+                ctx.getResources().getString(R.string.florianemail)
         };
     }
 
-    public static void sendBotEmail(@NonNull String[] to,
+    public static void sendBotEmail(@NonNull Activity actv,
+                                    @NonNull String[] to,
                                     @NonNull String subj,
                                     @NonNull String body,
                                     @Nullable String sendingMessage,
                                     @Nullable BackgroundMail.OnSuccessCallback succ,
                                     @Nullable BackgroundMail.OnFailCallback fail) {
-        BackgroundMail bm = new BackgroundMail(activity);
-        bm.setGmailUserName(activity.getApplicationContext().getString(R.string.botemail));
-        bm.setGmailPassword(activity.getApplicationContext().getString(R.string.botpwd));
+        BackgroundMail bm = new BackgroundMail(actv);
+        bm.setGmailUserName(actv.getApplicationContext().getString(R.string.botemail));
+        bm.setGmailPassword(actv.getApplicationContext().getString(R.string.botpwd));
         bm.setSendingMessage(sendingMessage);
         bm.setMailTo(TextUtils.join(",", to));
         bm.setFormSubject(subj);
@@ -537,11 +528,11 @@ public final class Util {
      * @author Simon Dräger
      */
     @Nullable
-    public static synchronized TriTuple<String, Integer, String[]> filterHTML(Document d, String stufe, String sub) {
-        activity.runOnUiThread(new Runnable() {
+    public static synchronized TriTuple<String, Integer, String[]> filterHTML(@NonNull final Activity actv, Document d, String stufe, String sub) {
+        actv.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toasty.info(activity.getApplicationContext(), "Aktualisiere...").show();
+                Toasty.info(actv.getApplicationContext(), "Aktualisiere...").show();
             }
         });
 
@@ -565,10 +556,10 @@ public final class Util {
         ArrayList<String> s = null;
 
         if (elements.first() == null) {
-            activity.runOnUiThread(new Runnable() {
+            actv.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toasty.warning(activity.getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!").show();
+                    Toasty.warning(actv.getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!").show();
                 }
             });
             if (strong != null)
@@ -600,10 +591,10 @@ public final class Util {
         }
 
         if (!showedToast) {
-            activity.runOnUiThread(new Runnable() {
+            actv.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toasty.success(context, "Aktualisiert!").show();
+                    Toasty.success(actv, "Aktualisiert!").show();
                 }
             });
         }
@@ -615,7 +606,10 @@ public final class Util {
      * @author Simon Dräger
      */
     @Nullable
-    public static synchronized TriTuple<String, Integer, VPInfo> filterHTML(Document d, String stufe, String[] kurse) throws AssertionError {
+    public static synchronized TriTuple<String, Integer, VPInfo> filterHTML(@NonNull final Activity actv,
+                                                                            Document d,
+                                                                            String stufe,
+                                                                            String[] kurse) throws AssertionError {
         assert stufe.equalsIgnoreCase("EF") ||
                 stufe.equalsIgnoreCase("Q1") ||
                 stufe.equalsIgnoreCase("Q2")
@@ -629,10 +623,10 @@ public final class Util {
         VPInfo info = new VPInfo();
 
         if (elements.first() == null) {
-            activity.runOnUiThread(new Runnable() {
+            actv.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toasty.warning(activity.getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!").show();
+                    Toasty.warning(actv.getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!").show();
                 }
             });
             if (strong != null)
@@ -761,7 +755,11 @@ public final class Util {
      * @author Melvin Zähl
      */
     @Nullable
-    public static synchronized TriTuple<String, Integer, VPInfo> filterHTML(Document d, String stufe, String[] kurse, ProgressCallback callback) throws AssertionError {
+    public static synchronized TriTuple<String, Integer, VPInfo> filterHTML(@NonNull final Activity actv,
+                                                                            Document d,
+                                                                            String stufe,
+                                                                            String[] kurse,
+                                                                            ProgressCallback callback) throws AssertionError {
         assert stufe.equalsIgnoreCase("EF") ||
                 stufe.equalsIgnoreCase("Q1") ||
                 stufe.equalsIgnoreCase("Q2")
@@ -775,10 +773,10 @@ public final class Util {
         VPInfo info = new VPInfo();
 
         if (elements.first() == null) {
-            activity.runOnUiThread(new Runnable() {
+            actv.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toasty.warning(activity.getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!").show();
+                    Toasty.warning(actv.getApplicationContext(), "Für heute wurden keine passenden Vertretungen gefunden!").show();
                 }
             });
             if (strong != null)
@@ -980,7 +978,7 @@ public final class Util {
                 String statt = subs.select("data-instead").get(0).text();
                 String bemerkung = subs.select("data-notice").get(0).text();
 
-                //Start Logging
+                // Begin Logging
                 if (D) Log.i("getCurrentInfo", "art: " + art);
                 if (D) Log.i("getCurrentInfo", "stunde: " + stunde);
                 if (D) Log.i("getCurrentInfo", "fach: " + fach);
@@ -988,7 +986,7 @@ public final class Util {
                 if (D) Log.i("getCurrentInfo", "raum: " + raum);
                 if (D) Log.i("getCurrentInfo", "statt: " + statt);
                 if (D) Log.i("getCurrentInfo", "bemerkung: " + bemerkung);
-                //End Logging
+                // End Logging
 
                 r.setStunde(stunde);
                 /* Unnötige Leerzeichen wegmachen */
@@ -1007,33 +1005,16 @@ public final class Util {
 
     /**
      * @author Melvin Zähl
-     *
      * @param title Titel der Benachrichtigung
      * @param content Content der Benachrichtigung
      */
-    public static void sendNotification(String title, String content){
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext(), NotificationChannel.DEFAULT_CHANNEL_ID)
+    public static void sendNotification(@NonNull Context ctx, String title, String content) {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(ctx, NotificationChannel.DEFAULT_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_stat_vp)
                 .setContentTitle(title)
                 .setContentText(content)
                 .setPriority(NotificationCompat.PRIORITY_MAX);
-        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(getContext());
+        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(ctx);
         managerCompat.notify(getNotificationID(), mBuilder.build());
-    }
-
-    /**
-     *  Gibt aktuellen Context zurück
-     * @return context
-     */
-    public static Context getContext(){
-        return context;
-    }
-
-    /**
-     *  Gibt aktuelle Activity zurück
-     * @return activity
-     */
-    public static Activity getActivity(){
-        return activity;
     }
 }

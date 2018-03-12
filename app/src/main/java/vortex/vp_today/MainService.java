@@ -45,6 +45,7 @@ public class MainService extends IntentService {
                 getResources().getBoolean(R.bool.defaultFetchHtml))
                 ) {
             try {
+
                 HashSet<String> known = new HashSet<>(prefs.getStringSet("knownInfos", null));
 
                 // TODO

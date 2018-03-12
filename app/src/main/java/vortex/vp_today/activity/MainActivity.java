@@ -58,8 +58,6 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.vpProg);
         /**/
 
-        Util.setup(this);
-
         /* Falls dies der erste Start sein sollte eine Client ID erstellen und speichern. */
         if (sp.getString("clientid", "0x0").equals("0x0")) {
             String[] setKurse = getResources().getStringArray(R.array.KurseQ1);
@@ -79,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             Log.i("MainActivity", "strs length: " + strs.length);
             Log.i("MainActivity", "bools length: " + bools.length);
 
-            Util.putGsonObject(getString(R.string.settingkurse), putTuple);
+            Util.putGsonObject(getApplicationContext(), getString(R.string.settingkurse), putTuple);
             sp.edit().putString("clientid", Util.generateClientID()).apply();
         }
 
@@ -114,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         });
         /**/
 
-        if (Util.isInternetConnected()) {
+        if (Util.isInternetConnected(getApplicationContext())) {
             new RetrieveDatesTask().execute(MainActivity.this);
         } else {
             MainActivity.this.runOnUiThread(new Runnable() {
@@ -133,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private synchronized void updateListFromSpinner() {
-        if (Util.isInternetConnected()) {
+        if (Util.isInternetConnected(getApplicationContext())) {
             String str = spinDate.getSelectedItem().toString().substring(4).trim();
 
             if (Util.D) Log.i("updateListfromSpinner", "str: " + str.trim());
@@ -145,22 +143,22 @@ public class MainActivity extends AppCompatActivity {
             LocalDate ldate = new LocalDate(vp);
 
             if (Util.D) Log.e("LDATE", ldate.toString());
-            if (Util.getSettingStufe().equals("EF") ||
-                    Util.getSettingStufe().equals("Q1") ||
-                    Util.getSettingStufe().equals("Q2")) {
+            if (Util.getSettingStufe(getApplicationContext()).equals("EF") ||
+                    Util.getSettingStufe(getApplicationContext()).equals("Q1") ||
+                    Util.getSettingStufe(getApplicationContext()).equals("Q2")) {
                 new RetrieveVPTask().execute(
                         MainActivity.this,
                         Util.makeDate(ldate.getDayOfMonth(), ldate.getMonthOfYear() - 1, ldate.getYear()),
-                        Util.getSettingStufe(),
-                        Util.getSettingKlasse(),
-                        Util.getSelectedKurse()
+                        Util.getSettingStufe(getApplicationContext()),
+                        Util.getSettingKlasse(getApplicationContext()),
+                        Util.getSelectedKurse(getApplicationContext())
                 );
             } else {
                 new RetrieveVPTask().execute(
                         MainActivity.this,
                         Util.makeDate(ldate.getDayOfMonth(), ldate.getMonthOfYear() - 1, ldate.getYear()),
-                        Util.getSettingStufe(),
-                        Util.getSettingKlasse(),
+                        Util.getSettingStufe(getApplicationContext()),
+                        Util.getSettingKlasse(getApplicationContext()),
                         null
                 );
             }

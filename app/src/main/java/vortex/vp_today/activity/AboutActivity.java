@@ -34,7 +34,6 @@ public class AboutActivity extends MaterialAboutActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Util.setup(this);
         /*setContentView(R.layout.activity_about);
 
         txtV = findViewById(R.id.txtAbout);
@@ -92,7 +91,7 @@ public class AboutActivity extends MaterialAboutActivity {
                 .addItem(new MaterialAboutTitleItem.Builder()
                 .text("VorteX Dev. Corp.:")
                 .desc("© 2018")
-                //.icon(R.mipmap.logo)
+                .icon(R.mipmap.logo)
                 .build())
                 .addItem(new MaterialAboutActionItem.Builder()
                 .text("Simon Dräger")
