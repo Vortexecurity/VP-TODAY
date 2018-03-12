@@ -201,6 +201,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
 
         main.msgOTD.setText(result.x);
         main.tvVers.setText("Version: " + result.y.intValue());
+        //Util.sendNotification("VP-TODAY", "Neuer Vertretungsplan online!");
 
         if (Util.D) Log.i("onPostExecute", "set text to result");
 

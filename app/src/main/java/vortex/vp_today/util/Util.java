@@ -3,6 +3,7 @@ package vortex.vp_today.util;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,6 +13,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -427,23 +430,6 @@ public final class Util {
         return false;
     }
 
-    public static void makePushNotification(String title, String text) {
-        try {
-            NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-            Notification.Builder notify = new Notification.Builder(context);
-            notify.setContentTitle(title);
-            notify.setContentText(text);
-            notify.setSmallIcon(R.mipmap.ic_launcher);
-
-            Notification n = notify.build();
-
-            nm.notify(getNotificationID(), n);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
     /**
      * @return null on error.
      */
@@ -772,6 +758,7 @@ public final class Util {
 
     /**
      * @author Simon Dräger
+     * @author Melvin Zähl
      */
     @Nullable
     public static synchronized TriTuple<String, Integer, VPInfo> filterHTML(Document d, String stufe, String[] kurse, ProgressCallback callback) throws AssertionError {
@@ -993,6 +980,7 @@ public final class Util {
                 String statt = subs.select("data-instead").get(0).text();
                 String bemerkung = subs.select("data-notice").get(0).text();
 
+                //Start Logging
                 if (D) Log.i("getCurrentInfo", "art: " + art);
                 if (D) Log.i("getCurrentInfo", "stunde: " + stunde);
                 if (D) Log.i("getCurrentInfo", "fach: " + fach);
@@ -1000,6 +988,7 @@ public final class Util {
                 if (D) Log.i("getCurrentInfo", "raum: " + raum);
                 if (D) Log.i("getCurrentInfo", "statt: " + statt);
                 if (D) Log.i("getCurrentInfo", "bemerkung: " + bemerkung);
+                //End Logging
 
                 r.setStunde(stunde);
                 /* Unnötige Leerzeichen wegmachen */
@@ -1014,6 +1003,22 @@ public final class Util {
         }
 
         return inf;
+    }
+
+    /**
+     * @author Melvin Zähl
+     *
+     * @param title Titel der Benachrichtigung
+     * @param content Content der Benachrichtigung
+     */
+    public static void sendNotification(String title, String content){
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext(), NotificationChannel.DEFAULT_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_stat_vp)
+                .setContentTitle(title)
+                .setContentText(content)
+                .setPriority(NotificationCompat.PRIORITY_MAX);
+        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(getContext());
+        managerCompat.notify(getNotificationID(), mBuilder.build());
     }
 
     /**
