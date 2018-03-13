@@ -35,16 +35,9 @@
             android:layout_alignParentEnd="true"
             android:text="@string/btnRateSend" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_toStartOf="@+id/btnSend" />
-
         <EditText
             android:id="@+id/txtSuggest"
+            android:background="@drawable/edittextborder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"

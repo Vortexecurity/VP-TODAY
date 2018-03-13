@@ -8,7 +8,9 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.NavUtils;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -44,6 +46,8 @@ public class SettingsActivity extends AppCompatActivity {
     private Button btnKurse;
     private Switch switchVibrate;
     private Switch switchPushes;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
 
     private Tuple<String[], Boolean[]> currentKurseChanges = null;
 
@@ -62,6 +66,28 @@ public class SettingsActivity extends AppCompatActivity {
         btnKurse = findViewById(R.id.btnKurse);
         switchPushes = findViewById(R.id.switchPushes);
         switchVibrate = findViewById(R.id.switchVibrate);
+        drawerLayout = findViewById(R.id.drawer_layout);
+
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // set item as selected to persist highlight
+                        menuItem.setChecked(true);
+                        // close drawer when item is tapped
+                        drawerLayout.closeDrawers();
+
+                        int id = menuItem.getItemId();
+
+                        if (id == R.id.nav_stufe) {
+
+                        } else if (id == R.id.nav_notifs) {
+
+                        }
+
+                        return true;
+                    }
+                });
 
         spinStufen.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -130,12 +156,14 @@ public class SettingsActivity extends AppCompatActivity {
 
                 if (tupSelects != null) {
                     if (Util.D) Log.i("btnKurseClick", "tupSelects not null");
-                    if (Util.D) Log.i("btnKurseClick", "tupleSelects type: " + tupSelects.getClass().toString());
+                    if (Util.D)
+                        Log.i("btnKurseClick", "tupleSelects type: " + tupSelects.getClass().toString());
                     //if (Util.D) Log.i("btnKurseClick", "tupSelects.y type: " + tupSelects.y.getClass().toString());
                     //selects = Util.BoolToTypeBool(tupSelects.y.toArray(new Boolean[0]));
                     selects = new boolean[q1Len];
 
-                    if (Util.D) Log.i("btnKurseClick", "tupSelects.y lenght " + tupSelects.y.toArray(new Boolean[0]).length);
+                    if (Util.D)
+                        Log.i("btnKurseClick", "tupSelects.y lenght " + tupSelects.y.toArray(new Boolean[0]).length);
                     for (int i = 0; i < q1Len; i++) {
                         selects[i] = tupSelects.y.get(i);
                         selectedItems.add(items[i]);
@@ -174,7 +202,8 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                 }, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) { }
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
                 });
 
             }
@@ -319,7 +348,7 @@ public class SettingsActivity extends AppCompatActivity {
                             new Handler().post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Util.ShowYesNoDialog(SettingsActivity.this,"Möchten Sie die ungesicherten Änderungen speichern?",
+                                    Util.ShowYesNoDialog(SettingsActivity.this, "Möchten Sie die ungesicherten Änderungen speichern?",
                                             new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {

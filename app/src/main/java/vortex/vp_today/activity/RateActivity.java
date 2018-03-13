@@ -11,7 +11,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.RatingBar;
 
 import es.dmoral.toasty.Toasty;
@@ -26,7 +25,6 @@ import vortex.vp_today.util.Util;
  */
 
 public class RateActivity extends AppCompatActivity {
-    private ProgressBar progBar;
     private Button btnSend;
     private EditText txtSuggest;
     private RatingBar rateBar;
@@ -39,12 +37,9 @@ public class RateActivity extends AppCompatActivity {
 
         prefs = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
 
-        progBar = findViewById(R.id.progressBar);
         btnSend = findViewById(R.id.btnSend);
         txtSuggest = findViewById(R.id.txtSuggest);
         rateBar = findViewById(R.id.rateBar);
-
-        progBar.setVisibility(View.INVISIBLE);
 
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override

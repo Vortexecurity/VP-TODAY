@@ -1,134 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="vortex.vp_today.activity.SettingsActivity">
+    android:fitsSystemWindows="true">
 
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="vortex.vp_today.activity.SettingsActivity">
 
-    <RelativeLayout
-        android:id="@+id/relativeLayout2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
-        android:layout_marginTop="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tvStufe"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginStart="19dp"
-                    android:layout_marginTop="17dp"
-                    android:layout_weight="1"
-                    android:text="@string/stufe" />
-
-                <TextView
-                    android:id="@+id/tvSelector"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="17dp"
-                    android:layout_marginTop="19dp"
-                    android:layout_weight="1"
-                    android:text="@string/klasse" />
-            </LinearLayout>
+        <RelativeLayout
+            android:id="@+id/relativeLayout2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:layout_marginTop="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:orientation="horizontal">
-
-                <Spinner
-                    android:id="@+id/spinStufen"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_below="@+id/tvStufe"
-                    android:layout_marginTop="0dp"
-                    android:layout_weight="1" />
-
-                <Spinner
-                    android:id="@+id/spinKlasse"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
-            </LinearLayout>
-
-            <Switch
-                android:id="@+id/switchPushes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:theme="@style/Theme.SwitchPrimary"
-                android:paddingLeft="33dp"
-                android:text="@string/receivepushes" />
-
-            <Switch
-                android:id="@+id/switchVibrate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:enabled="false"
-                android:theme="@style/Theme.SwitchPrimary"
-                android:paddingLeft="10dp"
-                android:text="@string/vibrateonreceive"
-                android:textSize="13sp" />
-
-            <Button
-                android:id="@+id/btnKurse"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:background="@color/colorPrimary"
-                android:text="@string/selectkurse" />
-
-            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="0">
+                android:orientation="vertical"
+                android:gravity="center" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvStufe"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="19dp"
+                        android:layout_marginTop="17dp"
+                        android:layout_weight="1"
+                        android:text="@string/stufe" />
+
+                    <TextView
+                        android:id="@+id/tvSelector"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="17dp"
+                        android:layout_marginTop="19dp"
+                        android:layout_weight="1"
+                        android:text="@string/klasse" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:orientation="horizontal">
+
+                    <Spinner
+                        android:id="@+id/spinStufen"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/tvStufe"
+                        android:layout_marginTop="0dp"
+                        android:layout_weight="1" />
+
+                    <Spinner
+                        android:id="@+id/spinKlasse"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+                <Switch
+                    android:id="@+id/switchPushes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:theme="@style/Theme.SwitchPrimary"
+                    android:paddingLeft="33dp"
+                    android:text="@string/receivepushes" />
+
+                <Switch
+                    android:id="@+id/switchVibrate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:enabled="false"
+                    android:theme="@style/Theme.SwitchPrimary"
+                    android:paddingLeft="10dp"
+                    android:text="@string/vibrateonreceive"
+                    android:textSize="13sp" />
 
                 <Button
-                    android:id="@+id/btnCancel"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/btnKurse"
+                    android:layout_width="351dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/btnApply"
-                    android:layout_alignBottom="@+id/btnApply"
-                    android:layout_marginEnd="11dp"
-                    android:layout_toStartOf="@+id/btnApply"
-                    android:background="@color/colorPrimary"
-                    android:text="@string/cancel" />
+                    android:background="@drawable/roundcornerbutton"
+                    android:gravity="center"
+                    android:text="@string/selectkurse" />
 
-                <Button
-                    android:id="@+id/btnApply"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginBottom="12dp"
-                    android:background="@color/colorPrimary"
-                    android:text="@string/apply" />
-            </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0">
 
-        </LinearLayout>
+                    <Button
+                        android:id="@+id/btnCancel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@+id/btnApply"
+                        android:layout_alignBottom="@+id/btnApply"
+                        android:layout_marginEnd="11dp"
+                        android:layout_toStartOf="@+id/btnApply"
+                        android:background="@drawable/roundcornerbutton"
+                        android:text="@string/cancel" />
 
-    </RelativeLayout>
-</android.support.constraint.ConstraintLayout>
+                    <Button
+                        android:id="@+id/btnApply"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginBottom="14dp"
+                        android:layout_marginEnd="11dp"
+                        android:background="@drawable/roundcornerbutton"
+                        android:text="@string/apply" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
+
+    <!-- Layout to contain contents of main body of screen (drawer will slide over this) -->
+    <!--<FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />-->
+
+    <!-- Container for contents of drawer - use NavigationView to make configuration easier -->
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:menu="@menu/drawer_menu"
+        app:headerLayout="@layout/navigator_header" />
+
+</android.support.v4.widget.DrawerLayout>
