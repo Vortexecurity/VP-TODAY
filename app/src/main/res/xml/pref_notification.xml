@@ -1,0 +1,17 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- A 'parent' preference, which enables/disables child preferences (below)
+         when checked/unchecked. -->
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="receiveNotifs"
+        android:title="@string/pref_title_receive_pushes" />
+
+    <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->
+    <SwitchPreference
+        android:defaultValue="false"
+        android:dependency="receiveNotifs"
+        android:key="vibrateOnNotifReceive"
+        android:title="@string/pref_title_vibrate_on_receive" />
+
+</PreferenceScreen>

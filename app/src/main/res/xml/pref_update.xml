@@ -1,0 +1,30 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:defaultValue="45"
+        android:entries="@array/pref_update_frequency_titles"
+        android:entryValues="@array/pref_update_frequency_titles"
+        android:key="update_frequency"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/pref_title_update_frequency" />
+
+    <ListPreference
+        android:defaultValue="5"
+        android:entries="@array/list_pref_stufen"
+        android:entryValues="@array/list_pref_stufen"
+        android:key="stufen_list"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/stufe" />
+
+    <ListPreference
+        android:defaultValue="A"
+        android:entries="@array/list_pref_klassen"
+        android:entryValues="@array/list_pref_klassen"
+        android:key="klassen_list"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/klasse" />
+
+</PreferenceScreen>

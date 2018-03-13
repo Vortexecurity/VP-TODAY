@@ -67,6 +67,7 @@ public class SettingsActivity extends AppCompatActivity {
         switchPushes = findViewById(R.id.switchPushes);
         switchVibrate = findViewById(R.id.switchVibrate);
         drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
 
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
