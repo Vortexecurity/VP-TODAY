@@ -52,10 +52,15 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        prefs = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
+
+        if (prefs.getBoolean(getString(R.string.settingAuthorized), false)) {
+            MainActivity.show(getApplicationContext());
+            finish();
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        prefs = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
 
         mUsrView = findViewById(R.id.usr);
         mRememberLogin = findViewById(R.id.saveLogin);
@@ -132,6 +137,8 @@ public class LoginActivity extends AppCompatActivity {
         if (cancel) {
             focusView.requestFocus();
         } else {
+            if (prefs != null)
+                prefs.edit().putBoolean(getString(R.string.settingAuthorized), true);
             showProgress(true);
             mAuthTask = new UserLoginTask(usr, password);
             mAuthTask.execute((Void) null);

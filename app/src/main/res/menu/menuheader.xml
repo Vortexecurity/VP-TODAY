@@ -12,6 +12,11 @@
         android:title="@string/rateus"></item>
 
     <item
+        android:id="@+id/logoff"
+        android:checkable="false"
+        android:title="@string/logoff"></item>
+
+    <item
         android:id="@+id/about"
         android:checkable="false"
         android:title="@string/about"></item>

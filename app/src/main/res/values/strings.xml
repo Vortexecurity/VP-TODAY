@@ -7,6 +7,7 @@
     <string name="stufe">Stufe:</string>
     <string name="apply">Übernehmen</string>
     <string name="cancel">Abbrechen</string>
+    <string name="logoff">Abmelden</string>
     <string name="btnRateSend">Senden</string>
     <string name="title_activity_about">AboutActivity</string>
     <string name="melvinemail">m.zaehl.vortex@gmail.com</string>
@@ -53,6 +54,7 @@
     <string name="angabenohnegewaehr">Alle Angaben ohne Gewähr! (Alpha Build)</string>
     <string name="settingRefreshIntervalMin">refreshIntervalMin</string>
     <string name="currentBadges">currentBadges</string>
+    <string name="settingAuthenticated">settingAuthenticated</string>
     <string-array name="KurseQ1">
         <item>BI G1</item>
         <item>BI G2</item>

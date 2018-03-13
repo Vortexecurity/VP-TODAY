@@ -94,14 +94,15 @@ public class MainService extends IntentService {
                 ex.printStackTrace();
             }
             try {
-            /* Jede X (default 45) Minuten updaten */
+                /* Jede X (default 45) Minuten updaten */
                 Thread.sleep(prefs.getInt(getString(R.string.settingRefreshIntervalMin), getResources().getInteger(R.integer.defaultRefreshIntervalMin)));
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
         }
 
-        getApplicationContext().getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).edit().remove("fetchHtmlPushes").apply();
+        // Sichergehen, dass der Service auch beendet
+        prefs.edit().remove("fetchHtmlPushes").apply();
         if (Util.D) Log.i("MainService", "Leaving onHandleIntent...");
     }
 

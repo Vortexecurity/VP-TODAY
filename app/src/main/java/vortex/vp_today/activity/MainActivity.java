@@ -83,8 +83,6 @@ public class MainActivity extends AppCompatActivity {
             sp.edit().putString("clientid", Util.generateClientID()).apply();
         }
 
-        //progressBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), android.graphics.PorterDuff.Mode.SRC_IN);
-
         swipe.setColorSchemeResources(R.color.colorPrimaryDark);
 
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
