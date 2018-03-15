@@ -122,6 +122,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+        Util.setProgressMax(progressBar, 100);
     }
 
     public static void show(@NonNull Context context) {
@@ -228,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.settings:
                 //SettingsActivity.show(getApplicationContext());
-                SettActivity.show(getApplicationContext());
+                SettingsActivity.show(getApplicationContext());
                 return true;
             case R.id.rate:
                 RateActivity.show(getApplicationContext());

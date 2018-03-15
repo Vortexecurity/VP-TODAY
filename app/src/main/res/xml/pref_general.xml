@@ -1,8 +1,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Preference
+    <!--<Preference
         android:title="@string/selectkurse"
         android:key="slctKurse"
-        android:summary="Select the Kurse you have" />
+        android:summary="Select the Kurse you have" />-->
+
+    <MultiSelectListPreference
+        android:title="@string/selectkurse"
+        android:key="slctKurse"
+        android:entries="@array/KurseQ1" />
 
 </PreferenceScreen>

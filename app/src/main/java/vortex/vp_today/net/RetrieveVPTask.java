@@ -29,12 +29,17 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
 
     @Override
     protected void onProgressUpdate(final Integer... values) {
-        main.runOnUiThread(new Runnable() {
+        super.onProgressUpdate(values);
+        Log.i("onProgressUpdate", "Progress is " + values[0]);
+        Util.setProgressAnimate(main.progressBar, values[0]);
+        /*main.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                main.progressBar.setProgress(values[0]);
+                Log.i("onProgressUpdate", "Progress is " + values[0]);
+                Util.setProgressAnimate(main.progressBar, values[0]);
+                //main.progressBar.setProgress(values[0]);
             }
-        });
+        });*/
     }
 
     // params: MainActivity, String date (vp style), String stufe, String sub, String[] kurse
@@ -77,6 +82,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                 filteredInfo = Util.filterHTML(main, doc, stufe, kurse, new ProgressCallback() {
                     @Override
                     public void onProgress(int percent) {
+                        Log.i("onProgress", "in onProgress");
                         publishProgress(percent);
                     }
 
@@ -163,7 +169,12 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                     Log.i("onPostExecute", "result: " + result.z.getRows().get(0).toString());
                 } catch (Exception ex) {
                     main.txt.setText("");
-                    Toasty.info(main.getApplicationContext(), "Du hast an diesem Tag keine Vertretungen!").show();
+                    main.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toasty.info(main.getApplicationContext(), "Du hast an diesem Tag keine Vertretungen!").show();
+                        }
+                    });
                     if (Util.D) Log.i("onPostExecute", "result: null");
                 }
 
@@ -186,7 +197,12 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                             if (Util.D) Log.i("onPostExecute", "adding row: " + linearContent);
                             main.txt.append(linearContent);
                         }
-                        Toasty.success(main.getApplicationContext(), "Aktualisiert!").show();
+                        main.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toasty.success(main.getApplicationContext(), "Aktualisiert!").show();
+                            }
+                        });
                     } else {
                         if (Util.D) Log.i("onPostExecute", "not assuming, adding result.z.getContent");
 
@@ -197,14 +213,21 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                 }
             } else {
                 if (Util.D) Log.i("onPostExecute", "result = null");
-                Toasty.error(main.getApplicationContext(), "Fehler beim Aktualisieren!").show();
+                main.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toasty.error(main.getApplicationContext(), "Fehler beim Aktualisieren!").show();
+                    }
+                });
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        main.msgOTD.setText(result.x);
-        main.tvVers.setText("Version: " + result.y.intValue());
+        /*if (result == null) {
+            main.msgOTD.setText(result.x : "result.x ist null");
+            main.tvVers.setText(result.y != null ? "Version: " + result.y.intValue() : "Version: -");
+        }*/
         //Util.sendNotification("VP-TODAY", "Neuer Vertretungsplan online!");
 
         if (Util.D) Log.i("onPostExecute", "set text to result");

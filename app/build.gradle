@@ -68,7 +68,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation "com.android.support:support-compat:26.1.0"
+    implementation 'com.android.support:support-compat:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.android.support:design:26.1.0'
     implementation 'com.android.support:support-v4:26.1.0'
@@ -84,9 +84,9 @@ dependencies {
     implementation files('libs/joda-time-2.9.9.jar')
     compile 'com.github.GrenderG:Toasty:1.2.5'
     compile 'com.github.daniel-stoneuk:material-about-library:2.2.5'
-    implementation "com.mikepenz:iconics-core:3.0.3@aar"
+    implementation 'com.mikepenz:iconics-core:3.0.3@aar'
     implementation 'com.mikepenz:community-material-typeface:2.0.46.1@aar'
-    compile "me.leolin:ShortcutBadger:1.1.21@aar"
+    compile 'me.leolin:ShortcutBadger:1.1.21@aar'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
     implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
     compile 'com.github.javiersantos:MaterialStyledDialogs:2.1'

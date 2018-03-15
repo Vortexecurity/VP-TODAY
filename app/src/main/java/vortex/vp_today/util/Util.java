@@ -1,5 +1,6 @@
 package vortex.vp_today.util;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -17,6 +18,8 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -107,6 +110,17 @@ public final class Util {
 
     public long MinsToMillis(int mins) {
         return TimeUnit.MINUTES.toMillis(mins);
+    }
+
+    public static synchronized void setProgressMax(ProgressBar pb, int max) {
+        pb.setMax(max * 100);
+    }
+
+    public static void setProgressAnimate(ProgressBar pb, int progressTo) {
+        ObjectAnimator animation = ObjectAnimator.ofInt(pb, "progress", pb.getProgress(), progressTo * 100);
+        animation.setDuration(200);
+        animation.setInterpolator(new DecelerateInterpolator());
+        animation.start();
     }
 
     /**
@@ -1043,8 +1057,10 @@ public final class Util {
                                         art == VPKind.KLAUSUR ||
                                         art == VPKind.BETREUUNG ||
                                         art == VPKind.LEHRERTAUSCH ||
-                                        art == VPKind.SONDEREINSATZ)
+                                        art == VPKind.SONDEREINSATZ ||
+                                        art == VPKind.VORMERKUNG) {
                                     continue;
+                                }
 
                                 if (D) Log.i("filterHTMLkurse", "dataType: " + dataType.text());
                                 row.setArt(VPKind.fromString(dataType.text()));

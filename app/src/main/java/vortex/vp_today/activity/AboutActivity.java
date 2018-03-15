@@ -1,12 +1,14 @@
 package vortex.vp_today.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
+import android.view.Gravity;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.danielstone.materialaboutlibrary.MaterialAboutActivity;
 import com.danielstone.materialaboutlibrary.items.MaterialAboutActionItem;
@@ -67,7 +69,7 @@ public class AboutActivity extends MaterialAboutActivity {
                 .titleColor(getResources().getColor(R.color.colorPrimaryDark))
                 .addItem(new MaterialAboutActionItem.Builder()
                         .text("Version")
-                        .subText(BuildConfig.buildVersion)
+                        .subText("Build: " + BuildConfig.buildVersion)
                         .icon(new IconicsDrawable(getApplicationContext())
                                 .icon(CommunityMaterial.Icon.cmd_information_outline)
                                 .sizeDp(18))
@@ -75,7 +77,7 @@ public class AboutActivity extends MaterialAboutActivity {
                 .addItem(new MaterialAboutActionItem.Builder()
                 .text("Lizenz")
                 .icon(new IconicsDrawable(getApplicationContext())
-                        .icon(CommunityMaterial.Icon.cmd_book)
+                        .icon(CommunityMaterial.Icon.cmd_comment_text)
                         .sizeDp(18))
                 .setOnClickAction(new MaterialAboutItemOnClickAction() {
                     @Override
@@ -90,36 +92,35 @@ public class AboutActivity extends MaterialAboutActivity {
                 .title("Entwickler")
                 .addItem(new MaterialAboutTitleItem.Builder()
                 .text("VorteX Dev. Corp.:")
-                .desc("© 2018")
                 .icon(R.mipmap.logo)
                 .build())
                 .addItem(new MaterialAboutActionItem.Builder()
                 .text("Simon Dräger")
-                .subText(R.string.simonemail)
+                .subText("Head-Admin | Developer | " + getString(R.string.simonemail))
                 .setOnClickAction(new MaterialAboutItemOnClickAction() {
                     @Override
                     public void onClick() {
-                        Log.i("CLICK", "CLICK SIMON");
+                        greetDialog("Simon", "Florian ist der Kapitän aufm Schiff", "Ay ay");
                     }
                 })
                 .build())
                 .addItem(new MaterialAboutActionItem.Builder()
                 .text("Melvin Zähl")
-                .subText(R.string.melvinemail)
+                .subText("Head-Admin | Developer | " + getString(R.string.melvinemail))
                         .setOnClickAction(new MaterialAboutItemOnClickAction() {
                             @Override
                             public void onClick() {
-                                Log.i("CLICK", "CLICK MELVIN");
+                                greetDialog("Melvin", "", "OK");
                             }
                         })
                 .build())
                 .addItem(new MaterialAboutActionItem.Builder()
                 .text("Florian Koll")
-                .subText(R.string.florianemail)
+                .subText("Kundensupport | Projektleitung | Bug-Hunter | " + getString(R.string.florianemail))
                         .setOnClickAction(new MaterialAboutItemOnClickAction() {
                             @Override
                             public void onClick() {
-                                Log.i("CLICK", "CLICK FLORIAN");
+                                greetDialog("Florian", "", "OK");
                             }
                         })
                 .build())
@@ -135,6 +136,20 @@ public class AboutActivity extends MaterialAboutActivity {
     @Override
     protected CharSequence getActivityTitle() {
         return getString(R.string.about);
+    }
+
+    private void greetDialog(String name, String text, String btnText) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(AboutActivity.this);
+        builder.setTitle("Gruß vom " + name);
+
+        TextView myMsg = new TextView(AboutActivity.this);
+        myMsg.setText(text);
+        myMsg.setGravity(Gravity.CENTER_HORIZONTAL);
+        builder.setView(myMsg);
+
+        builder.setPositiveButton(btnText, null);
+
+        builder.show();
     }
 
     public static void show(@NonNull Context context){
