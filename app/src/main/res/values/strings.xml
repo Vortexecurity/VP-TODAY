@@ -35,7 +35,8 @@
         <b>All information is subject to change.</b>\n
         End of License.
     </string>
-    <string name="ratehint">(Geben Sie hier einen Feedback-Text ein...)</string>
+    <string name="ratehint">Gib hier einen Feedback-Text ein...</string>
+    <string name="emailhint">E-Mail (optional)</string>
     <string name="klasse">Klasse:</string>
     <string name="vibrateonreceive">Beim Erhalt einer Benachrichtigung vibrieren</string>
     <string name="receivepushes">Push-Nachrichten erhalten</string>

@@ -27,6 +27,7 @@ import vortex.vp_today.util.Util;
 public class RateActivity extends AppCompatActivity {
     private Button btnSend;
     private EditText txtSuggest;
+    private EditText txtEmail;
     private RatingBar rateBar;
     private SharedPreferences prefs;
 
@@ -39,17 +40,18 @@ public class RateActivity extends AppCompatActivity {
 
         btnSend = findViewById(R.id.btnSend);
         txtSuggest = findViewById(R.id.txtSuggest);
+        txtEmail = findViewById(R.id.txtEmail);
         rateBar = findViewById(R.id.rateBar);
 
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: check if valid
+                // TODO: prüfen ob der Benutzer auch etwas gültiges eingeben hat
                 if (txtSuggest.getText().toString().trim().equals("")) {
                     new Handler().post(new Runnable() {
                         @Override
                         public void run() {
-                            Toasty.info(getApplicationContext(), "Bitte geben Sie einen Bericht ein!").show();
+                            Toasty.info(getApplicationContext(), "Bitte gib einen Bericht ein!").show();
                         }
                     });
                 } else {
@@ -61,6 +63,50 @@ public class RateActivity extends AppCompatActivity {
                         }
 
                         cid = prefs.getString("clientid", "0x0");
+
+                        String emailTrimmed = txtEmail.getText().toString().trim();
+
+                        if (!emailTrimmed.equals("") && Util.isEmailValid(emailTrimmed)) {
+                            Util.sendBotEmail(
+                                    RateActivity.this,
+                                    Util.getDevEmails(getApplicationContext()),
+                                    "Client " + cid + " Rating: " + rateBar.getRating() + " Sterne",
+                                    "Angegebene E-Mail: " + emailTrimmed + "\n\nGesendete Mitteilung: \n\n" + txtSuggest.getText().toString(),
+                                    "Sende Feedback...",
+                                    new BackgroundMail.OnSuccessCallback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            successCallback();
+                                        }
+                                    },
+                                    new BackgroundMail.OnFailCallback() {
+                                        @Override
+                                        public void onFail() {
+                                            failCallback();
+                                        }
+                                    }
+                            );
+                        } else {
+                            Util.sendBotEmail(
+                                    RateActivity.this,
+                                    Util.getDevEmails(getApplicationContext()),
+                                    "Client " + cid + " Rating: " + rateBar.getRating() + " Sterne",
+                                    "Gesendete Mitteilung: \n\n" + txtSuggest.getText().toString(),
+                                    "Sende Feedback...",
+                                    new BackgroundMail.OnSuccessCallback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            successCallback();
+                                        }
+                                    },
+                                    new BackgroundMail.OnFailCallback() {
+                                        @Override
+                                        public void onFail() {
+                                            failCallback();
+                                        }
+                                    }
+                            );
+                        }
 
                         Util.sendBotEmail(
                                 RateActivity.this,

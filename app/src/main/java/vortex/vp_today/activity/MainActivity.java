@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
             MainActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toasty.error(getApplicationContext(), "Es besteht keine Internetverbindung!").show();
+                    Toasty.warning(getApplicationContext(), "Es besteht keine Internetverbindung!").show();
                 }
             });
         }

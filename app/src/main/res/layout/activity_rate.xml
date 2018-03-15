@@ -33,23 +33,36 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:text="@string/btnRateSend" />
+            android:text="@string/btnRateSend"
+            android:background="@drawable/roundcornerbutton" />
 
         <EditText
             android:id="@+id/txtSuggest"
-            android:background="@drawable/edittextborder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/btnSend"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/rateBar"
+            android:background="@drawable/edittextborder"
             android:ems="10"
             android:fadeScrollbars="true"
             android:gravity="top"
-            android:hint=""
+            android:hint="@string/ratehint"
             android:inputType="textMultiLine"
             android:lines="15"
             android:maxLines="20"
             android:scrollbars="vertical" />
+
+        <EditText
+            android:id="@+id/txtEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/txtSuggest"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="11dp"
+            android:background="@drawable/edittextborder"
+            android:ems="10"
+            android:hint="@string/emailhint"
+            android:inputType="textPersonName" />
 
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

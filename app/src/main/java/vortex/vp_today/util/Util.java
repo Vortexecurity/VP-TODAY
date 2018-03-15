@@ -100,6 +100,10 @@ public final class Util {
         return false;
     }
 
+    public static boolean isEmailValid(CharSequence email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
     public static int MillisToSecs(int millis) {
         return (millis / 1000);
     }
@@ -225,7 +229,6 @@ public final class Util {
         return null;
     }
 
-    @SuppressWarnings("deprecated")
     @Nullable
     public static synchronized TwoFormatDate[] getVPDates() {
         String unfiltered = getGod();

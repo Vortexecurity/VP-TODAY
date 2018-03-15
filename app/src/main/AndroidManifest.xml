@@ -36,6 +36,7 @@
             android:name=".activity.RateActivity"
             android:label="@string/ratelbl"
             android:parentActivityName=".activity.MainActivity"
+            android:windowSoftInputMode="adjustNothing"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
