@@ -2,8 +2,8 @@
     <string name="app_name">VP-TODAY</string>
     <string name="settings">Einstellungen</string>
     <string name="about">Über</string>
-    <string name="rateus">Bewerte uns!</string>
-    <string name="ratelbl">Bewerten</string>
+    <string name="rateus">Feedback</string>
+    <string name="ratelbl">Feedback</string>
     <string name="stufe">Stufe:</string>
     <string name="apply">Übernehmen</string>
     <string name="cancel">Abbrechen</string>

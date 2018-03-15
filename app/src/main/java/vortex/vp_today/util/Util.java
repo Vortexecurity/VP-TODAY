@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 
 import org.joda.time.LocalDate;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -1240,5 +1242,25 @@ public final class Util {
                 .setPriority(NotificationCompat.PRIORITY_MAX);
         NotificationManagerCompat managerCompat = NotificationManagerCompat.from(ctx);
         managerCompat.notify(getNotificationID(), mBuilder.build());
+    }
+
+
+    /**
+     *
+     * Langfristig zur Ersetzung der Kurse Array Listen
+     *
+     * @author Melvin Zähl
+     * @param url
+     * @return String Array mit den Kursen
+     */
+    public static String[] parseKurse(String url){
+        String[] out = null;
+        try {
+            Document doc = Jsoup.connect("http://melvinz.atwebpages.com/vortex/vp-today/data/kurseq1.txt").get();
+            out = doc.wholeText().split(";");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return out;
     }
 }
