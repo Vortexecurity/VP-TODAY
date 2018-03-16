@@ -4,17 +4,17 @@
 
     <header
         android:fragment="vortex.vp_today.activity.SettActivity$GeneralPreferenceFragment"
+        android:icon="@drawable/ic_info_black_24dp"
         android:title="@string/pref_header_general" />
-    <!--android:icon="@drawable/ic_info_black_24dp"-->
 
     <header
         android:fragment="vortex.vp_today.activity.SettActivity$NotificationPreferenceFragment"
+        android:icon="@drawable/ic_notifications_black_24dp"
         android:title="@string/pref_header_notifications" />
-    <!--android:icon="@drawable/ic_notifications_black_24dp"-->
 
     <header
-        android:fragment="vortex.vp_today.activity.SettActivity$DataSyncPreferenceFragment"
+        android:fragment="vortex.vp_today.activity.SettActivity$UpdatePreferenceFragment"
+        android:icon="@drawable/ic_sync_black_24dp"
         android:title="@string/pref_header_vp_update" />
-    <!--android:icon="@drawable/ic_sync_black_24dp"-->
 
 </preference-headers>

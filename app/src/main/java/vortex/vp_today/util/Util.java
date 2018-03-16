@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -1249,11 +1248,12 @@ public final class Util {
      *
      * Langfristig zur Ersetzung der Kurse Array Listen
      *
-     * @author Melvin Zähl
+     * @author Melvin Zähl, Simon Dräger
      * @param url
      * @return String Array mit den Kursen
      */
-    public static String[] parseKurse(String url){
+    @Nullable
+    public static String[] parseKurse(String url) {
         String[] out = null;
         try {
             Document doc = Jsoup.connect("http://melvinz.atwebpages.com/vortex/vp-today/data/kurseq1.txt").get();

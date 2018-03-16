@@ -1,4 +1,4 @@
-package vortex.vp_today.activity;
+package vortex.vp_today;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

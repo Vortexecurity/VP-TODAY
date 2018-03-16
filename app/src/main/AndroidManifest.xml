@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activity.MainActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/settings"
@@ -36,8 +36,8 @@
             android:name=".activity.RateActivity"
             android:label="@string/ratelbl"
             android:parentActivityName=".activity.MainActivity"
-            android:windowSoftInputMode="adjustNothing"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="vortex.vp_today.activity.MainActivity" />
@@ -79,6 +79,14 @@
                 android:resource="@xml/display_info" />
         </receiver>
 
+        <activity
+            android:name=".activity.SettActivity"
+            android:label="@string/title_activity_sett"
+            android:parentActivityName=".activity.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="vortex.vp_today.activity.MainActivity" />
+        </activity>
         <activity
             android:name=".activity.SettActivity"
             android:label="@string/title_activity_sett"

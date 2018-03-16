@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
+import android.preference.MultiSelectListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -19,76 +20,43 @@ import android.view.MenuItem;
 
 import java.util.List;
 
+import vortex.vp_today.AppCompatPreferenceActivity;
 import vortex.vp_today.R;
 
-public class SettActivity extends AppCompatPreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
-
-    private SwitchPreference prefPushes;
-    private SwitchPreference prefVibratePushes;
-    private ListPreference prefKurseQ1;
-    private ListPreference prefKlassen;
+public class SettActivity extends AppCompatPreferenceActivity {
+    private SharedPreferences prefs;
 
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
-            String stringValue = value.toString();
+            if (preference instanceof MultiSelectListPreference) {
+                MultiSelectListPreference pref = (MultiSelectListPreference) preference;
+                //pref
+            } else if (preference instanceof ListPreference) {
+                ListPreference pref = (ListPreference) preference;
 
-            // TODO
-
-            if (preference instanceof ListPreference) {
-                ListPreference listPreference = (ListPreference) preference;
-                int index = listPreference.findIndexOfValue(stringValue);
-
-                preference.setSummary(
-                        index >= 0
-                                ? listPreference.getEntries()[index]
-                                : null);
             } else if (preference instanceof SwitchPreference) {
-                SwitchPreference swtch = (SwitchPreference) preference;
+                SwitchPreference pref = (SwitchPreference) preference;
 
-             //   preference.setSummary(swtch.get);
-
-            } else {
-                preference.setSummary(stringValue);
             }
             return true;
         }
     };
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        String receivePushes = getString(R.string.receivepushes);
-        if (key.equals(receivePushes)) {
-            boolean test = sharedPreferences.getBoolean(receivePushes, false);
-            if (test) {
-             //   testPref.setSummary("Enabled");
-            } else {
-             //   testPref.setSummary("Disabled");
-            }
-        }
-    }
-
-    public static void show(@NonNull Context ctx) {
-        Intent intent = new Intent(ctx, SettActivity.class);
+    public static void show(@NonNull Context context) {
+        Intent intent = new Intent(context, SettActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        ctx.startActivity(intent);
+        context.startActivity(intent);
     }
 
-    /**
-     * Helper method to determine if the device has an extra-large screen. For
-     * example, 10" tablets are extra-large.
-     */
     private static boolean isXLargeTablet(Context context) {
         return (context.getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
     }
 
     private static void bindPreferenceSummaryToValue(Preference preference) {
-        // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 
-        // Trigger the listener immediately with the preference's
-        // current value.
         sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
                 PreferenceManager
                         .getDefaultSharedPreferences(preference.getContext())
@@ -97,8 +65,12 @@ public class SettActivity extends AppCompatPreferenceActivity implements SharedP
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        prefs = getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
+
         super.onCreate(savedInstanceState);
         setupActionBar();
+
+
     }
 
     private void setupActionBar() {
@@ -135,17 +107,16 @@ public class SettActivity extends AppCompatPreferenceActivity implements SharedP
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || GeneralPreferenceFragment.class.getName().equals(fragmentName)
-                || DataSyncPreferenceFragment.class.getName().equals(fragmentName)
+                || UpdatePreferenceFragment.class.getName().equals(fragmentName)
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
     }
 
-    /***/
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class GeneralPreferenceFragment extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_general);
+            addPreferencesFromResource(R.xml.prefs_general);
             setHasOptionsMenu(true);
 
             bindPreferenceSummaryToValue(findPreference("slctKurse"));
@@ -162,19 +133,17 @@ public class SettActivity extends AppCompatPreferenceActivity implements SharedP
         }
     }
 
-    /**
-     * This fragment shows notification preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-     */
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class NotificationPreferenceFragment extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_notification);
+            addPreferencesFromResource(R.xml.prefs_notifications);
             setHasOptionsMenu(true);
 
-            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
+            bindPreferenceSummaryToValue(findPreference("receiveNotifs"));
+            bindPreferenceSummaryToValue(findPreference("vibrateOnNotifReceive"));
         }
 
         @Override
@@ -188,19 +157,15 @@ public class SettActivity extends AppCompatPreferenceActivity implements SharedP
         }
     }
 
-    /**
-     * This fragment shows data and sync preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-     */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class DataSyncPreferenceFragment extends PreferenceFragment {
+    public static class UpdatePreferenceFragment extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_update);
+            addPreferencesFromResource(R.xml.prefs_update);
             setHasOptionsMenu(true);
 
-            bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+            bindPreferenceSummaryToValue(findPreference("update_frequency"));
         }
 
         @Override

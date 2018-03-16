@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.settings:
                 //SettingsActivity.show(getApplicationContext());
-                SettingsActivity.show(getApplicationContext());
+                SettActivity.show(getApplicationContext());
                 return true;
             case R.id.rate:
                 RateActivity.show(getApplicationContext());
