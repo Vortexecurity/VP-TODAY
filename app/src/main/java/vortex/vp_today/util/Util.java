@@ -158,7 +158,8 @@ public final class Util {
 
         try {
             if (tupSelects.x.get(0) != null) {
-                if (Util.D) Log.e("getSelectedKurse", "tupSelects.x type: " + tupSelects.x.getClass().toString());
+                if (Util.D)
+                    Log.e("getSelectedKurse", "tupSelects.x type: " + tupSelects.x.getClass().toString());
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -178,8 +179,8 @@ public final class Util {
 
         if (tupSelects == null)
             if (Util.D) Log.e("getSelectedKurse", "Returning null, tupSelects is null");
-        else if (tupSelects.x == null)
-            if (Util.D) Log.e("getSelectedKurse", "Returning null, x is null");
+            else if (tupSelects.x == null)
+                if (Util.D) Log.e("getSelectedKurse", "Returning null, x is null");
 
         return selectedKurse.toArray(new String[0]);
     }
@@ -212,7 +213,8 @@ public final class Util {
             String json = prefs.getString(tag, null);
             if (D) Log.e("getGsonObject", "json: " + json);
             return ((T) gson.fromJson(json, type));
-        } catch (Exception ex) { }
+        } catch (Exception ex) {
+        }
         return null;
     }
 
@@ -257,7 +259,8 @@ public final class Util {
                     if (dates.contains(tfd))
                         continue;
 
-                    if (D) Log.i("getvpdates", "Adding tfd: " + (tfd == null ? "null" : "not null"));
+                    if (D)
+                        Log.i("getvpdates", "Adding tfd: " + (tfd == null ? "null" : "not null"));
 
                     dates.add(tfd);
                 } catch (ParseException ex) {
@@ -323,13 +326,13 @@ public final class Util {
      * @throws AssertionError wird ausgelöst, wenn preselectedItems != null und Länge != KurseQ1.length
      */
     public static void ShowKurseDialogQ1
-        (
+    (
             @NonNull Activity actv,
             @Nullable boolean[] preselectedItems,
             DialogInterface.OnMultiChoiceClickListener multiListener,
             DialogInterface.OnClickListener positiveClick,
             DialogInterface.OnClickListener negativeClick
-        ) throws AssertionError {
+    ) throws AssertionError {
 
         final Resources res = actv.getApplicationContext().getResources();
         final int q1Len = res.getStringArray(R.array.KurseQ1).length;
@@ -638,6 +641,7 @@ public final class Util {
 
     /**
      * Service-Version
+     *
      * @author Simon Dräger
      */
     @Nullable
@@ -789,10 +793,12 @@ public final class Util {
                             } else if (selector.contains("td.data-subject")) {
                                 Element dataSubject = td.selectFirst("td.data-subject");
                                 String txtSubject = dataSubject.text();
-                                if (D) Log.i("filterHTMLkurse", "datasubject " + dataSubject.text());
+                                if (D)
+                                    Log.i("filterHTMLkurse", "datasubject " + dataSubject.text());
 
                                 if (!anyMatch(txtSubject, kurse)) {
-                                    if (D) Log.i("filterHTMLkurse", "not matching subject: " + txtSubject);
+                                    if (D)
+                                        Log.i("filterHTMLkurse", "not matching subject: " + txtSubject);
                                     breakk = true;
                                     break;
                                 }
@@ -832,8 +838,7 @@ public final class Util {
         if (info != null) {
             if (D) Log.i("filterHTMLkurse", "info != null");
             //if (D) Log.i("filterHTMLkurse", "info.getRows().get(0): " + info.getRows().get(0).toString());
-        }
-        else {
+        } else {
             if (D) Log.i("filterHTMLkurse", "info = null");
         }
 
@@ -845,8 +850,8 @@ public final class Util {
      */
     @Nullable
     public static synchronized TriTuple<String, Integer, VPInfo> filterHTMLService(Document d,
-                                                                            String stufe,
-                                                                            String[] kurse) throws AssertionError {
+                                                                                   String stufe,
+                                                                                   String[] kurse) throws AssertionError {
         assert stufe.equalsIgnoreCase("EF") ||
                 stufe.equalsIgnoreCase("Q1") ||
                 stufe.equalsIgnoreCase("Q2")
@@ -930,10 +935,12 @@ public final class Util {
                             } else if (selector.contains("td.data-subject")) {
                                 Element dataSubject = td.selectFirst("td.data-subject");
                                 String txtSubject = dataSubject.text();
-                                if (D) Log.i("filterHTMLkurse", "datasubject " + dataSubject.text());
+                                if (D)
+                                    Log.i("filterHTMLkurse", "datasubject " + dataSubject.text());
 
                                 if (!anyMatch(txtSubject, kurse)) {
-                                    if (D) Log.i("filterHTMLkurse", "not matching subject: " + txtSubject);
+                                    if (D)
+                                        Log.i("filterHTMLkurse", "not matching subject: " + txtSubject);
                                     breakk = true;
                                     break;
                                 }
@@ -1083,10 +1090,12 @@ public final class Util {
                             } else if (selector.contains("td.data-subject")) {
                                 Element dataSubject = td.selectFirst("td.data-subject");
                                 String txtSubject = dataSubject.text();
-                                if (D) Log.i("filterHTMLkurse", "datasubject " + dataSubject.text());
+                                if (D)
+                                    Log.i("filterHTMLkurse", "datasubject " + dataSubject.text());
 
                                 if (!anyMatch(txtSubject, kurse)) {
-                                    if (D) Log.i("filterHTMLkurse", "not matching subject: " + txtSubject);
+                                    if (D)
+                                        Log.i("filterHTMLkurse", "not matching subject: " + txtSubject);
                                     breakk = true;
                                     break;
                                 }
@@ -1134,8 +1143,7 @@ public final class Util {
         if (info != null) {
             if (D) Log.i("filterHTMLkurse", "info != null");
             //if (D) Log.i("filterHTMLkurse", "info.getRows().get(0): " + info.getRows().get(0).toString());
-        }
-        else {
+        } else {
             if (D) Log.i("filterHTMLkurse", "info = null");
         }
 
@@ -1229,9 +1237,9 @@ public final class Util {
     }
 
     /**
-     * @author Melvin Zähl
-     * @param title Titel der Benachrichtigung
+     * @param title   Titel der Benachrichtigung
      * @param content Content der Benachrichtigung
+     * @author Melvin Zähl
      */
     public static void sendNotification(@NonNull Context ctx, String title, String content) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(ctx, NotificationChannel.DEFAULT_CHANNEL_ID)
@@ -1245,12 +1253,11 @@ public final class Util {
 
 
     /**
-     *
      * Langfristig zur Ersetzung der Kurse Array Listen
      *
-     * @author Melvin Zähl, Simon Dräger
      * @param url
      * @return String Array mit den Kursen
+     * @author Melvin Zähl, Simon Dräger
      */
     @Nullable
     public static String[] parseKurse(String url) {
@@ -1258,8 +1265,8 @@ public final class Util {
         try {
             Document doc = Jsoup.connect("http://melvinz.atwebpages.com/vortex/vp-today/data/kurseq1.txt").get();
             out = doc.wholeText().split(";");
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
         return out;
     }

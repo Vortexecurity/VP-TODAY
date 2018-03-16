@@ -50,6 +50,7 @@
     <string name="settingSaveLogin">saveLogin</string>
     <string name="settingUsrname">usrName</string>
     <string name="settingPwd">passwd</string>
+    <string name="settingUpdateInterval">updateInterval</string>
     <string name="selectedkurseindices">selectedKurseIndices</string>
     <string name="saveLogin">Angaben speichern</string>
     <string name="angabenohnegewaehr">Alle Angaben ohne Gewähr! (Alpha Build)</string>

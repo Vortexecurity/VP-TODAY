@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <ListPreference
-        android:defaultValue="45"
         android:entries="@array/listIntervals"
         android:entryValues="@array/listIntervalValuesMin"
+        android:summary="Das Intervall, in dem die App automatisch updaten soll"
         android:key="update_frequency"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null"
         android:title="@string/pref_title_update_frequency" />
 </PreferenceScreen>

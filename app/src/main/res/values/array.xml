@@ -8,14 +8,14 @@
         <item>2 Stunden</item>
         <item>Nie</item>
     </string-array>
-    <array name="listIntervalValuesMin">
+    <string-array name="listIntervalValuesMin">
         <item>15</item>
         <item>30</item>
         <item>45</item>
         <item>60</item>
         <item>120</item>
         <item>-1</item>
-    </array>
+    </string-array>
 
     <string-array name="listStufen">
         <item>5</item>

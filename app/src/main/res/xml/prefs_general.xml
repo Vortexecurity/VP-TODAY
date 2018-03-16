@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:title="@string/stufe"
+        android:summary="Wähle deine Stufe"
+        android:key="slctStufe"
+        android:entries="@array/listStufen"
+        android:entryValues="@array/listStufen" />
+
+    <ListPreference
+        android:title="@string/klasse"
+        android:summary="Wähle deine Klasse"
+        android:key="slctKlasse"
+        android:entries="@array/listKlassen"
+        android:entryValues="@array/listKlassen" />
+
     <MultiSelectListPreference
         android:title="@string/selectkurse"
         android:summary="Wähle deine Kurse aus"
-        android:key="slctKurse"
-        android:entries="@array/KurseQ1" />
+        android:key="slctKurse" />
 </PreferenceScreen>
