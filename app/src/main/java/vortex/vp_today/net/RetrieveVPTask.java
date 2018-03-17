@@ -83,7 +83,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                 filteredInfo = Util.filterHTML(main, doc, stufe, kurse, new ProgressCallback() {
                     @Override
                     public void onProgress(int percent) {
-                        Log.i("onProgress", "in onProgress");
+                        if (Util.D) Log.i("onProgress", "in onProgress");
                         publishProgress(percent);
                     }
 
