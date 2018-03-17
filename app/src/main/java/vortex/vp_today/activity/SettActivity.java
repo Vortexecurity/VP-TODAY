@@ -310,7 +310,7 @@ public class SettActivity extends AppCompatPreferenceActivity {
                             ListPreference newPref = (ListPreference) preference;
                             int index = ((ListPreference) preference).findIndexOfValue(newValue.toString());
 
-                            prefs.edit().putInt(getString(R.string.settingUpdateInterval),
+                            prefs.edit().putInt(getString(R.string.settingRefreshIntervalMin),
                                     Integer.parseInt(getResources().getStringArray(R.array.listIntervalValuesMin)[index]))
                                     .apply();
 

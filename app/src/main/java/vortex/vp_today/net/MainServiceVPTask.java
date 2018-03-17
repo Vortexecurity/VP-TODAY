@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import vortex.vp_today.MainService;
 import vortex.vp_today.logic.VPInfo;
 import vortex.vp_today.logic.VPRow;
 import vortex.vp_today.util.TriTuple;
@@ -19,17 +18,15 @@ import vortex.vp_today.util.Util;
 
 public class MainServiceVPTask extends AsyncTask<Object, Integer, TriTuple<String, Integer, VPInfo>> {
     private Exception exception = null;
-    private MainService srvs = null;
 
-    // params: MainActivity, String date (vp style), String stufe, String sub, String[] kurse
+    // params: String date (vp style), String stufe, String sub, String[] kurse
     @Override
     @SuppressWarnings("ResourceTypes")
     protected TriTuple<String, Integer, VPInfo> doInBackground(Object... params) {
-        srvs = (MainService) params[0];
-        String vpDate = (String) params[1];
-        String stufe = (String) params[2];
-        String sub = (String) params[3];
-        String[] kurse = (String[]) params[4];
+        String vpDate = (String) params[0];
+        String stufe = (String) params[1];
+        String sub = (String) params[2];
+        String[] kurse = (String[]) params[3];
 
         try {
             String unfiltered = Util.fetchUnfiltered(vpDate);

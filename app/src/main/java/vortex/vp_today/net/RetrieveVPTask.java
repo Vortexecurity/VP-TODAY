@@ -19,7 +19,7 @@ import vortex.vp_today.util.Util;
 
 /**
  * @author Simon Dräger
- * @version 12.3.18
+ * @version 17.3.18
  */
 
 // params: Object, progress: Void, return: TriTuple: String Integer String[] || String Integer VPInfo[]

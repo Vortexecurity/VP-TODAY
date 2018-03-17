@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="listIntervals">
+        <item>1 Minute (Dev-Debug)</item>
         <item>15 Minuten</item>
         <item>30 Minuten</item>
         <item>45 Minuten</item>
@@ -9,6 +10,7 @@
         <item>Nie</item>
     </string-array>
     <string-array name="listIntervalValuesMin">
+        <item>1</item>
         <item>15</item>
         <item>30</item>
         <item>45</item>

@@ -28,7 +28,7 @@
         </activity>
 
         <service
-            android:name=".MainService"
+            android:name="service.MainService"
             android:enabled="true"
             android:exported="false" />
 
@@ -77,6 +77,13 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/display_info" />
+        </receiver>
+
+        <receiver android:name=".receiver.BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
         </receiver>
 
         <activity

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
@@ -48,6 +49,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import es.dmoral.toasty.Toasty;
+import service.MainService;
 import vortex.vp_today.R;
 import vortex.vp_today.logic.VPInfo;
 import vortex.vp_today.logic.VPKind;
@@ -58,7 +60,7 @@ import vortex.vp_today.mail.BackgroundMail;
  * @author Simon Dräger
  * @author Melvin Zähl
  * @author Florian Koll
- * @version 6.3.18
+ * @version 17.3.18
  */
 
 public final class Util {
@@ -109,12 +111,22 @@ public final class Util {
         return (millis / 1000);
     }
 
-    public int SecsToMins(int secs) {
+    public static int SecsToMins(int secs) {
         return ((secs % 3600) / 60);
     }
 
-    public long MinsToMillis(int mins) {
+    public static long MinsToMillis(int mins) {
         return TimeUnit.MINUTES.toMillis(mins);
+    }
+
+    public static boolean isMainServiceRunning(@NonNull Context ctx) {
+        ActivityManager manager = (ActivityManager) ctx.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (MainService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static synchronized void setProgressMax(ProgressBar pb, int max) {
@@ -156,7 +168,13 @@ public final class Util {
     public static String[] getSelectedKurse(@NonNull Context ctx) {
         Tuple<ArrayList<String>, ArrayList<Boolean>> tupSelects = Util.getGsonObject(ctx, ctx.getString(R.string.settingkurse), Tuple.class);
 
-        try {
+        String[] kurse = tupSelects.x.toArray(new String[0]);
+
+        Log.i("getSelectedKurse", "kurse: " + TextUtils.join(",", kurse));
+
+        return kurse;
+
+        /*try {
             if (tupSelects.x.get(0) != null) {
                 if (Util.D)
                     Log.e("getSelectedKurse", "tupSelects.x type: " + tupSelects.x.getClass().toString());
@@ -182,7 +200,7 @@ public final class Util {
             else if (tupSelects.x == null)
                 if (Util.D) Log.e("getSelectedKurse", "Returning null, x is null");
 
-        return selectedKurse.toArray(new String[0]);
+        return selectedKurse.toArray(new String[0]);*/
     }
 
     public static final int getNotificationID() {
@@ -459,6 +477,7 @@ public final class Util {
     }
 
     /**
+     * Konvertiert ein Datum in ein VP-Datum
      * @return null on error.
      */
     @Nullable
@@ -1246,7 +1265,8 @@ public final class Util {
                 .setSmallIcon(R.drawable.ic_stat_vp)
                 .setContentTitle(title)
                 .setContentText(content)
-                .setPriority(NotificationCompat.PRIORITY_MAX);
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setLights(Color.GREEN, 400, 400);
         NotificationManagerCompat managerCompat = NotificationManagerCompat.from(ctx);
         managerCompat.notify(getNotificationID(), mBuilder.build());
     }
