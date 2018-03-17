@@ -8,7 +8,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
+
+import com.google.gson.reflect.TypeToken;
 
 import org.joda.time.LocalDate;
 
@@ -20,6 +23,7 @@ import java.util.TimerTask;
 import me.leolin.shortcutbadger.ShortcutBadger;
 import vortex.vp_today.R;
 import vortex.vp_today.logic.VPInfo;
+import vortex.vp_today.logic.VPKind;
 import vortex.vp_today.logic.VPRow;
 import vortex.vp_today.net.MainServiceVPTask;
 import vortex.vp_today.util.Util;
@@ -55,7 +59,7 @@ public class MainService extends IntentService {
 
                     try {
                         info = new MainServiceVPTask().execute(
-                                Util.makeDate(ldate.getDayOfMonth() + 2, ldate.getMonthOfYear() - 1, ldate.getYear()),
+                                Util.makeDate(ldate.getDayOfMonth() + 1, ldate.getMonthOfYear() - 1, ldate.getYear()),
                                 Util.getSettingStufe(getApplicationContext()),
                                 Util.getSettingKlasse(getApplicationContext()),
                                 Util.getSelectedKurse(getApplicationContext())
@@ -67,15 +71,34 @@ public class MainService extends IntentService {
                         Log.i("MainService", "info getRows length: " + info.getRows().size());
 
                         Context ctx = getApplicationContext();
-                        ArrayList<VPRow> known = Util.getGsonObject(ctx, "knownInfos", ArrayList.class);
+                        ArrayList<VPRow> known = Util.getGsonObject(ctx, "knownInfos", new TypeToken<ArrayList<VPRow>>() {});
 
                         // Jeden bereits benachrichtigten Eintrag überspringen
                         if (known != null) {
-                            for (VPRow i : info.getRows()) {
-                                if (known.contains(i))
+                            String[] strknown = new String[known.size()];
+
+                            for (int i = 0; i < strknown.length; i++) {
+                                strknown[i] = known.get(i).toString();
+                            }
+
+                            Log.i("MainService", TextUtils.join(" ; ", strknown));
+                            for (VPRow i : new ArrayList<>(info.getRows())) {
+                                Log.i("MainService", "VPRow i: " + i.toString());
+                                if (known.contains(i)) {
                                     info.removeRow(i);
+                                    Log.i("MainService", "remove row: " + i.toString());
+                                } else {
+                                    Log.i("MainService", "keeping row: " + i.toString());
+                                }
                             }
                         }
+
+                        // texts
+                        ArrayList<String> content = new ArrayList<>();
+                        int entfall = 0;
+                        int eigenvarbeiten = 0;
+                        int raumvertretung = 0;
+                        int vertretung = 0;
 
                         for (VPRow row : info.getRows()) {
                             if (keyguardManager.inKeyguardRestrictedInputMode() && prefs.getBoolean("vibrateOnPushReceiveInLS", false)) {
@@ -86,10 +109,24 @@ public class MainService extends IntentService {
                             if (prefs.getBoolean(getString(R.string.settingpushes), false)) {
                                 Log.i("MainService", "settingpushes true");
 
-                                String art = row.getArt().getName();
-                                String fachOrKurs = row.getFach();
-                                Util.sendNotification(ctx, "VP-TODAY: " + fachOrKurs + " | " + art,
-                                        row.getLinearContent());
+                                //String art = row.getArt().getName();
+                                //String fachOrKurs = row.getFach();
+
+                                VPKind art = row.getArt();
+
+                                if (art == VPKind.ENTFALL)
+                                    entfall++;
+                                else if (art == VPKind.EIGENVARBEITEN)
+                                    eigenvarbeiten++;
+                                else if (art == VPKind.RAUMVERTRETUNG)
+                                    raumvertretung++;
+                                else if (art == VPKind.VERTRETUNG)
+                                    vertretung++;
+
+                                content.add(row.getLinearContent());
+
+                                //Util.sendNotification(ctx, "VP-TODAY: " + fachOrKurs + " | " + art,
+                                //        row.getLinearContent());
 
                                 // Die Zahl am launcher inkrementieren
                                 int badgeCount = prefs.getInt(getString(R.string.currentBadges), 0);
@@ -108,10 +145,29 @@ public class MainService extends IntentService {
                             known.add(row);
 
                             // Die Änderungen speichern
-                            Util.putGsonObject(getApplicationContext(), "knownInfos", known);
+                            Util.putGsonObject(getApplicationContext(), "knownInfos", known, new TypeToken<ArrayList<VPRow>>() {});
 
                             info = null;
                         }
+
+                        int sum = entfall + vertretung + raumvertretung + eigenvarbeiten;
+                        String title = "VP-TODAY (" + sum + ")";
+
+                        /*if (entfall > 0)
+                            title += "(" + entfall + ") Entfall | ";
+                        if (eigenvarbeiten > 0)
+                            title += "(" + eigenvarbeiten + ") Eigenv. Arbeiten | ";
+                        if (raumvertretung > 0)
+                            title += "(" + raumvertretung + ") Raumvertretung | ";
+                        if (vertretung > 0)
+                            title += "(" + vertretung + ") Vertretung";
+
+                        if (title.endsWith(" | "))
+                            title = title.substring(title.length() - 3);*/
+
+                        if (sum > 0)
+                            Util.sendNotification(ctx, title, TextUtils.join("\n", content.toArray(new String[0])));
+
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }

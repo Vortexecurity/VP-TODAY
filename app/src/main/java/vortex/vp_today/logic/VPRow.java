@@ -2,8 +2,11 @@ package vortex.vp_today.logic;
 
 import android.support.annotation.Nullable;
 
+import vortex.vp_today.util.Util;
+
 /**
  * Eine VP-Reihe.
+ *
  * @author Simon Dräger
  * @version 5.3.18
  */
@@ -39,13 +42,13 @@ public class VPRow {
     public String getLinearContent() {
         if (art != null) {
             String out = String.valueOf(stunde) + DELIMITER + fach + DELIMITER + art.getName() + DELIMITER;
-            if(vertreter != null)
+            if (vertreter != null)
                 out += vertreter + DELIMITER;
-            if(!raum.equals("---"))
+            if (!raum.equals("---"))
                 out += raum + DELIMITER;
-            if(!statt.equals("---"))
+            if (!statt.equals("---"))
                 out += statt + DELIMITER;
-            if(!bemerkung.equals("---"))
+            if (!bemerkung.equals("---"))
                 out += bemerkung + DELIMITER;
             return out.substring(0, out.length() - 2) + "\n\n";
         }
@@ -154,14 +157,14 @@ public class VPRow {
         if (obj instanceof VPRow) {
             VPRow row = (VPRow) obj;
             if (row.getArt() == art &&
-                    row.getBemerkung().equals(bemerkung) &&
-                    row.getFach().equals(fach) &&
-                    row.getKlasse().equals(klasse) &&
-                    row.getRaum().equals(raum) &&
-                    row.getStatt().equals(statt) &&
-                    row.getStunde() == stunde &&
-                    row.getStunden() == stunden &&
-                    row.getVertreter().equals(vertreter)) {
+                    Util.equalsWithNulls(row.getBemerkung(), bemerkung) &&
+                    Util.equalsWithNulls(row.getFach(), fach) &&
+                    Util.equalsWithNulls(row.getKlasse(), klasse) &&
+                    Util.equalsWithNulls(row.getRaum(), raum) &&
+                    Util.equalsWithNulls(row.getStatt(), statt) &&
+                    Util.equalsWithNulls(row.getVertreter(), vertreter) &&
+                    Util.equalsWithNulls(row.getStunden(), stunden) &&
+                    row.getStunde() == stunde) {
                 return true;
             }
         }

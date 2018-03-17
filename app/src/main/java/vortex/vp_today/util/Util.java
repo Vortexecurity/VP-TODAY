@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.joda.time.LocalDate;
 import org.jsoup.Jsoup;
@@ -207,20 +209,32 @@ public final class Util {
         return atomInt.incrementAndGet();
     }
 
-    public static void putGsonObject(@NonNull Context ctx, @NonNull String tag, @Nullable Object obj) {
+    public static final boolean equalsWithNulls(Object a, Object b) {
+        if (a==b) return true;
+        if ((a==null) || (b==null)) return false;
+        return a.equals(b);
+    }
+
+    public static void putGsonObject(@NonNull Context ctx, @NonNull String tag, @Nullable Object obj, @Nullable TypeToken tok) {
+        //Type fooType = new TypeToken<Foo<Bar>>() {}.getType();
         SharedPreferences.Editor prefsEditor = ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE).edit();
         Gson gson = new Gson();
-        String json = gson.toJson(obj);
+        String json;
+        if (tok != null) {
+            json = gson.toJson(obj, tok.getType());
+        } else {
+            json = gson.toJson(obj);
+        }
         prefsEditor.putString(tag, json);
         prefsEditor.apply();
     }
 
     @Nullable
-    public static Object getGsonObject(@NonNull Context ctx, @NonNull String tag) {
+    public static <T> T getGsonObject(@NonNull Context ctx, @NonNull String tag, @NonNull TypeToken tok) {
         SharedPreferences prefs = ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE);
         Gson gson = new Gson();
         String json = prefs.getString(tag, null);
-        return gson.fromJson(json, Object.class);
+        return gson.fromJson(json, tok.getType());
     }
 
     @Nullable
@@ -1266,9 +1280,15 @@ public final class Util {
                 .setContentTitle(title)
                 .setContentText(content)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setLights(Color.GREEN, 400, 400);
+                .setLights(Color.GREEN, 400, 400)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                .bigText(content));
+
+        Notification notif = mBuilder.build();
+        //notif.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
+
         NotificationManagerCompat managerCompat = NotificationManagerCompat.from(ctx);
-        managerCompat.notify(getNotificationID(), mBuilder.build());
+        managerCompat.notify(getNotificationID(), notif);
     }
 
 

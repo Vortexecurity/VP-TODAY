@@ -1,5 +1,6 @@
 package vortex.vp_today.activity;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,6 +18,8 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.google.gson.reflect.TypeToken;
 
 import org.joda.time.LocalDate;
 
@@ -79,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             Log.i("MainActivity", "strs length: " + strs.length);
             Log.i("MainActivity", "bools length: " + bools.length);
 
-            Util.putGsonObject(getApplicationContext(), getString(R.string.settingkurse), putTuple);
+            Util.putGsonObject(getApplicationContext(), getString(R.string.settingkurse), putTuple, new TypeToken<Tuple<String[], Boolean[]>>() {});
             sp.edit().putString("clientid", Util.generateClientID()).apply();
         }
 
@@ -205,6 +208,22 @@ public class MainActivity extends AppCompatActivity {
 
         dateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinDate.setAdapter(dateAdapter);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        int close = intent.getIntExtra("closeNotificationID", -1);
+
+        if (close != -1) {
+            try {
+                NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.cancel(close);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     @Override

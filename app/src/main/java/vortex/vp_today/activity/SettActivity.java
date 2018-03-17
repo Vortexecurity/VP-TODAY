@@ -18,6 +18,8 @@ import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.google.gson.reflect.TypeToken;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -136,7 +138,7 @@ public class SettActivity extends AppCompatPreferenceActivity {
 
                                 Tuple<String[], Boolean[]> tup = new Tuple(valSet.toArray(new String[0]), boolSelects);
 
-                                Util.putGsonObject(getActivity().getApplicationContext(), getString(R.string.settingkurse), tup);
+                                Util.putGsonObject(getActivity().getApplicationContext(), getString(R.string.settingkurse), tup, new TypeToken<Tuple<String[], Boolean[]>>() {});
 
                                 if (Util.D) Log.i("onPrefChange", "Gson obj y size: " +
                                         ((Tuple<String[], ArrayList<Boolean>>)Util.getGsonObject(getActivity().getApplicationContext(), getString(R.string.settingkurse), Tuple.class)).y.size());

@@ -22,6 +22,8 @@ import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 
+import com.google.gson.reflect.TypeToken;
+
 import java.util.ArrayList;
 
 import es.dmoral.toasty.Toasty;
@@ -270,7 +272,7 @@ public class SettingsActivity extends AppCompatActivity {
         e.putBoolean(getString(R.string.settingvibrateLS), switchVibrate.isChecked());
 
         if (currentKurseChanges != null) {
-            Util.putGsonObject(getApplicationContext(), getString(R.string.settingkurse), currentKurseChanges);
+            Util.putGsonObject(getApplicationContext(), getString(R.string.settingkurse), currentKurseChanges, new TypeToken<Tuple<String[], Boolean[]>>() {});
         }
 
         if (e.commit())
