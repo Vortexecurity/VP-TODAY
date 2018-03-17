@@ -30,7 +30,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
     @Override
     protected void onProgressUpdate(final Integer... values) {
         super.onProgressUpdate(values);
-        Log.i("onProgressUpdate", "Progress is " + values[0]);
+        if (Util.D) Log.i("onProgressUpdate", "Progress is " + values[0]);
         Util.setProgressAnimate(main.progressBar, values[0]);
         /*main.runOnUiThread(new Runnable() {
             @Override
@@ -58,6 +58,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
             main.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    main.progressBar.setProgress(0);
                     main.progressBar.setVisibility(View.VISIBLE);
                     //if (Util.D) Log.i("RetrieveVPTask", "visibility: " + main.progressBar.getVisibility());
                 }
@@ -188,6 +189,12 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                     if (Util.D) Log.i("onPostExecute", "result not empty");
 
                     main.txt.setText("");
+
+                    if (result.y != null) {
+                        main.tvVers.setText("Version: " + result.y);
+                    } else {
+                        main.tvVers.setText("Version: -");
+                    }
 
                     if (result.z.assumeKursVersion()) {
                         if (Util.D) Log.i("onPostExecute", "assuming kurse version");

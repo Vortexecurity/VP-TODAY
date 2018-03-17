@@ -87,14 +87,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="vortex.vp_today.activity.MainActivity" />
         </activity>
-        <activity
-            android:name=".activity.SettActivity"
-            android:label="@string/title_activity_sett"
-            android:parentActivityName=".activity.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="vortex.vp_today.activity.MainActivity" />
-        </activity>
     </application>
 
 </manifest>
