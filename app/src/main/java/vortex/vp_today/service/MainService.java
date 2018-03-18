@@ -29,9 +29,9 @@ import vortex.vp_today.net.MainServiceVPTask;
 import vortex.vp_today.util.Util;
 
 /**
+ * Der Haupt-Service, der im Hintergrund Push-Nachrichten sendet.
  * @author Simon Dräger
- * @version 17.3.18
- *          Der Haupt-Service, der im Hintergrund Push-Nachrichten sendet.
+ * @version 18.3.18
  */
 
 public class MainService extends IntentService {
@@ -53,123 +53,111 @@ public class MainService extends IntentService {
                 if (prefs.getBoolean("fetchHtmlPushes", getResources().getBoolean(R.bool.defaultFetchHtml)) &&
                         !isForeground()) {
 
-                    Log.i("initializeTimer", "if passed");
+                    if (Util.isInternetConnected(getApplicationContext())) {
 
-                    LocalDate ldate = LocalDate.now();
+                        Log.i("initializeTimer", "if passed");
 
-                    try {
-                        info = new MainServiceVPTask().execute(
-                                Util.makeDate(ldate.getDayOfMonth() + 1, ldate.getMonthOfYear() - 1, ldate.getYear()),
-                                Util.getSettingStufe(getApplicationContext()),
-                                Util.getSettingKlasse(getApplicationContext()),
-                                Util.getSelectedKurse(getApplicationContext())
-                        ).get().z;
+                        LocalDate ldate = LocalDate.now();
 
-                        assert info != null : "info.z darf nicht null sein";
+                        try {
+                            info = new MainServiceVPTask().execute(
+                                    Util.makeDate(ldate.getDayOfMonth() + 1, ldate.getMonthOfYear() - 1, ldate.getYear()),
+                                    Util.getSettingStufe(getApplicationContext()),
+                                    Util.getSettingKlasse(getApplicationContext()),
+                                    Util.getSelectedKurse(getApplicationContext())
+                            ).get().z;
 
-                        Log.i("MainService", "info not null");
-                        Log.i("MainService", "info getRows length: " + info.getRows().size());
+                            if (info == null)
+                                return;
 
-                        Context ctx = getApplicationContext();
-                        ArrayList<VPRow> known = Util.getGsonObject(ctx, "knownInfos", new TypeToken<ArrayList<VPRow>>() {});
+                            Log.i("MainService", "info not null");
+                            Log.i("MainService", "info getRows length: " + info.getRows().size());
 
-                        // Jeden bereits benachrichtigten Eintrag überspringen
-                        if (known != null) {
-                            String[] strknown = new String[known.size()];
+                            Context ctx = getApplicationContext();
+                            ArrayList<VPRow> known = Util.getGsonObject(ctx, "knownInfos", new TypeToken<ArrayList<VPRow>>() {
+                            });
 
-                            for (int i = 0; i < strknown.length; i++) {
-                                strknown[i] = known.get(i).toString();
-                            }
+                            // Jeden bereits benachrichtigten Eintrag überspringen
+                            if (known != null) {
+                                String[] strknown = new String[known.size()];
 
-                            Log.i("MainService", TextUtils.join(" ; ", strknown));
-                            for (VPRow i : new ArrayList<>(info.getRows())) {
-                                Log.i("MainService", "VPRow i: " + i.toString());
-                                if (known.contains(i)) {
-                                    info.removeRow(i);
-                                    Log.i("MainService", "remove row: " + i.toString());
-                                } else {
-                                    Log.i("MainService", "keeping row: " + i.toString());
+                                for (int i = 0; i < strknown.length; i++) {
+                                    strknown[i] = known.get(i).toString();
+                                }
+
+                                Log.i("MainService", TextUtils.join(" ; ", strknown));
+                                for (VPRow i : new ArrayList<>(info.getRows())) {
+                                    Log.i("MainService", "VPRow i: " + i.toString());
+                                    if (known.contains(i)) {
+                                        info.removeRow(i);
+                                        Log.i("MainService", "remove row: " + i.toString());
+                                    } else {
+                                        Log.i("MainService", "keeping row: " + i.toString());
+                                    }
                                 }
                             }
+
+                            // texts
+                            ArrayList<String> content = new ArrayList<>();
+                            int entfall = 0;
+                            int eigenvarbeiten = 0;
+                            int raumvertretung = 0;
+                            int vertretung = 0;
+
+                            for (VPRow row : info.getRows()) {
+                                if (keyguardManager.inKeyguardRestrictedInputMode() && prefs.getBoolean("vibrateOnPushReceiveInLS", false)) {
+                                    // Wenn Bildschirm aus ist: 2 mal vibrieren, -1 für nicht wiederholen.
+                                    vibrator.vibrate(new long[]{700, 700}, -1);
+                                }
+
+                                if (prefs.getBoolean(getString(R.string.settingpushes), false)) {
+                                    Log.i("MainService", "settingpushes true");
+
+                                    VPKind art = row.getArt();
+
+                                    if (art == VPKind.ENTFALL)
+                                        entfall++;
+                                    else if (art == VPKind.EIGENVARBEITEN)
+                                        eigenvarbeiten++;
+                                    else if (art == VPKind.RAUMVERTRETUNG)
+                                        raumvertretung++;
+                                    else if (art == VPKind.VERTRETUNG)
+                                        vertretung++;
+
+                                    content.add(row.getLinearContent());
+
+                                    // Die Zahl am launcher inkrementieren
+                                    int badgeCount = prefs.getInt(getString(R.string.currentBadges), 0);
+
+                                    Log.i("MainService", "applyCount: " + String.valueOf(ShortcutBadger.applyCount(ctx, ++badgeCount)));
+
+                                    prefs.edit().putInt(getString(R.string.currentBadges), badgeCount).apply();
+                                } else {
+                                    Log.i("MainService", "settingpushes false");
+                                }
+
+                                if (known == null) {
+                                    known = new ArrayList<>();
+                                }
+
+                                known.add(row);
+
+                                // Die Änderungen speichern
+                                Util.putGsonObject(getApplicationContext(), "knownInfos", known, new TypeToken<ArrayList<VPRow>>() {
+                                });
+
+                                info = null;
+                            }
+
+                            int sum = entfall + vertretung + raumvertretung + eigenvarbeiten;
+                            String title = "VP-TODAY (" + sum + ")";
+
+                            if (sum > 0)
+                                Util.sendNotification(ctx, title, TextUtils.join("\n", content.toArray(new String[0])));
+
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
-
-                        // texts
-                        ArrayList<String> content = new ArrayList<>();
-                        int entfall = 0;
-                        int eigenvarbeiten = 0;
-                        int raumvertretung = 0;
-                        int vertretung = 0;
-
-                        for (VPRow row : info.getRows()) {
-                            if (keyguardManager.inKeyguardRestrictedInputMode() && prefs.getBoolean("vibrateOnPushReceiveInLS", false)) {
-                                // 2 mal vibrieren, -1 für nicht wiederholen.
-                                vibrator.vibrate(new long[]{700, 700}, -1);
-                            }
-
-                            if (prefs.getBoolean(getString(R.string.settingpushes), false)) {
-                                Log.i("MainService", "settingpushes true");
-
-                                //String art = row.getArt().getName();
-                                //String fachOrKurs = row.getFach();
-
-                                VPKind art = row.getArt();
-
-                                if (art == VPKind.ENTFALL)
-                                    entfall++;
-                                else if (art == VPKind.EIGENVARBEITEN)
-                                    eigenvarbeiten++;
-                                else if (art == VPKind.RAUMVERTRETUNG)
-                                    raumvertretung++;
-                                else if (art == VPKind.VERTRETUNG)
-                                    vertretung++;
-
-                                content.add(row.getLinearContent());
-
-                                //Util.sendNotification(ctx, "VP-TODAY: " + fachOrKurs + " | " + art,
-                                //        row.getLinearContent());
-
-                                // Die Zahl am launcher inkrementieren
-                                int badgeCount = prefs.getInt(getString(R.string.currentBadges), 0);
-
-                                Log.i("MainService", "applyCount: " + String.valueOf(ShortcutBadger.applyCount(ctx, ++badgeCount)));
-
-                                prefs.edit().putInt(getString(R.string.currentBadges), badgeCount).apply();
-                            } else {
-                                Log.i("MainService", "settingpushes false");
-                            }
-
-                            if (known == null) {
-                                known = new ArrayList<>();
-                            }
-
-                            known.add(row);
-
-                            // Die Änderungen speichern
-                            Util.putGsonObject(getApplicationContext(), "knownInfos", known, new TypeToken<ArrayList<VPRow>>() {});
-
-                            info = null;
-                        }
-
-                        int sum = entfall + vertretung + raumvertretung + eigenvarbeiten;
-                        String title = "VP-TODAY (" + sum + ")";
-
-                        /*if (entfall > 0)
-                            title += "(" + entfall + ") Entfall | ";
-                        if (eigenvarbeiten > 0)
-                            title += "(" + eigenvarbeiten + ") Eigenv. Arbeiten | ";
-                        if (raumvertretung > 0)
-                            title += "(" + raumvertretung + ") Raumvertretung | ";
-                        if (vertretung > 0)
-                            title += "(" + vertretung + ") Vertretung";
-
-                        if (title.endsWith(" | "))
-                            title = title.substring(title.length() - 3);*/
-
-                        if (sum > 0)
-                            Util.sendNotification(ctx, title, TextUtils.join("\n", content.toArray(new String[0])));
-
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
                     }
                 }
             }

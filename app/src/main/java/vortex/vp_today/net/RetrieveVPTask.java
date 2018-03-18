@@ -2,7 +2,6 @@ package vortex.vp_today.net;
 
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -11,6 +10,7 @@ import org.jsoup.nodes.Document;
 
 import es.dmoral.toasty.Toasty;
 import vortex.vp_today.activity.MainActivity;
+import vortex.vp_today.adapter.RVAdapter;
 import vortex.vp_today.logic.VPInfo;
 import vortex.vp_today.logic.VPRow;
 import vortex.vp_today.util.ProgressCallback;
@@ -167,9 +167,10 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
             if (result != null) {
                 if (Util.D) Log.i("onPostExecute", "result != null");
                 try {
+                    Log.i("onPostExecute", "result length " + result.z.getRows().size());
                     Log.i("onPostExecute", "result: " + result.z.getRows().get(0).toString());
                 } catch (Exception ex) {
-                    main.txt.setText("");
+                    //main.txt.setText("");
                     main.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -188,7 +189,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                 } else if (result.x != null && result.z != null && !result.z.isEmpty()) {
                     if (Util.D) Log.i("onPostExecute", "result not empty");
 
-                    main.txt.setText("");
+                    //main.txt.setText("");
 
                     if (result.y != null) {
                         main.tvVers.setText("Version: " + result.y);
@@ -199,11 +200,14 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                     if (result.z.assumeKursVersion()) {
                         if (Util.D) Log.i("onPostExecute", "assuming kurse version");
 
-                        for (VPRow row : result.z.getRows()) {
+                        RVAdapter adapter = new RVAdapter(result.z.getRows());
+                        main.rv.setAdapter(adapter);
+
+                        /*for (VPRow row : result.z.getRows()) {
                             String linearContent = row.getLinearContent();
                             if (Util.D) Log.i("onPostExecute", "adding row: " + linearContent);
                             main.txt.append(linearContent);
-                        }
+                        }*/
                         main.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -212,8 +216,8 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                         });
                     } else {
                         if (Util.D) Log.i("onPostExecute", "not assuming, adding result.z.getContent");
-
-                        main.txt.setText(TextUtils.join("\n\n", result.z.getContent()));
+                        //TODO
+                       // main.txt.setText(TextUtils.join("\n\n", result.z.getContent()));
                     }
                 } else {
                     if (Util.D) Log.i("onPostExecute", "in else: result.x = null -> " + (result.x == null) + " y = 0 -> " + (result.y == 0) + " z = null -> " + (result.z == null));

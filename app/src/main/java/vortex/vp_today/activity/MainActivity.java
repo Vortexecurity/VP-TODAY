@@ -8,13 +8,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -42,8 +43,9 @@ public class MainActivity extends AppCompatActivity {
     public TextView tvVers;
     public Spinner spinDate;
     public SwipeRefreshLayout swipe;
-    public EditText txt;
+    //public EditText txt;
     public ProgressBar progressBar;
+    public RecyclerView rv;
 
     private static boolean activityVisible;
 
@@ -55,12 +57,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         /* Initialize views */
-        txt = findViewById(R.id.text);
+        //txt = findViewById(R.id.text);
         msgOTD = findViewById(R.id.msgOTD);
         spinDate = findViewById(R.id.spinDate);
         swipe = findViewById(R.id.swiperefresh);
         tvVers = findViewById(R.id.tvVers);
         progressBar = findViewById(R.id.vpProg);
+        rv = findViewById(R.id.rv);
         /**/
 
         /* Falls dies der erste Start sein sollte eine Client ID erstellen und speichern. */
@@ -85,6 +88,9 @@ public class MainActivity extends AppCompatActivity {
             Util.putGsonObject(getApplicationContext(), getString(R.string.settingkurse), putTuple, new TypeToken<Tuple<String[], Boolean[]>>() {});
             sp.edit().putString("clientid", Util.generateClientID()).apply();
         }
+
+        rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.setHasFixedSize(false);
 
         swipe.setColorSchemeResources(R.color.colorPrimaryDark);
 
