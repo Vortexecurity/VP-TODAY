@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import service.MainService;
 import vortex.vp_today.R;
+import vortex.vp_today.service.MainService;
 import vortex.vp_today.util.Util;
 
 /**

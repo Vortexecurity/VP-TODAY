@@ -51,12 +51,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import es.dmoral.toasty.Toasty;
-import service.MainService;
 import vortex.vp_today.R;
 import vortex.vp_today.logic.VPInfo;
 import vortex.vp_today.logic.VPKind;
 import vortex.vp_today.logic.VPRow;
 import vortex.vp_today.mail.BackgroundMail;
+import vortex.vp_today.service.MainService;
 
 /**
  * @author Simon Dräger

@@ -1,4 +1,4 @@
-package service;
+package vortex.vp_today.service;
 
 import android.app.ActivityManager;
 import android.app.IntentService;
