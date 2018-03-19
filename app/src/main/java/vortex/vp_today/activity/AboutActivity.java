@@ -97,7 +97,7 @@ public class AboutActivity extends MaterialAboutActivity {
                         .setOnClickAction(new MaterialAboutItemOnClickAction() {
                             @Override
                             public void onClick() {
-                                greetDialog("Florian", "", "OK");
+                                greetDialog("Florian", "Ich bin toll und heiße Koll", "Ja so und nicht anders!");
                             }
                         })
                 .build())
