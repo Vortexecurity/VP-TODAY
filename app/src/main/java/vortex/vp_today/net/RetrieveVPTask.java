@@ -200,7 +200,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                     if (result.z.assumeKursVersion()) {
                         if (Util.D) Log.i("onPostExecute", "assuming kurse version");
 
-                        RVAdapter adapter = new RVAdapter(result.z.getRows());
+                        RVAdapter adapter = new RVAdapter(main.rv, result.z.getRows());
                         main.rv.setAdapter(adapter);
 
                         /*for (VPRow row : result.z.getRows()) {

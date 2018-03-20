@@ -1,5 +1,6 @@
 package vortex.vp_today.adapter;
 
+import android.support.transition.TransitionManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import vortex.vp_today.R;
 import vortex.vp_today.logic.VPRow;
+import vortex.vp_today.util.Util;
 
 /**
  * @author Simon Dräger
@@ -21,6 +23,8 @@ import vortex.vp_today.logic.VPRow;
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.VPRowViewHolder> {
     private List<VPRow> rows;
+    private RecyclerView rv;
+    private boolean[] expandedRows;
 
     public static class VPRowViewHolder extends RecyclerView.ViewHolder {
         CardView cv;
@@ -38,39 +42,52 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.VPRowViewHolder> {
         }
     }
 
-    public RVAdapter(List<VPRow> rows) {
+    public RVAdapter(RecyclerView rv, List<VPRow> rows) {
+        this.rv = rv;
         this.rows = rows;
-        Log.i("RVAdapter", "rows size: " + this.rows.size());
+        expandedRows = new boolean[rows.size()];
+
+        for (int i = 0; i < expandedRows.length; i++)
+            expandedRows[i] = false;
+
+        if (Util.D) Log.i("RVAdapter", "rows size: " + this.rows.size());
     }
 
     @Override
     public VPRowViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item, viewGroup, false);
 
-        v.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                // item clicked
-            }
-        });
-
         VPRowViewHolder pvh = new VPRowViewHolder(v);
         return pvh;
     }
 
     @Override
-    public void onBindViewHolder(VPRowViewHolder vpViewHolder, int i) {
+    public void onBindViewHolder(final VPRowViewHolder vpViewHolder, final int i) {
         VPRow r = rows.get(i);
 
-        Log.i("onBindViewHolder", "row an " + i + ": " + r.toString());
+        if (Util.D) Log.i("onBindViewHolder", "row an " + i + ": " + r.toString());
+
+        vpViewHolder.vpText.setVisibility(View.GONE);
+        vpViewHolder.itemView.setActivated(false);
 
         vpViewHolder.vpTitle.setText(r.getStunde() + ". Std.: " + r.getArt());
         vpViewHolder.vpText.setText(r.isKurseVersion() ? r.getLinearContent() : r.getContent());
         vpViewHolder.vpImage.setImageResource(R.mipmap.ic_launcher);
+
+        vpViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                expandedRows[i] = !expandedRows[i];
+                vpViewHolder.vpText.setVisibility(expandedRows[i] ? View.VISIBLE : View.GONE);
+                vpViewHolder.itemView.setActivated(expandedRows[i]);
+                TransitionManager.beginDelayedTransition(rv);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        Log.i("getItemCount", "" + rows.size());
+        if (Util.D) Log.i("getItemCount", "" + rows.size());
         return rows.size();
     }
 }

@@ -10,10 +10,14 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
@@ -43,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     public TextView tvVers;
     public Spinner spinDate;
     public SwipeRefreshLayout swipe;
-    //public EditText txt;
     public ProgressBar progressBar;
     public RecyclerView rv;
 
@@ -57,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         /* Initialize views */
-        //txt = findViewById(R.id.text);
         msgOTD = findViewById(R.id.msgOTD);
         spinDate = findViewById(R.id.spinDate);
         swipe = findViewById(R.id.swiperefresh);
@@ -91,6 +93,24 @@ public class MainActivity extends AppCompatActivity {
 
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setHasFixedSize(false);
+
+        WindowManager windowmanager = (WindowManager)getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics dimension = new DisplayMetrics();
+        windowmanager.getDefaultDisplay().getMetrics(dimension);
+        final int height = dimension.heightPixels;
+
+        rv.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                rv.getViewTreeObserver().removeOnPreDrawListener(this);
+                int minHeight = rv.getHeight();
+                ViewGroup.LayoutParams layoutParams = rv.getLayoutParams();
+                layoutParams.height = minHeight;
+                rv.setLayoutParams(layoutParams);
+
+                return true;
+            }
+        });
 
         swipe.setColorSchemeResources(R.color.colorPrimaryDark);
 
