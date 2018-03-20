@@ -8,6 +8,8 @@ import android.view.View;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import java.util.ArrayList;
+
 import es.dmoral.toasty.Toasty;
 import vortex.vp_today.activity.MainActivity;
 import vortex.vp_today.adapter.RVAdapter;
@@ -80,7 +82,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                 filtered = Util.filterHTML(main, doc, stufe, sub);
             } else {
                 if (Util.D) Log.i("RVPT/doInBackground", "kurse not null, doing filterHTML kurse");
-                filteredInfo = Util.filterHTML(main, doc, stufe, kurse, new ProgressCallback() {
+                filteredInfo = Util.filterHTML(main, doc, stufe, kurse, vpDate, new ProgressCallback() {
                     @Override
                     public void onProgress(int percent) {
                         if (Util.D) Log.i("onProgress", "in onProgress");
@@ -127,7 +129,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
 
             if (filtered != null) {
                 TriTuple<String, Integer, VPInfo> out = null;
-                VPInfo info = new VPInfo();
+                VPInfo info = new VPInfo(Util.parseStrDate(vpDate));
                 VPRow[] rows = new VPRow[filtered.z.length];
 
                 for (int i = 0; i < rows.length; i++) {
@@ -185,6 +187,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
 
                 if (result.x.equals("novpexist")) {
                     main.tvVers.setText("Version: 0");
+                    main.currentVersion = 0;
                     main.msgOTD.setText("Für diesen Tag gibt es noch keine Vertretungen!");
                 } else if (result.x != null && result.z != null && !result.z.isEmpty()) {
                     if (Util.D) Log.i("onPostExecute", "result not empty");
@@ -192,6 +195,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                     //main.txt.setText("");
 
                     if (result.y != null) {
+                        main.currentVersion = result.y;
                         main.tvVers.setText("Version: " + result.y);
                     } else {
                         main.tvVers.setText("Version: -");
@@ -199,6 +203,14 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
 
                     if (result.z.assumeKursVersion()) {
                         if (Util.D) Log.i("onPostExecute", "assuming kurse version");
+
+                        main.currentInfo = result.z;
+                        Log.i("RVPT", "currentInfo = result.z");
+
+                        if (main.lastOfflineVersions == null) {
+                            main.lastOfflineVersions = new ArrayList<>();
+                        }
+                        main.lastOfflineVersions.add(result.z);
 
                         RVAdapter adapter = new RVAdapter(main.rv, result.z.getRows());
                         main.rv.setAdapter(adapter);

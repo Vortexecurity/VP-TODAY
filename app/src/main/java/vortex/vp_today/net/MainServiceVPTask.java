@@ -39,7 +39,7 @@ public class MainServiceVPTask extends AsyncTask<Object, Integer, TriTuple<Strin
             if (kurse == null) {
                 filtered = Util.filterHTMLService(doc, stufe, sub);
             } else {
-                filteredInfo = Util.filterHTMLService(doc, stufe, kurse);
+                filteredInfo = Util.filterHTMLService(doc, stufe, kurse, vpDate);
             }
 
             if (filtered == null) {
@@ -65,7 +65,7 @@ public class MainServiceVPTask extends AsyncTask<Object, Integer, TriTuple<Strin
 
             if (filtered != null) {
                 TriTuple<String, Integer, VPInfo> out = null;
-                VPInfo info = new VPInfo();
+                VPInfo info = new VPInfo(Util.parseStrDate(vpDate));
                 VPRow[] rows = new VPRow[filtered.z.length];
 
                 for (int i = 0; i < rows.length; i++) {

@@ -3,6 +3,8 @@ package vortex.vp_today.net;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import java.util.Date;
+
 import vortex.vp_today.activity.MainActivity;
 import vortex.vp_today.util.TwoFormatDate;
 import vortex.vp_today.util.Util;
@@ -44,6 +46,12 @@ public class RetrieveDatesTask extends AsyncTask<Object, Void, TwoFormatDate[]> 
         Log.i("RetrieveDatesTask", "twoFormatDates: " + (twoFormatDates == null ? "null" : "not null"));
         if (main != null) {
             Log.i("RetrieveDatesTask", "main != null");
+
+            Date[] javaDates = new Date[twoFormatDates.length];
+            for (int i = 0; i < javaDates.length; i++)
+                javaDates[i] = twoFormatDates[i].getActualDate().toDate();
+
+            main.currentDatesAvailable = javaDates;
             main.processCurrentDates(twoFormatDates);
             main.spinDate.setSelection(0);
             main.spinDate.setEnabled(true);

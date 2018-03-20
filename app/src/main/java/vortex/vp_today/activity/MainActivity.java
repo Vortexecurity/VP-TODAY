@@ -10,14 +10,10 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
@@ -28,8 +24,14 @@ import com.google.gson.reflect.TypeToken;
 
 import org.joda.time.LocalDate;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+
 import es.dmoral.toasty.Toasty;
 import vortex.vp_today.R;
+import vortex.vp_today.adapter.RVAdapter;
+import vortex.vp_today.logic.VPInfo;
 import vortex.vp_today.net.RetrieveDatesTask;
 import vortex.vp_today.net.RetrieveVPTask;
 import vortex.vp_today.util.Tuple;
@@ -49,6 +51,10 @@ public class MainActivity extends AppCompatActivity {
     public SwipeRefreshLayout swipe;
     public ProgressBar progressBar;
     public RecyclerView rv;
+    public Date[] currentDatesAvailable;
+    public VPInfo currentInfo = null;
+    public ArrayList<VPInfo> lastOfflineVersions = null;
+    public int currentVersion = 0;
 
     private static boolean activityVisible;
 
@@ -94,24 +100,6 @@ public class MainActivity extends AppCompatActivity {
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setHasFixedSize(false);
 
-        WindowManager windowmanager = (WindowManager)getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics dimension = new DisplayMetrics();
-        windowmanager.getDefaultDisplay().getMetrics(dimension);
-        final int height = dimension.heightPixels;
-
-        rv.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                rv.getViewTreeObserver().removeOnPreDrawListener(this);
-                int minHeight = rv.getHeight();
-                ViewGroup.LayoutParams layoutParams = rv.getLayoutParams();
-                layoutParams.height = minHeight;
-                rv.setLayoutParams(layoutParams);
-
-                return true;
-            }
-        });
-
         swipe.setColorSchemeResources(R.color.colorPrimaryDark);
 
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -144,12 +132,56 @@ public class MainActivity extends AppCompatActivity {
         if (Util.isInternetConnected(getApplicationContext())) {
             new RetrieveDatesTask().execute(MainActivity.this);
         } else {
-            MainActivity.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toasty.warning(getApplicationContext(), "Es besteht keine Internetverbindung!").show();
+            lastOfflineVersions = new ArrayList<>(Arrays.asList(Util.loadOfflineVersions(getApplicationContext())));
+            currentDatesAvailable = Util.loadOfflineDates(getApplicationContext());
+            if (lastOfflineVersions != null && currentDatesAvailable != null) {
+                LocalDate now = LocalDate.now();
+                String[] strdates = new String[currentDatesAvailable.length];
+                for (int i = 0; i < strdates.length; i++) {
+                    String month = "";
+                    String day = "";
+
+                    if (currentDatesAvailable[i].getMonth() < 10)
+                        month = "0";
+                    month += currentDatesAvailable[i].getMonth();
+                    if (currentDatesAvailable[i].getDate() < 10)
+                        day = "0";
+                    day += currentDatesAvailable[i].getDate();
+                    strdates[i] = currentDatesAvailable[i].getYear() + "-" + month + "-" + day;
                 }
-            });
+                String closest = Util.getClosestDate(now.getYear(), now.getMonthOfYear(), now.getDayOfMonth(), strdates);
+                for (int i = 0; i < lastOfflineVersions.size(); i++) {
+                    VPInfo inf = lastOfflineVersions.get(i);
+                    Date d = inf.getDate();
+                    String year = String.valueOf(d.getYear());
+                    String month = "";
+                    String day = "";
+
+                    if (d.getMonth() < 10)
+                        month = "0";
+                    month += d.getMonth();
+
+                    if (d.getDay() < 10)
+                        day = "0";
+                    day += d.getDate();
+
+                    String strVpDate = year + month + day;
+
+                    if (strVpDate.equals(closest)) {
+                        RVAdapter adapter = new RVAdapter(rv, inf.getRows());
+                        rv.setAdapter(adapter);
+                        tvVers.setText("Version: " + currentVersion + " (Offline)");
+                        break;
+                    }
+                }
+            } else {
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toasty.warning(getApplicationContext(), "Es besteht keine Internetverbindung!").show();
+                    }
+                });
+            }
         }
 
         Util.setProgressMax(progressBar, 100);
@@ -234,6 +266,11 @@ public class MainActivity extends AppCompatActivity {
 
         dateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinDate.setAdapter(dateAdapter);
+
+        Date[] javaDates = new Date[dates.length];
+        for (int i = 0; i < javaDates.length; i++)
+            javaDates[i] = dates[i].getActualDate().toDate();
+        currentDatesAvailable = javaDates;
     }
 
     @Override
@@ -254,14 +291,23 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        super.onPause();
+        if (currentInfo != null) {
+            Log.i("MainActv", "currentInfo != null, saving values");
+            lastOfflineVersions.add(currentInfo);
+            Context appCtx = getApplicationContext();
+            Util.saveOfflineVersions(appCtx, lastOfflineVersions.toArray(new VPInfo[0]));
+            Util.saveOfflineDates(appCtx, currentDatesAvailable);
+        } else {
+            Log.i("Main", "currentInfo is null");
+        }
         activityPaused();
+        super.onPause();
     }
 
     @Override
     protected void onResume() {
-        super.onResume();
         activityResumed();
+        super.onResume();
     }
 
     @Override

@@ -43,6 +43,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -210,8 +213,8 @@ public final class Util {
     }
 
     public static final boolean equalsWithNulls(Object a, Object b) {
-        if (a==b) return true;
-        if ((a==null) || (b==null)) return false;
+        if (a == b) return true;
+        if ((a == null) || (b == null)) return false;
         return a.equals(b);
     }
 
@@ -490,6 +493,34 @@ public final class Util {
         return false;
     }
 
+    public static synchronized void saveOfflineVersions(@NonNull Context ctx, @Nullable VPInfo[] ver) {
+        putGsonObject(ctx, "offlineVPVersion", ver, new TypeToken<VPInfo[]>(){});
+    }
+
+    public static synchronized void saveOfflineDates(@NonNull Context ctx, @Nullable Date[] dates) {
+        putGsonObject(ctx, "offlineVPDates", dates, new TypeToken<Date[]>(){});
+    }
+
+    public static synchronized void saveOfflineVPVersion(@NonNull Context ctx, @NonNull int version) {
+        ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE)
+                .edit().putInt("offlineVPVersion", version).apply();
+    }
+
+    @Nullable
+    public static VPInfo[] loadOfflineVersions(@NonNull Context ctx) {
+        return getGsonObject(ctx, "offlineVPVersion", new TypeToken<VPInfo[]>(){});
+    }
+
+    @Nullable
+    public static Date[] loadOfflineDates(@NonNull Context ctx) {
+        return getGsonObject(ctx, "offlineVPDates", new TypeToken<Date[]>(){});
+    }
+
+    public static int loadOfflineVPVersion(@NonNull Context ctx) {
+        return ctx.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE)
+                .getInt("offlineVPDates", 0);
+    }
+
     /**
      * Konvertiert ein Datum in ein VP-Datum
      * @return null on error.
@@ -515,9 +546,42 @@ public final class Util {
         return null;
     }
 
+    public static Date parseStrDate(String vpDate) {
+        String[] datPart = TextUtils.split(vpDate, "-");
+        if (datPart[1].startsWith("0"))
+            datPart[1] = datPart[1].replace("0", "");
+        if (datPart[2].startsWith("0"))
+            datPart[2].replace("0", "");
+        return new Date(Integer.parseInt(datPart[0]), Integer.parseInt(datPart[1]), Integer.parseInt(datPart[2]));
+    }
+
+    /**
+     * @param dates Daten im VP-Format: Bsp.: 2018-03-20
+     */
+    @Nullable
+    public static String getClosestDate(int day, int month, int year, String[] dates) {
+        final Date d = new Date(year, month, day);
+
+        // Die String-Daten in Date konvertieren
+        ArrayList<Date> dateList = new ArrayList<>();
+        for (int i = 0; i < dates.length; i++) {
+            String[] datPart = TextUtils.split(dates[i], "-");
+            dateList.add(new Date(Integer.parseInt(datPart[0]), Integer.parseInt(datPart[1]), Integer.parseInt(datPart[2])));
+        }
+
+        Date closest = Collections.min(dateList, new Comparator<Date>() {
+            public int compare(Date d1, Date d2) {
+                long diff1 = Math.abs(d1.getTime() - d.getTime());
+                long diff2 = Math.abs(d2.getTime() - d.getTime());
+                return Long.compare(diff1, diff2);
+            }
+        });
+
+        return (closest.getYear() + "-0" + closest.getMonth() + "-0" + closest.getDate());
+    }
+
     public static synchronized String getGod() {
         try {
-
             String urlS = "https://vp.gymnasium-odenthal.de/god";
             String authStringEnc = "dnA6Z29kOTIwMQ==";
 
@@ -736,7 +800,8 @@ public final class Util {
     public static synchronized TriTuple<String, Integer, VPInfo> filterHTML(@NonNull final Activity actv,
                                                                             Document d,
                                                                             String stufe,
-                                                                            String[] kurse) throws AssertionError {
+                                                                            String[] kurse,
+                                                                            String vpDate) throws AssertionError {
         assert stufe.equalsIgnoreCase("EF") ||
                 stufe.equalsIgnoreCase("Q1") ||
                 stufe.equalsIgnoreCase("Q2")
@@ -747,7 +812,7 @@ public final class Util {
 
         Elements elements = d.select("tr[data-index*='" + stufe + "']");
         Element strong = d.selectFirst("strong");
-        VPInfo info = new VPInfo();
+        VPInfo info = new VPInfo(Util.parseStrDate(vpDate));
 
         if (elements.first() == null) {
             actv.runOnUiThread(new Runnable() {
@@ -884,7 +949,8 @@ public final class Util {
     @Nullable
     public static synchronized TriTuple<String, Integer, VPInfo> filterHTMLService(Document d,
                                                                                    String stufe,
-                                                                                   String[] kurse) throws AssertionError {
+                                                                                   String[] kurse,
+                                                                                   String vpDate) throws AssertionError {
         assert stufe.equalsIgnoreCase("EF") ||
                 stufe.equalsIgnoreCase("Q1") ||
                 stufe.equalsIgnoreCase("Q2")
@@ -895,7 +961,7 @@ public final class Util {
 
         Elements elements = d.select("tr[data-index*='" + stufe + "']");
         Element strong = d.selectFirst("strong");
-        VPInfo info = new VPInfo();
+        VPInfo info = new VPInfo(Util.parseStrDate(vpDate));
 
         if (elements.first() == null) {
             if (strong != null)
@@ -1022,6 +1088,7 @@ public final class Util {
                                                                             Document d,
                                                                             String stufe,
                                                                             String[] kurse,
+                                                                            String vpDate,
                                                                             ProgressCallback callback) throws AssertionError {
         assert stufe.equalsIgnoreCase("EF") ||
                 stufe.equalsIgnoreCase("Q1") ||
@@ -1033,7 +1100,7 @@ public final class Util {
 
         Elements elements = d.select("tr[data-index*='" + stufe + "']");
         Element strong = d.selectFirst("strong");
-        VPInfo info = new VPInfo();
+        VPInfo info = new VPInfo(Util.parseStrDate(vpDate));
 
         if (elements.first() == null) {
             actv.runOnUiThread(new Runnable() {
@@ -1207,10 +1274,10 @@ public final class Util {
      * @author Simon Dräger
      */
     @Nullable
-    public static synchronized VPInfo getCurrentInfo(@NonNull Document d) {
+    public static synchronized VPInfo getCurrentInfo(@NonNull Document d, String vpDate) {
         Elements elements = d.select("tr[data-index]");
 
-        VPInfo inf = new VPInfo();
+        VPInfo inf = new VPInfo(Util.parseStrDate(vpDate));
 
         //if (D) Log.i("getCurrentInfo/elements", ArrListToArr(elements.eachText()));
 

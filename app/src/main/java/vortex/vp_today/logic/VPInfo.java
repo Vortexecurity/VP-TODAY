@@ -3,17 +3,26 @@ package vortex.vp_today.logic;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
+ * Beschreibt einen Tag vom VP.
+ *
  * @author Simon Dräger
- * @version 5.3.18
+ * @version 20.3.18
  */
 
 public class VPInfo {
     private ArrayList<VPRow> rows;
+    private Date date;
 
-    public VPInfo() {
+    public VPInfo(Date date) {
         rows = new ArrayList<>();
+        this.date = date;
+    }
+
+    public Date getDate() {
+        return date;
     }
 
     public ArrayList<VPRow> getRows() {
