@@ -16,7 +16,8 @@ public enum VPKind {
     VERLEGUNG("Verlegung"),
     LEHRERTAUSCH("Lehrertausch"),
     SONDEREINSATZ("Sondereinsatz"),
-    VORMERKUNG("Vormerkung");
+    VORMERKUNG("Vormerkung"),
+    TROTZABSENZ("Trotz Absenz");
 
     private final String name;
 
