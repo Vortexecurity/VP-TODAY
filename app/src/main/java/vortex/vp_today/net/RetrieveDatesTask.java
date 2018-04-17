@@ -3,11 +3,12 @@ package vortex.vp_today.net;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.vplib.vortex.vplib.TwoFormatDate;
+import com.vplib.vortex.vplib.Util;
+
 import java.util.Date;
 
 import vortex.vp_today.activity.MainActivity;
-import vortex.vp_today.util.TwoFormatDate;
-import vortex.vp_today.util.Util;
 
 /**
  * Holt die VP-Daten asynchron
@@ -44,7 +45,7 @@ public class RetrieveDatesTask extends AsyncTask<Object, Void, TwoFormatDate[]> 
     @Override
     protected void onPostExecute(TwoFormatDate[] twoFormatDates) {
         Log.i("RetrieveDatesTask", "twoFormatDates: " + (twoFormatDates == null ? "null" : "not null"));
-        if (main != null) {
+        if (main != null && twoFormatDates != null) {
             Log.i("RetrieveDatesTask", "main != null");
 
             Date[] javaDates = new Date[twoFormatDates.length];

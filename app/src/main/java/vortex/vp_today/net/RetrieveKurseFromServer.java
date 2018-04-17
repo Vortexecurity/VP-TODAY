@@ -2,7 +2,7 @@ package vortex.vp_today.net;
 
 import android.os.AsyncTask;
 
-import vortex.vp_today.util.Util;
+import com.vplib.vortex.vplib.Util;
 
 /**
  * @author Simon Dräger

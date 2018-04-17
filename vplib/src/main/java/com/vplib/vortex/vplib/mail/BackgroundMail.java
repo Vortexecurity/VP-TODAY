@@ -1,4 +1,4 @@
-package vortex.vp_today.mail;
+package com.vplib.vortex.vplib.mail;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -11,12 +11,13 @@ import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.vplib.vortex.vplib.Util;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
-import vortex.vp_today.util.Util;
 
 public class BackgroundMail {
     private static final String TAG = "BackgroundMail";
@@ -270,10 +271,10 @@ public class BackgroundMail {
                 /*new Handler().post(new Runnable() {
                     @Override
                     public void run() {*/
-                        progressDialog = new ProgressDialog(mContext);
-                        progressDialog.setMessage(sendingMessage);
-                        progressDialog.setCancelable(false);
-                        progressDialog.show();
+                progressDialog = new ProgressDialog(mContext);
+                progressDialog.setMessage(sendingMessage);
+                progressDialog.setCancelable(false);
+                progressDialog.show();
                 //});
             }
         }

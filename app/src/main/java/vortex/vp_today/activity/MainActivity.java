@@ -21,6 +21,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
+import com.vplib.vortex.vplib.NetworkStateChangeListener;
+import com.vplib.vortex.vplib.OfflineManager;
+import com.vplib.vortex.vplib.Tuple;
+import com.vplib.vortex.vplib.TwoFormatDate;
+import com.vplib.vortex.vplib.Util;
+import com.vplib.vortex.vplib.logic.VPInfo;
 
 import org.joda.time.LocalDate;
 
@@ -31,12 +37,8 @@ import java.util.Date;
 import es.dmoral.toasty.Toasty;
 import vortex.vp_today.R;
 import vortex.vp_today.adapter.RVAdapter;
-import vortex.vp_today.logic.VPInfo;
 import vortex.vp_today.net.RetrieveDatesTask;
 import vortex.vp_today.net.RetrieveVPTask;
-import vortex.vp_today.util.Tuple;
-import vortex.vp_today.util.TwoFormatDate;
-import vortex.vp_today.util.Util;
 
 /**
  * @author Simon Dräger
@@ -55,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
     public VPInfo currentInfo = null;
     public ArrayList<VPInfo> lastOfflineVersions = null;
     public int currentVersion = 0;
+    public String currentMsgOTD = "";
+    private OfflineManager offlineManager;
 
     private static boolean activityVisible;
 
@@ -90,8 +94,8 @@ public class MainActivity extends AppCompatActivity {
 
             putTuple = new Tuple<>(strs, bools);
 
-            Log.i("MainActivity", "strs length: " + strs.length);
-            Log.i("MainActivity", "bools length: " + bools.length);
+            if (Util.D) Log.i("MainActivity", "strs length: " + strs.length);
+            if (Util.D) Log.i("MainActivity", "bools length: " + bools.length);
 
             Util.putGsonObject(getApplicationContext(), getString(R.string.settingkurse), putTuple, new TypeToken<Tuple<String[], Boolean[]>>() {});
             sp.edit().putString("clientid", Util.generateClientID()).apply();
@@ -129,7 +133,66 @@ public class MainActivity extends AppCompatActivity {
         });
         /**/
 
+        offlineManager = new OfflineManager();
+
+        offlineManager.setListener(new NetworkStateChangeListener() {
+            @Override
+            public void onNetworkStateChange(int state) {
+                if (state == OfflineManager.NETWORK_DISCONNECTED) {
+                    lastOfflineVersions = new ArrayList<>(Arrays.asList(Util.loadOfflineVersions(getApplicationContext())));
+                    currentDatesAvailable = Util.loadOfflineDates(getApplicationContext());
+                    if (lastOfflineVersions != null && currentDatesAvailable != null) {
+                        LocalDate now = LocalDate.now();
+                        String[] strdates = new String[currentDatesAvailable.length];
+                        for (int i = 0; i < strdates.length; i++) {
+                            String month = "";
+                            String day = "";
+
+                            if (currentDatesAvailable[i].getMonth() < 10)
+                                month = "0";
+                            month += currentDatesAvailable[i].getMonth();
+                            if (currentDatesAvailable[i].getDate() < 10)
+                                day = "0";
+                            day += currentDatesAvailable[i].getDate();
+                            strdates[i] = currentDatesAvailable[i].getYear() + "-" + month + "-" + day;
+                        }
+                        String closest = Util.getClosestDate(now.getYear(), now.getMonthOfYear(), now.getDayOfMonth(), strdates);
+                        for (int i = 0; i < lastOfflineVersions.size(); i++) {
+                            VPInfo inf = lastOfflineVersions.get(i);
+                            Date d = inf.getDate();
+                            String year = String.valueOf(d.getYear());
+                            String month = "";
+                            String day = "";
+
+                            if (d.getMonth() < 10)
+                                month = "0";
+                            month += d.getMonth();
+
+                            if (d.getDay() < 10)
+                                day = "0";
+                            day += d.getDate();
+
+                            String strVpDate = year + "-" + month + "-" + day;
+
+                            if (strVpDate.equals(closest)) {
+                                RVAdapter adapter = new RVAdapter(getApplicationContext(), rv, inf.getRows(), currentMsgOTD);
+                                rv.setAdapter(adapter);
+                                tvVers.setText("Version: " + currentVersion + " (Offline)");
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    new RetrieveDatesTask().execute(MainActivity.this);
+                }
+            }
+        });
+
         if (Util.isInternetConnected(getApplicationContext())) {
+            new RetrieveDatesTask().execute(MainActivity.this);
+        }
+
+        /*if (Util.isInternetConnected(getApplicationContext())) {
             new RetrieveDatesTask().execute(MainActivity.this);
         } else {
             lastOfflineVersions = new ArrayList<>(Arrays.asList(Util.loadOfflineVersions(getApplicationContext())));
@@ -165,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
                         day = "0";
                     day += d.getDate();
 
-                    String strVpDate = year + month + day;
+                    String strVpDate = year + "-" + month + "-" + day;
 
                     if (strVpDate.equals(closest)) {
                         RVAdapter adapter = new RVAdapter(rv, inf.getRows());
@@ -182,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
-        }
+        }*/
 
         Util.setProgressMax(progressBar, 100);
     }
@@ -221,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
             if (Util.getSettingStufe(getApplicationContext()).equals("EF") ||
                     Util.getSettingStufe(getApplicationContext()).equals("Q1") ||
                     Util.getSettingStufe(getApplicationContext()).equals("Q2")) {
-                new RetrieveVPTask().execute(
+                new RetrieveVPTask(getApplicationContext()).execute(
                         MainActivity.this,
                         Util.makeDate(ldate.getDayOfMonth(), ldate.getMonthOfYear() - 1, ldate.getYear()),
                         Util.getSettingStufe(getApplicationContext()),
@@ -229,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
                         Util.getSelectedKurse(getApplicationContext())
                 );
             } else {
-                new RetrieveVPTask().execute(
+                new RetrieveVPTask(getApplicationContext()).execute(
                         MainActivity.this,
                         Util.makeDate(ldate.getDayOfMonth(), ldate.getMonthOfYear() - 1, ldate.getYear()),
                         Util.getSettingStufe(getApplicationContext()),
@@ -241,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
             MainActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    swipe.setRefreshing(false);
                     Toasty.error(getApplicationContext(), "Es besteht keine Internetverbindung!").show();
                 }
             });

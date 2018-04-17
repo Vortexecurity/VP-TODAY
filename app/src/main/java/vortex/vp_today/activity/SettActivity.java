@@ -19,6 +19,8 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.gson.reflect.TypeToken;
+import com.vplib.vortex.vplib.Tuple;
+import com.vplib.vortex.vplib.Util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,8 +31,6 @@ import java.util.Set;
 import vortex.vp_today.AppCompatPreferenceActivity;
 import vortex.vp_today.R;
 import vortex.vp_today.net.RetrieveKurseFromServer;
-import vortex.vp_today.util.Tuple;
-import vortex.vp_today.util.Util;
 
 public class SettActivity extends AppCompatPreferenceActivity {
     private SharedPreferences prefs;

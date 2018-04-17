@@ -13,10 +13,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
 
+import com.vplib.vortex.vplib.Util;
+import com.vplib.vortex.vplib.mail.BackgroundMail;
+
 import es.dmoral.toasty.Toasty;
 import vortex.vp_today.R;
-import vortex.vp_today.mail.BackgroundMail;
-import vortex.vp_today.util.Util;
 
 /**
  * @author Simon Dräger

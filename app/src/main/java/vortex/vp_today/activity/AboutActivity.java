@@ -17,10 +17,10 @@ import com.danielstone.materialaboutlibrary.model.MaterialAboutCard;
 import com.danielstone.materialaboutlibrary.model.MaterialAboutList;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.vplib.vortex.vplib.Util;
 
 import vortex.vp_today.BuildConfig;
 import vortex.vp_today.R;
-import vortex.vp_today.util.Util;
 
 /**
  * @author Simon Dräger

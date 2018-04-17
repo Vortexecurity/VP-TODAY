@@ -15,17 +15,6 @@
     <string name="florianemail">f.koll.vortex@gmail.com</string>
     <string name="botemail">mailbot.vortex@gmail.com</string>
     <string name="botpwd">GOIPGANG</string>
-    <string name="abouttxt"><i>VP-TODAY</i>&#169; a <b>VorteX Dev. Corp.</b> development.\n
-                            Build: %1$d, Date: %2$s\n
-                            <u>All rights reserved.</u>\n\n
-                            <u>Copyright</u>\n
-                            The underlying Application is conducted under absolute closed-source copyright.\n
-                            Any attempts of decompilation or unauthorized distribution are strictly prohibited.\n\n
-                            On need of contacting the publisher, please refer to the following persons:\n
-                            <u>Simon Dräger <i>(Head Admin / Developer)</i></u> &lt;%4$s&gt;\n
-                            <u>Melvin Zähl <i>(Head Admin / Developer)</i></u> &lt;%3$s&gt;\n
-                            <u>Florian Koll <i>(Customer Support / Project Management / Bug Hunter)\n</i></u> &lt;%5$s&gt;
-    </string>
     <string name="license">
         <b>License</b>\n
         <u>All rights are reserved to</u> <i>VorteX Dev. Corp.</i>.\n

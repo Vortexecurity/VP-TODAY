@@ -1,4 +1,4 @@
-package vortex.vp_today.util;
+package com.vplib.vortex.vplib;
 
 /**
  * @author Simon Dräger

@@ -1,9 +1,16 @@
 package vortex.vp_today.net;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+
+import com.vplib.vortex.vplib.ProgressCallback;
+import com.vplib.vortex.vplib.TriTuple;
+import com.vplib.vortex.vplib.Util;
+import com.vplib.vortex.vplib.logic.VPInfo;
+import com.vplib.vortex.vplib.logic.VPRow;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,11 +20,6 @@ import java.util.ArrayList;
 import es.dmoral.toasty.Toasty;
 import vortex.vp_today.activity.MainActivity;
 import vortex.vp_today.adapter.RVAdapter;
-import vortex.vp_today.logic.VPInfo;
-import vortex.vp_today.logic.VPRow;
-import vortex.vp_today.util.ProgressCallback;
-import vortex.vp_today.util.TriTuple;
-import vortex.vp_today.util.Util;
 
 /**
  * @author Simon Dräger
@@ -28,6 +30,11 @@ import vortex.vp_today.util.Util;
 public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, Integer, VPInfo>> {
     private Exception exception = null;
     private MainActivity main = null;
+    private Context appctx;
+
+    public RetrieveVPTask(Context ctx) {
+        appctx = ctx;
+    }
 
     @Override
     protected void onProgressUpdate(final Integer... values) {
@@ -128,7 +135,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
             }
 
             if (filtered != null) {
-                TriTuple<String, Integer, VPInfo> out = null;
+                TriTuple<String, Integer, VPInfo> out;
                 VPInfo info = new VPInfo(Util.parseStrDate(vpDate));
                 VPRow[] rows = new VPRow[filtered.z.length];
 
@@ -185,12 +192,15 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                 //if (result.z != null)
                 //if (Util.D) Log.i("doInBackground", "filtered.z.length = " + result.z.length);
 
-                if (result.x.equals("novpexist")) {
-                    main.tvVers.setText("Version: 0");
-                    main.currentVersion = 0;
-                    main.msgOTD.setText("Für diesen Tag gibt es noch keine Vertretungen!");
-                } else if (result.x != null && result.z != null && !result.z.isEmpty()) {
+                if (result.x != null && result.z != null && !result.z.isEmpty()) {
                     if (Util.D) Log.i("onPostExecute", "result not empty");
+
+                    if (result.x.equals("novpexist")) {
+                        main.tvVers.setText("Version: 0");
+                        main.currentVersion = 0;
+                        main.msgOTD.setText("Für diesen Tag gibt es noch keine Vertretungen!");
+                        return;
+                    }
 
                     //main.txt.setText("");
 
@@ -212,7 +222,7 @@ public class RetrieveVPTask extends AsyncTask<Object, Integer, TriTuple<String, 
                         }
                         main.lastOfflineVersions.add(result.z);
 
-                        RVAdapter adapter = new RVAdapter(main.rv, result.z.getRows());
+                        RVAdapter adapter = new RVAdapter(appctx, main.rv, result.z.getRows(), result.x);
                         main.rv.setAdapter(adapter);
 
                         /*for (VPRow row : result.z.getRows()) {

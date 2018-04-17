@@ -12,6 +12,10 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
+import com.vplib.vortex.vplib.Util;
+import com.vplib.vortex.vplib.logic.VPInfo;
+import com.vplib.vortex.vplib.logic.VPKind;
+import com.vplib.vortex.vplib.logic.VPRow;
 
 import org.joda.time.LocalDate;
 
@@ -22,11 +26,7 @@ import java.util.TimerTask;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 import vortex.vp_today.R;
-import vortex.vp_today.logic.VPInfo;
-import vortex.vp_today.logic.VPKind;
-import vortex.vp_today.logic.VPRow;
 import vortex.vp_today.net.MainServiceVPTask;
-import vortex.vp_today.util.Util;
 
 /**
  * Der Haupt-Service, der im Hintergrund Push-Nachrichten sendet.

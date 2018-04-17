@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">VPLib</string>
+    <string name="license">
+        <b>License</b>\n
+        <u>All rights are reserved to</u> <i>VorteX Dev. Corp.</i>.\n
+        The underlying Application is delivered under absolute closed-source copyright.\n
+        Any attempts of decompilation or unauthorized distribution are strictly prohibited.\n
+        The authors are not responsible for any consequences drawn from unintentionally faulty information produced by the Application.\n
+        <b>All information is subject to change.</b>\n
+        End of License.
+    </string>
+    <string name="melvinemail">m.zaehl.vortex@gmail.com</string>
+    <string name="simonemail">s.draeger.vortex@gmail.com</string>
+    <string name="florianemail">f.koll.vortex@gmail.com</string>
+    <string name="botemail">mailbot.vortex@gmail.com</string>
+    <string name="botpwd">GOIPGANG</string>
+    <string name="settingkurse">kurse</string>
+    <string name="settingklasse">klasse</string>
+    <string name="settingstufe">stufe</string>
+    <string name="settingpushes">receivePushes</string>
+    <string name="settingvibrateLS">vibrateOnPushReceiveInLS</string>
+    <string name="settingAuthorized">usrAuthorized</string>
+    <string name="settingSaveLogin">saveLogin</string>
+    <string name="settingUsrname">usrName</string>
+    <string name="settingPwd">passwd</string>
+    <string name="settingUpdateInterval">updateInterval</string>
+    <string name="selectedkurseindices">selectedKurseIndices</string>
+    <string name="saveLogin">Angaben speichern</string>
+    <string name="angabenohnegewaehr">Alle Angaben ohne Gewähr! (Alpha Build)</string>
+    <string name="settingRefreshIntervalMin">refreshIntervalMin</string>
+    <string name="currentBadges">currentBadges</string>
+    <string name="settingAuthenticated">settingAuthenticated</string>
+</resources>

@@ -1,4 +1,4 @@
-package vortex.vp_today.util;
+package com.vplib.vortex.vplib;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
@@ -7,9 +7,7 @@ import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -26,6 +24,10 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.vplib.vortex.vplib.logic.VPInfo;
+import com.vplib.vortex.vplib.logic.VPKind;
+import com.vplib.vortex.vplib.logic.VPRow;
+import com.vplib.vortex.vplib.mail.BackgroundMail;
 
 import org.joda.time.LocalDate;
 import org.jsoup.Jsoup;
@@ -54,22 +56,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import es.dmoral.toasty.Toasty;
-import vortex.vp_today.R;
-import vortex.vp_today.logic.VPInfo;
-import vortex.vp_today.logic.VPKind;
-import vortex.vp_today.logic.VPRow;
-import vortex.vp_today.mail.BackgroundMail;
-import vortex.vp_today.service.MainService;
-
-/**
- * @author Simon Dräger
- * @author Melvin Zähl
- * @author Florian Koll
- * @version 17.3.18
- */
 
 public final class Util {
-
     private static Random rand;
     private static final String ALPHANUM = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
     private static AtomicInteger atomInt;
@@ -93,16 +81,22 @@ public final class Util {
         }
     }
 
+    private Util() { }
+
     public static boolean isAppRunning(final Context context, final String packageName) {
         final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         final List<ActivityManager.RunningAppProcessInfo> procInfos = activityManager.getRunningAppProcesses();
 
         if (procInfos != null) {
+            Log.i("isAppRunning", "procInfos != null");
             for (final ActivityManager.RunningAppProcessInfo processInfo : procInfos) {
+                Log.i("isAppRunning", processInfo.processName);
                 if (processInfo.processName.equals(packageName)) {
                     return true;
                 }
             }
+        } else {
+            Log.i("isAppRunning", "procInfos = null");
         }
 
         return false;
@@ -124,10 +118,10 @@ public final class Util {
         return TimeUnit.MINUTES.toMillis(mins);
     }
 
-    public static boolean isMainServiceRunning(@NonNull Context ctx) {
+    public static boolean isMainServiceRunning(@NonNull Context ctx, Class mainServiceClass) {
         ActivityManager manager = (ActivityManager) ctx.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (MainService.class.getName().equals(service.service.getClassName())) {
+            if (mainServiceClass.getName().equals(service.service.getClassName())) {
                 return true;
             }
         }
@@ -159,14 +153,6 @@ public final class Util {
     @NonNull
     public static String[] getKlassen() {
         return lstKlassen.toArray(new String[0]);
-    }
-
-    /**
-     * @return Eine Liste der Kurse der Q1
-     */
-    @NonNull
-    public static String[] getKurseQ1(@NonNull Context ctx) {
-        return ctx.getResources().getStringArray(R.array.KurseQ1);
     }
 
     @Nullable
@@ -327,7 +313,7 @@ public final class Util {
         }
     }
 
-    public static synchronized void ShowYesNoDialog(@NonNull Activity actv,
+    /*public static synchronized void ShowYesNoDialog(@NonNull Activity actv,
                                                     @NonNull String text,
                                                     @NonNull final DialogInterface.OnClickListener positiveClicked,
                                                     @NonNull final DialogInterface.OnClickListener negativeClicked) {
@@ -353,14 +339,14 @@ public final class Util {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
+    }*/
 
     /**
-     * @param preselectedItems Look the positions up in strings.xml/KurseQ1 etc. (complete list)
+     * //@param preselectedItems Look the positions up in strings.xml/KurseQ1 etc. (complete list)
      * @return The selected items
      * @throws AssertionError wird ausgelöst, wenn preselectedItems != null und Länge != KurseQ1.length
      */
-    public static void ShowKurseDialogQ1
+    /*public static void ShowKurseDialogQ1
     (
             @NonNull Activity actv,
             @Nullable boolean[] preselectedItems,
@@ -376,7 +362,7 @@ public final class Util {
         final String[] items = res.getStringArray(R.array.KurseQ1);
         final DlgResult result = new DlgResult();
 
-        /* Wenn items ausgewählt wurden */
+        // Wenn items ausgewählt wurden
         if (preselectedItems != null) {
             assert preselectedItems.length == q1Len : "preselectedItems must be the length of KurseQ1!";
             for (int i = 0; i < preselectedItems.length; i++) {
@@ -384,7 +370,7 @@ public final class Util {
                 boolSelectedItems.add(preselectedItems[i]);
             }
         } else {
-            /* Sonst alles auf false setzen */
+            // Sonst alles auf false setzen
             if (D) Log.i("ShowKurseDialogQ1", "size: " + boolSelectedItems.size());
             for (int i = 0; i < q1Len; i++) {
                 boolSelectedItems.set(i, false);
@@ -399,7 +385,7 @@ public final class Util {
                 .create();
 
         dialog.show();
-    }
+    }*/
 
     @Nullable
     public static boolean[] BoolToTypeBool(@Nullable Boolean[] input) {
@@ -1169,7 +1155,8 @@ public final class Util {
                                         art == VPKind.BETREUUNG ||
                                         art == VPKind.LEHRERTAUSCH ||
                                         art == VPKind.SONDEREINSATZ ||
-                                        art == VPKind.VORMERKUNG) {
+                                        art == VPKind.VORMERKUNG ||
+                                        art == VPKind.TROTZABSENZ) {
                                     continue;
                                 }
 
@@ -1349,7 +1336,7 @@ public final class Util {
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setLights(Color.GREEN, 400, 400)
                 .setStyle(new NotificationCompat.BigTextStyle()
-                .bigText(content));
+                        .bigText(content));
 
         Notification notif = mBuilder.build();
         //notif.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;

@@ -1,5 +1,6 @@
 package vortex.vp_today.adapter;
 
+import android.content.Context;
 import android.support.transition.TransitionManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -10,11 +11,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.vplib.vortex.vplib.Util;
+import com.vplib.vortex.vplib.logic.VPRow;
+
 import java.util.List;
 
 import vortex.vp_today.R;
-import vortex.vp_today.logic.VPRow;
-import vortex.vp_today.util.Util;
 
 /**
  * @author Simon Dräger
@@ -22,7 +24,9 @@ import vortex.vp_today.util.Util;
  */
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.VPRowViewHolder> {
+    private Context ctx;
     private List<VPRow> rows;
+    private String msgOTD;
     private RecyclerView rv;
     private boolean[] expandedRows;
 
@@ -42,8 +46,10 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.VPRowViewHolder> {
         }
     }
 
-    public RVAdapter(RecyclerView rv, List<VPRow> rows) {
+    public RVAdapter(Context ctx, RecyclerView rv, List<VPRow> rows, String msgOTD) {
+        this.ctx = ctx;
         this.rv = rv;
+        this.msgOTD = msgOTD;
         this.rows = rows;
         expandedRows = new boolean[rows.size()];
 
@@ -51,6 +57,15 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.VPRowViewHolder> {
             expandedRows[i] = false;
 
         if (Util.D) Log.i("RVAdapter", "rows size: " + this.rows.size());
+    }
+
+    public void removeItem(int index) {
+        rows.remove(index);
+    }
+
+    public void removeMsgOTD() {
+        msgOTD = null;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -63,31 +78,43 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.VPRowViewHolder> {
 
     @Override
     public void onBindViewHolder(final VPRowViewHolder vpViewHolder, final int i) {
-        VPRow r = rows.get(i);
-
-        if (Util.D) Log.i("onBindViewHolder", "row an " + i + ": " + r.toString());
-
-        vpViewHolder.vpText.setVisibility(View.GONE);
-        vpViewHolder.itemView.setActivated(false);
-
-        vpViewHolder.vpTitle.setText(r.getStunde() + ". Std.: " + r.getArt());
-        vpViewHolder.vpText.setText(r.isKurseVersion() ? r.getLinearContent() : r.getContent());
-        vpViewHolder.vpImage.setImageResource(R.mipmap.ic_launcher);
-
-        vpViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                expandedRows[i] = !expandedRows[i];
-                vpViewHolder.vpText.setVisibility(expandedRows[i] ? View.VISIBLE : View.GONE);
-                vpViewHolder.itemView.setActivated(expandedRows[i]);
-                TransitionManager.beginDelayedTransition(rv);
+        if (i == 0) {
+            if (msgOTD != null) {
+                vpViewHolder.vpText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
+                vpViewHolder.vpText.setText(msgOTD);
             }
-        });
+        } else {
+            VPRow r = rows.get(i - 1);
+
+            if (Util.D) Log.i("onBindViewHolder", "row an " + i + ": " + r.toString());
+
+            vpViewHolder.vpText.setVisibility(View.GONE);
+            vpViewHolder.itemView.setActivated(false);
+
+            vpViewHolder.vpTitle.setText(r.getStunde() + ". Std.: " + r.getArt());
+            vpViewHolder.vpText.setText(r.isKurseVersion() ? r.getLinearContent() : r.getContent());
+            vpViewHolder.vpImage.setImageResource(R.mipmap.ic_launcher);
+
+            vpViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    expandedRows[i - 1] = !expandedRows[i - 1];
+                    vpViewHolder.vpText.setVisibility(expandedRows[i - 1] ? View.VISIBLE : View.GONE);
+                    vpViewHolder.itemView.setActivated(expandedRows[i - 1]);
+                    TransitionManager.beginDelayedTransition(rv);
+                }
+            });
+        }
     }
 
     @Override
     public int getItemCount() {
-        if (Util.D) Log.i("getItemCount", "" + rows.size());
-        return rows.size();
+        if (Util.D) Log.i("getItemCount", "" + (rows.size() + 1));
+
+        if (msgOTD == null)
+            return rows.size();
+
+        /* + 1 für msgOTD */
+        return rows.size() + 1;
     }
 }

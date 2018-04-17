@@ -21,13 +21,14 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.vplib.vortex.vplib.Tuple;
+import com.vplib.vortex.vplib.Util;
+
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 
 import vortex.vp_today.R;
-import vortex.vp_today.util.Tuple;
-import vortex.vp_today.util.Util;
 
 /**
  * @author Simon Dräger

@@ -5,9 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.vplib.vortex.vplib.Util;
+
 import vortex.vp_today.R;
 import vortex.vp_today.service.MainService;
-import vortex.vp_today.util.Util;
 
 /**
  * @author Simon Dräger
@@ -17,7 +18,7 @@ import vortex.vp_today.util.Util;
 public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (!Util.isMainServiceRunning(context)) {
+        if (!Util.isMainServiceRunning(context, MainService.class)) {
             Intent i = new Intent(context, MainService.class);
             i.putExtra("interval", context.getSharedPreferences("vortex.vp_today.app", Context.MODE_PRIVATE)
                     .getInt(context.getString(R.string.settingRefreshIntervalMin), context.getResources().getInteger(R.integer.defaultRefreshIntervalMin)));

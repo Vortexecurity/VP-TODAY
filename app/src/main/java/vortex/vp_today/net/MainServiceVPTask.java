@@ -3,13 +3,13 @@ package vortex.vp_today.net;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 
+import com.vplib.vortex.vplib.TriTuple;
+import com.vplib.vortex.vplib.Util;
+import com.vplib.vortex.vplib.logic.VPInfo;
+import com.vplib.vortex.vplib.logic.VPRow;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-
-import vortex.vp_today.logic.VPInfo;
-import vortex.vp_today.logic.VPRow;
-import vortex.vp_today.util.TriTuple;
-import vortex.vp_today.util.Util;
 
 /**
  * @author Simon Dräger

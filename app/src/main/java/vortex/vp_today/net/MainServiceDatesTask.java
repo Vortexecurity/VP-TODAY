@@ -3,8 +3,8 @@ package vortex.vp_today.net;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 
-import vortex.vp_today.util.TwoFormatDate;
-import vortex.vp_today.util.Util;
+import com.vplib.vortex.vplib.TwoFormatDate;
+import com.vplib.vortex.vplib.Util;
 
 /**
  * @author Simon Dräger

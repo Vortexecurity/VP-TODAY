@@ -1,4 +1,4 @@
-package vortex.vp_today.mail;
+package com.vplib.vortex.vplib.mail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -66,7 +66,7 @@ public class GmailSender extends javax.mail.Authenticator {
         message.setSubject(subject);
 
         message.setText(body);
-        
+
         if (recipients.indexOf(',') > 0)
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipients));
         else

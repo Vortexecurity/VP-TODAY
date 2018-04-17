@@ -1,4 +1,4 @@
-package vortex.vp_today.util;
+package com.vplib.vortex.vplib;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

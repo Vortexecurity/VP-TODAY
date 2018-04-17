@@ -1,8 +1,8 @@
-package vortex.vp_today.logic;
+package com.vplib.vortex.vplib.logic;
 
 import android.support.annotation.Nullable;
 
-import vortex.vp_today.util.Util;
+import com.vplib.vortex.vplib.Util;
 
 /**
  * Eine VP-Reihe.
